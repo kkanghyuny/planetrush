@@ -1,6 +1,7 @@
 import React from "react";
-import kakaoIcon from "../../assets/kakao_icon.png";
 import backGround from "../../assets/background.png";
+import kakaoLogin from "../../assets/kakao_login.png";
+import "../../css/StartPage.css";
 
 function Login() {
   const SocialKakao = () => {
@@ -14,11 +15,13 @@ function Login() {
     return (
       <div className="container">
         <img src={backGround} alt="Background" className="back_ground" />
-        <div className="centered">
-          <button className="kakaologin_button" onClick={handleLogin}>
-            <img src={kakaoIcon} alt="Kakao Talk" className="kakao_icon" />
-            카카오 로그인
-          </button>
+        <div className="kakaologin">
+          <img
+            src={kakaoLogin}
+            alt="Kakao Talk"
+            className="kakao_login"
+            onClick={handleLogin}
+          />
         </div>
       </div>
     );
