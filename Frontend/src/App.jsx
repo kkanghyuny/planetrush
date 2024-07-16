@@ -1,11 +1,20 @@
 import "./App.css";
-import Login from './pages/StartPage/StartPage'
+import { Router, Route, Routes } from "react-router-dom";
+
+import MainPage from "./pages/MainPage/MainPage";
+import PlanetCreate from "./pages/PlanetCreatePage/PlanetCreate";
+import MyPlanetDoing from "./pages/MyPage/MyPlanetDoing";
+import Navigation from "./components/Nav/BottomNav";
 
 function App() {
   return (
     <>
-      <h1> PWA 실습 </h1>
-      <Login />
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/create" element={<PlanetCreate />} />
+        <Route path="/mypage" element={<MyPlanetDoing />} />
+      </Routes>
     </>
   );
 }
