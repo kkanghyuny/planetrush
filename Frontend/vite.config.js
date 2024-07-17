@@ -34,4 +34,10 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "@components": "/src/components",
+      "@styles": "/src/styles",
+    },
+  },
 });
