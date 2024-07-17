@@ -1,6 +1,8 @@
 import "./App.css";
 import { Router, Route, Routes } from "react-router-dom";
 
+import BackGround from "./components/BackGround/BackGround";
+
 import MainPage from "./pages/MainPage/MainPage";
 import PlanetCreate from "./pages/PlanetCreatePage/PlanetCreate";
 import MyPlanetDoing from "./pages/MyPage/MyPlanetDoing";
@@ -10,7 +12,8 @@ import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruti
 
 function App() {
   return (
-    <>
+    <div className="App">
+      <BackGround />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/create" element={<PlanetCreate />} />
@@ -19,7 +22,7 @@ function App() {
         <Route path="/planet" element={<PlanetDetailRecruiting />} />
       </Routes>
       <Navigation />
-    </>
+    </div>
   );
 }
 
