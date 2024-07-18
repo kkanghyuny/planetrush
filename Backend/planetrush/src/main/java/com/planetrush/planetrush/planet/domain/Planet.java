@@ -50,8 +50,8 @@ public class Planet {
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 
-	@Column(name = "maximum_capacity", nullable = false)
-	private int maxCapacity;
+	@Column(name = "max_participants", nullable = false)
+	private int maxParticipants;
 
 	@Column(name = "authentication_cond", nullable = false)
 	private String authCond;
@@ -68,14 +68,14 @@ public class Planet {
 
 	@Builder
 	public Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
-		int maxCapacity,
+		int maxParticipants,
 		String authCond, String authImgUrl) {
 		this.name = name;
 		this.category = category;
 		this.content = content;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.maxCapacity = maxCapacity;
+		this.maxParticipants = maxParticipants;
 		this.authCond = authCond;
 		this.authImgUrl = authImgUrl;
 	}
