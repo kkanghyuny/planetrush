@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.planetrush.planetrush.resident.domain.Resident;
+import com.planetrush.planetrush.planet.domain.Resident;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

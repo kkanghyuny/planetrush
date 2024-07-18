@@ -1,7 +1,6 @@
-package com.planetrush.planetrush.resident.domain;
+package com.planetrush.planetrush.planet.domain;
 
 import com.planetrush.planetrush.member.domain.Member;
-import com.planetrush.planetrush.planet.domain.Planet;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,8 +37,8 @@ public class Resident {
 	private Planet planet;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "challenge_status", nullable = false)
-	private ChallStatus challStatus;
+	@Column(name = "challenger_status", nullable = false)
+	private ChallengerStatus challengerStatus;
 
 	@Column(name = "is_banned", nullable = false)
 	private Boolean banned;
@@ -48,17 +46,20 @@ public class Resident {
 	@Column(name = "is_creator", nullable = false)
 	private Boolean creator;
 
-	@Builder
-	public Resident(Member member, Planet planet, ChallStatus challStatus) {
-		this(member, planet, challStatus, false, false);
-	}
-
-	private Resident(Member member, Planet planet, ChallStatus challStatus, Boolean banned, Boolean creator) {
+	private Resident(Member member, Planet planet, ChallengerStatus challengerStatus, Boolean banned, Boolean creator) {
 		addMember(member);
 		addPlanet(planet);
-		this.challStatus = challStatus;
+		this.challengerStatus = challengerStatus;
 		this.banned = banned;
 		this.creator = creator;
+	}
+
+	public static Resident isNotCreator(Member member, Planet planet) {
+		return new Resident(member, planet, ChallengerStatus.READY, false, false);
+	}
+
+	public static Resident isCreator(Member member, Planet planet) {
+		return new Resident(member, planet, ChallengerStatus.READY, false, true);
 	}
 
 	private void addPlanet(Planet planet) {
