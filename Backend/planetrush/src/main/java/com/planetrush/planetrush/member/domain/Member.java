@@ -9,13 +9,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.planetrush.planetrush.resident.domain.Resident;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -34,6 +37,10 @@ public class Member {
 	@Column(name = "member_id")
 	private Long id;
 
+	@ElementCollection
+	@CollectionTable(name = "MEMBER_AUTHORITY", joinColumns = @JoinColumn(name = "member_id"))
+	private List<String> authorities = new ArrayList<>();
+
 	@Column(name = "nickname", length = 10, nullable = false)
 	private String nickname;
 
@@ -43,9 +50,6 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "provider", nullable = false)
 	private Provider provider;
-
-	@Column(name = "ci", nullable = false)
-	private String ci;
 
 	@OneToMany(mappedBy = "member")
 	private List<Resident> residents = new ArrayList<>();
@@ -59,11 +63,10 @@ public class Member {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public Member(String nickname, String email, Provider provider, String ci) {
+	public Member(String nickname, String email, Provider provider) {
 		this.nickname = nickname;
 		this.email = email;
 		this.provider = provider;
-		this.ci = ci;
 	}
 
 }

@@ -17,6 +17,7 @@ spring:
       hibernate:
         format_sql: true
 
+
 logging:
   level:
     org:
@@ -24,3 +25,19 @@ logging:
         web: DEBUG
     com:
       example: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  issuer: ${JWT_ISSUER}
+  salt: ${JWT_SALT}
+  access-token:
+    expiretime: ${JWT_ACCESS_TOKEN_EXPIRETIME}
+  refresh-token:
+    expiretime: ${JWT_REFRESH_TOKEN_EXPIRETIME}
+
+kakao:
+  secret:
+    key: ${KAKAO_SECRET_KEY}
+  loginurl: ${KAKAO_LOGOIN_URL}
+  logouturl: ${KAKAO_LOGOUT_URL}
