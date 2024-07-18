@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.planetrush.planetrush.resident.domain.Resident;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,11 +54,8 @@ public class Planet {
 	@Column(name = "authentication_cond", nullable = false)
 	private String authCond;
 
-	@Column(name = "authentication_img_url", nullable = false)
-	private String authImgUrl;
-
 	@OneToMany(mappedBy = "planet")
-	private List<Resident> residents = new ArrayList<>();
+	private final List<Resident> residents = new ArrayList<>();
 
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false)
@@ -69,7 +64,7 @@ public class Planet {
 	@Builder
 	public Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
 		int maxParticipants,
-		String authCond, String authImgUrl) {
+		String authCond) {
 		this.name = name;
 		this.category = category;
 		this.content = content;
@@ -77,7 +72,6 @@ public class Planet {
 		this.endDate = endDate;
 		this.maxParticipants = maxParticipants;
 		this.authCond = authCond;
-		this.authImgUrl = authImgUrl;
 	}
 
 }
