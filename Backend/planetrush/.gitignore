@@ -229,5 +229,6 @@ gradle-app.setting
 ### Custom
 .idea
 .build
+.env
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,intellij,java,gradle
