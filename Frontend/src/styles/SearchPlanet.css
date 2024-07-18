@@ -1,0 +1,14 @@
+.challengeList {
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin-bottom: '10px';
+}
+
+.challengeImg {
+    margin-right: '10px';
+}
+
+.challengeExp {
+    margin-left: '30%';
+}

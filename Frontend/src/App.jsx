@@ -9,6 +9,7 @@ import MyPlanetDoing from "./pages/MyPage/MyPlanetDoing";
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruting";
+import Kakaoauth from "./pages/AuthenticaitionPage/Kakaoauth";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/mypage" element={<MyPlanetDoing />} />
         <Route path="/search" element={<SearchBar />} />
         <Route path="/planet" element={<PlanetDetailRecruiting />} />
+        <Route path="/auth" element={<Kakaoauth />} />
       </Routes>
       <Navigation />
     </div>
