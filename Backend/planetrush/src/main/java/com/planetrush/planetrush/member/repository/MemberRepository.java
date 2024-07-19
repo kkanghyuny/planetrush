@@ -8,5 +8,4 @@ import com.planetrush.planetrush.member.domain.Provider;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Member findByEmailAndProvider(String email, Provider provider);
-
 }
