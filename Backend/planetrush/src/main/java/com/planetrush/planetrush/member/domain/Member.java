@@ -47,6 +47,9 @@ public class Member {
 	@Column(name = "email", nullable = false)
 	private String email;
 
+	@Column(name = "ci", nullable = false)
+	private String ci;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "provider", nullable = false)
 	private Provider provider;
@@ -63,9 +66,10 @@ public class Member {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public Member(String nickname, String email, Provider provider) {
+	public Member(String nickname, String email, String ci, Provider provider) {
 		this.nickname = nickname;
 		this.email = email;
+		this.ci = ci;
 		this.provider = provider;
 	}
 
