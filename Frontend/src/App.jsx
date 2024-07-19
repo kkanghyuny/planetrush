@@ -10,6 +10,7 @@ import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruting";
 import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
+import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
 
 function App() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function App() {
         <Route path="/mypage" element={<MyPlanetDoing />} />
         <Route path="/search" element={<SearchBar />} />
         <Route path="/planet" element={<PlanetDetailRecruiting />} />
+        <Route path="/auth" element={<Auth />} />
       </Routes>
       {!isStartPage && <Navigation />}
     </div>
