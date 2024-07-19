@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import io.netty.handler.codec.http.HttpMethod;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -15,13 +16,13 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		// registry
-		// 	.addMapping("/**")
-		// 	.allowedOrigins("*")
-		// 	.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-		// 		HttpMethod.DELETE.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(),
-		// 		HttpMethod.PATCH.name())
-		// 	.maxAge(1800);
+		registry
+			.addMapping("/**")
+			.allowedOrigins("*")
+			.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+				HttpMethod.DELETE.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(),
+				HttpMethod.PATCH.name())
+			.maxAge(1800);
 	}
 
 	@Override

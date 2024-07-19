@@ -26,22 +26,19 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	public List<PlanetInfoDto> searchPlanet(SearchCond cond) {
 		List<Planet> planets = planetRepositoryCustom.searchPlanet(cond);
 		return planets.stream()
-			.map(this::mapToDto)
+			.map(p -> PlanetInfoDto.builder()
+				.planetId(p.getId())
+				.name(p.getName())
+				.planetImg(null)  // TODO: 행성 이미지 URL 추가할 것
+				.content(p.getContent())
+				.startDate(p.getStartDate())
+				.endDate(p.getEndDate())
+				.category(String.valueOf(p.getCategory()))
+				.maxParticipants(p.getMaxParticipants())
+				.currentParticipants(p.getCurrentParticipants())
+				.planetStatus(p.getStatus().toString())
+				.build())
 			.toList();
-	}
-
-	private PlanetInfoDto mapToDto(Planet p) {
-		return PlanetInfoDto.builder()
-			.planetId(p.getId())
-			.name(p.getName())
-			.planetImg(null)  // TODO: 행성 이미지 URL 추가할 것
-			.content(p.getContent())
-			.startDate(p.getStartDate())
-			.endDate(p.getEndDate())
-			.category(String.valueOf(p.getCategory()))
-			.maxParticipants(p.getMaxParticipants())
-			.currentParticipants(0)  // TODO: 현재 참여중인 인원 수 정보를 추가할 것
-			.build();
 	}
 
 }
