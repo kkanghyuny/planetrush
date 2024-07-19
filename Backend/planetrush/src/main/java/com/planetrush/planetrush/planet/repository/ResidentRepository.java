@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.planetrush.planetrush.planet.domain.Resident;
 
 @Repository
-public interface ResidentRepository extends GetResidentRepository, JpaRepository<Resident, Long> {
+public interface ResidentRepository extends JpaRepository<Resident, Long> {
 }

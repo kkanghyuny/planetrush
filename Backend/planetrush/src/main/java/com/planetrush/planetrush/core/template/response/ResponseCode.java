@@ -23,6 +23,8 @@ public enum ResponseCode {
 	FAIL_TO_UPLOAD_FILE("4001", "AWS 서비스가 원활하지 않아 사진 업로드에 실패했습니다."),
 
 	// 5000 - PLANET
+	RESIDENT_LIMIT_EXCEEDED("5000", "행성 거주 최대 인원을 초과했습니다."),
+	ALREADY_EXIST_RESIDENT("5001", "이미 행성에 거주 중입니다."),
 
 	// 6000 - RESIDENT
 	;
