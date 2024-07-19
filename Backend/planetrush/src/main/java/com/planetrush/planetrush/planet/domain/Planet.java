@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
+import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,11 +54,17 @@ public class Planet {
 	@Column(name = "max_participants", nullable = false)
 	private int maxParticipants;
 
+	@Column(name = "current_participants", nullable = false)
+	private int currentParticipants;
+
 	@Column(name = "authentication_cond", nullable = false)
 	private String authCond;
 
 	@OneToMany(mappedBy = "planet")
 	private final List<Resident> residents = new ArrayList<>();
+
+	@Column(name = "planet_status", nullable = false)
+	private PlanetStatus status;
 
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false)
@@ -63,15 +72,38 @@ public class Planet {
 
 	@Builder
 	public Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
-		int maxParticipants,
-		String authCond) {
+		int maxParticipants, String authCond) {
+		this(name, category, content, startDate, endDate, maxParticipants, 1, authCond, PlanetStatus.READY);
+	}
+
+	private Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
+		int maxParticipants, int currentParticipants, String authCond, PlanetStatus status) {
 		this.name = name;
 		this.category = category;
 		this.content = content;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.maxParticipants = maxParticipants;
+		this.currentParticipants = currentParticipants;
 		this.authCond = authCond;
+		this.status = status;
+	}
+
+	public void addParticipant() {
+		if (currentParticipants == maxParticipants) {
+			throw new ParticipantsOverflowException();
+		}
+		this.currentParticipants++;
+	}
+
+	public void removeParticipant() {
+		this.currentParticipants--;
+		if (currentParticipants == 0) {
+			this.status = PlanetStatus.DESTROYED;
+		}
+		if (currentParticipants < 0) {
+			throw new NegativeParticipantCountException();
+		}
 	}
 
 }

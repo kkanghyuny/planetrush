@@ -20,5 +20,6 @@ public class PlanetInfoDto {
 	private LocalDate endDate;
 	private int currentParticipants;
 	private int maxParticipants;
-	
+	private String planetStatus;
+
 }

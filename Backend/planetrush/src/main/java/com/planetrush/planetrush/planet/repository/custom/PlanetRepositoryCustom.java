@@ -2,12 +2,12 @@ package com.planetrush.planetrush.planet.repository.custom;
 
 import static com.planetrush.planetrush.planet.domain.QPlanet.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.planetrush.planetrush.planet.domain.Planet;
+import com.planetrush.planetrush.planet.domain.PlanetStatus;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,7 +23,7 @@ public class PlanetRepositoryCustom {
 	public List<Planet> searchPlanet(SearchCond cond) {
 		return queryFactory.selectFrom(planet)
 			.where(
-				isNotStarted(),
+				isReadyStatus(),
 				isKeywordContained(cond.getKeyword()),
 				ltPlanetId(cond.getLastPlanetId()),
 				isInCategory(cond.getCategory()))
@@ -32,8 +32,8 @@ public class PlanetRepositoryCustom {
 			.fetch();
 	}
 
-	private BooleanExpression isNotStarted() {
-		return planet.startDate.after(LocalDate.now());
+	private BooleanExpression isReadyStatus() {
+		return planet.status.eq(PlanetStatus.READY);
 	}
 
 	private BooleanExpression isKeywordContained(String keyword) {
