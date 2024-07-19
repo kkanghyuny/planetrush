@@ -6,16 +6,15 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.planetrush.planetrush.core.exception.ExpiredJwtException;
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.ServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,7 +54,7 @@ public class JwtTokenProvider {
 		return UUID.randomUUID().toString();
 	}
 
-	public boolean validateToken(ServletRequest request, String accessToken) {
+	public boolean validateToken(String accessToken) {
 		log.info("secret key: {}", SECRET_KEY);
 		if (!accessToken.startsWith("Bearer ")) {
 			return false;
@@ -70,7 +69,7 @@ public class JwtTokenProvider {
 			log.error("JWT 토큰이 없거나 잘못되었습니다.", e);
 		} catch (ExpiredJwtException e) {
 			log.error("만료된 JWT 토큰입니다.");
-			request.setAttribute("exception", "ExpiredJwtException");
+			throw new ExpiredJwtException();
 		}
 		return false;
 	}

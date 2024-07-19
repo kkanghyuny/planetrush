@@ -6,6 +6,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.planetrush.planetrush.core.interceptor.JwtInterceptor;
+
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebMvc
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+	private final JwtInterceptor jwtInterceptor;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
@@ -27,8 +31,8 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// registry.addInterceptor(jwtInterceptor)
-		// 	.addPathPatterns("/admin/**")
-		// 	.excludePathPatterns("/members/oauth/**", "/swagger-ui.html", "/api/**");
+		registry.addInterceptor(jwtInterceptor)
+			.addPathPatterns("/api/**")
+			.excludePathPatterns("/api/v1/members/auth/login/kakao", "/api/v1/members/oauth/reissue", "/api/v1/planets/detail/**");
 	}
 }
