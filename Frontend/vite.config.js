@@ -34,6 +34,11 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
+  },
   resolve: {
     alias: {
       "@components": "/src/components",

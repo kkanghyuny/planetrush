@@ -7,3 +7,5 @@ function PlanteCreateInfo() {
     </>
   );
 }
+
+export default PlanteCreateInfo;
