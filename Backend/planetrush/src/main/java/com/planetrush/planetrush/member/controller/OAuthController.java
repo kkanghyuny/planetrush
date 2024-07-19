@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.member.controller.request.KakaoLoginReq;
+import com.planetrush.planetrush.member.controller.request.KakaoLogoutReq;
 import com.planetrush.planetrush.member.service.OAuthService;
 import com.planetrush.planetrush.member.service.dto.LoginDto;
 
@@ -24,6 +25,12 @@ public class OAuthController {
 	public ResponseEntity<BaseResponse<LoginDto>> doKakaoLogin(@RequestBody KakaoLoginReq req) {
 		LoginDto res = oAuthService.kakaoLogin(req.getAccessToken());
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
+	}
+
+	@PostMapping("/auth/logout/kakao")
+	public ResponseEntity<BaseResponse<?>> doKakaoLogout(@RequestBody KakaoLogoutReq req) {
+		oAuthService.kakaoLogout(req.getAccessToken());
+		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 }

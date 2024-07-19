@@ -41,5 +41,5 @@ jwt:
 kakao:
   secret:
     key: ${KAKAO_SECRET_KEY}
-  loginurl: ${KAKAO_LOGOIN_URL}
+  loginurl: ${KAKAO_LOGIN_URL}
   logouturl: ${KAKAO_LOGOUT_URL}

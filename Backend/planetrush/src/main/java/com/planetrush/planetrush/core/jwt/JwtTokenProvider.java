@@ -1,18 +1,9 @@
 package com.planetrush.planetrush.core.jwt;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
@@ -84,15 +75,21 @@ public class JwtTokenProvider {
 		return false;
 	}
 
-	public Authentication getAuthentication(String accessToken) {
+	public Long getMemberId(String accessToken) {
 		Claims claims = parseClaims(accessToken);
-		Collection<GrantedAuthority> authorities =
-			Arrays.stream(claims.get("authorities").toString().split(","))
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
-		UserDetails principal = new User(claims.getSubject(), "", authorities);
-		return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+		return claims.get("memberId", Long.class);
 	}
+
+	// security용
+	// public Authentication getAuthentication(String accessToken) {
+	// 	Claims claims = parseClaims(accessToken);
+	// 	Collection<GrantedAuthority> authorities =
+	// 		Arrays.stream(claims.get("authorities").toString().split(","))
+	// 			.map(SimpleGrantedAuthority::new)
+	// 			.collect(Collectors.toList());
+	// 	UserDetails principal = new User(claims.getSubject(), "", authorities);
+	// 	return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+	// }
 
 	private Claims parseClaims(String accessToken) {
 		return Jwts.parserBuilder()

@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planetrush.planetrush.infra.oauth.dto.KakaoUserInfo;
 
@@ -17,14 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KakaoUtil {
 
-	// private String kakaoApiKey = "f6f0d0622693c7164aa45dcb523d4a50";
-	@Value("{kakao.loginurl}")
+	@Value("${kakao.loginurl}")
 	private String loginUrl;
 
-	@Value("{kakao.secret.key}")
+	@Value("${kakao.secret.key}")
 	private String SERVICE_APP_ADMIN_KEY;
 
-	@Value("{kakao.logouturl}")
+	@Value("${kakao.logouturl}")
 	private String logoutUrl;
 
 	public KakaoUserInfo getUserInfo(String accessToken) {
@@ -40,10 +40,10 @@ public class KakaoUtil {
 			.retrieve()
 			.bodyToMono(String.class)
 			.block();
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			userInfo = objectMapper.readValue(response, KakaoUserInfo.class);
+			userInfo = objectMapper.readValue(response, new TypeReference<KakaoUserInfo>() {
+			});
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -52,16 +52,16 @@ public class KakaoUtil {
 	}
 
 	public void kakaoLogout(String id) {
-		String requestUrl = "https://kapi.kakao.com/v1/user/logout";
 
-		WebClient webClient = WebClient.builder().defaultHeader("Content-Type", "application/x-www-form-urlencoded").build();
+		WebClient webClient = WebClient.builder()
+			.defaultHeader("Content-Type", "application/x-www-form-urlencoded")
+			.build();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("target_id_type", "user_id");
 		params.add("target_id", id);
-
 		String response = webClient.post()
-			.uri(requestUrl)
+			.uri(logoutUrl)
 			.header("Authorization", ("KakaoAK " + SERVICE_APP_ADMIN_KEY))
 			.body(BodyInserters.fromFormData(params))
 			.retrieve()

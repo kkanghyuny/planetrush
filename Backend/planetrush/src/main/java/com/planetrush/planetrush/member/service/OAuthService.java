@@ -6,4 +6,5 @@ public interface OAuthService {
 
 	LoginDto kakaoLogin(String accessToken);
 
+	void kakaoLogout(String memberId);
 }

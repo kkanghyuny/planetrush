@@ -26,11 +26,13 @@ public class OAuthServiceImpl implements OAuthService {
 	@Override
 	public LoginDto kakaoLogin(String accessToken) {
 		KakaoUserInfo kakaoUserInfo = kakaoUtil.getUserInfo(accessToken);
-		Member member = memberRepository.findByEmailAndProvider(kakaoUserInfo.getEmail(), Provider.KAKAO);
+		String email = kakaoUserInfo.getKakaoAccount().getEmail();
+		Member member = memberRepository.findByEmailAndProvider(email, Provider.KAKAO);
 		/* 회원가입 진행 */
 		if (member == null) {
 			member = memberRepository.save(Member.builder()
-				.email(kakaoUserInfo.getEmail())
+				.email(email)
+				.ci(kakaoUserInfo.getId().toString())
 				.nickname("랜덤")  // TODO: 랜덤 닉네임 생성기 추가
 				.provider(Provider.KAKAO)
 				.build());
@@ -43,4 +45,10 @@ public class OAuthServiceImpl implements OAuthService {
 			.build();
 	}
 
+	@Override
+	public void kakaoLogout(String accessToken) {
+		Long memberId = jwtTokenProvider.getMemberId(accessToken); // TODO: refreshToken 추가되고 jwtToken 수정
+		Member member = memberRepository.findById(memberId).orElseThrow();
+		kakaoUtil.kakaoLogout(member.getCi());
+	}
 }
