@@ -63,6 +63,7 @@ public class Planet {
 	@OneToMany(mappedBy = "planet")
 	private final List<Resident> residents = new ArrayList<>();
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "planet_status", nullable = false)
 	private PlanetStatus status;
 
