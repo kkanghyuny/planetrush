@@ -10,8 +10,8 @@ import com.planetrush.planetrush.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
 @Transactional
+@Service
 public class UpdateMemberServiceImpl implements UpdateMemberService {
 
 	private final MemberRepository memberRepository;

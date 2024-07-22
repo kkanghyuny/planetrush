@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.planetrush.planetrush.member.exception.AlreadyWithdrawnException;
 import com.planetrush.planetrush.member.exception.NicknameOverflowException;
 import com.planetrush.planetrush.planet.domain.Resident;
 
@@ -55,6 +56,10 @@ public class Member {
 	@Column(name = "provider", nullable = false)
 	private Provider provider;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = false)
+	private Status status;
+
 	@OneToMany(mappedBy = "member")
 	private List<Resident> residents = new ArrayList<>();
 
@@ -67,11 +72,12 @@ public class Member {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	public Member(String nickname, String email, String ci, Provider provider) {
+	public Member(String nickname, String email, String ci, Provider provider, Status status) {
 		this.nickname = nickname;
 		this.email = email;
 		this.ci = ci;
 		this.provider = provider;
+		this.status = status;
 	}
 
 	public void updateNickname(String newNickname) {
@@ -94,4 +100,14 @@ public class Member {
 		return nickname.trim().isEmpty() || nickname.length() > 10;
 	}
 
+	public void withdrawn() {
+		if (alreadyWithdrawn()) {
+			throw new AlreadyWithdrawnException();
+		}
+		this.status = Status.INACTIVE;
+	}
+
+	private boolean alreadyWithdrawn() {
+		return this.status.equals(Status.INACTIVE);
+	}
 }
