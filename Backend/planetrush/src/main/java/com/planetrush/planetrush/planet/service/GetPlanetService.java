@@ -9,6 +9,6 @@ public interface GetPlanetService {
 
 	List<PlanetDetailDto> searchPlanet(SearchCond cond);
 
-	PlanetDetailDto getPlanetDetail(String accessToken, Long planetId);
+	PlanetDetailDto getPlanetDetail(Long memberId, Long planetId);
 
 }
