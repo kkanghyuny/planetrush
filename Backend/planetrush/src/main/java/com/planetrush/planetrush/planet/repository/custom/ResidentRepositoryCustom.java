@@ -38,7 +38,7 @@ public class ResidentRepositoryCustom {
 	}
 
 	private BooleanExpression memberIdEq(Long memberId) {
-		return resident.member.id.eq(memberId);
+		return memberId != null ? resident.member.id.eq(memberId) : null;
 	}
 
 	private BooleanExpression isReadyStatus() {

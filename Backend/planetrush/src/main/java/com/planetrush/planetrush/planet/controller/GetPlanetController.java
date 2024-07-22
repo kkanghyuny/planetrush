@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.planet.controller.response.SearchPlanetRes;
 import com.planetrush.planetrush.planet.service.GetPlanetService;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class GetPlanetController extends PlanetController {
 
+	private final JwtTokenProvider jwtTokenProvider;
 	private final GetPlanetService getPlanetService;
 
 	@GetMapping
@@ -48,8 +50,13 @@ public class GetPlanetController extends PlanetController {
 
 	@GetMapping("/detail")
 	public ResponseEntity<BaseResponse<PlanetDetailDto>> getPlanetDetail(
-		@RequestHeader("Authorization") String accessToken, @RequestParam("planet-id") Long planetId) {
-		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getPlanetDetail(accessToken, planetId)));
+		@RequestHeader(value = "Authorization", required = false) String accessToken,
+		@RequestParam("planet-id") Long planetId) {
+		Long memberId = null;
+		if (accessToken != null) {
+			memberId = jwtTokenProvider.getMemberId(accessToken);
+		}
+		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getPlanetDetail(memberId, planetId)));
 	}
 
 }

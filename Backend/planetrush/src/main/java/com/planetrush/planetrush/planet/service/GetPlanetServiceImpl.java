@@ -56,18 +56,20 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 
 	/**
 	 * 챌린지가 시작되지 않은 행성 상세 조회한다.
-	 * @param accessToken JWT accessToken
+	 * @param memberId 회원 id
 	 * @param planetId 행성 id
 	 * @return 행성 상세 정보
 	 */
 	@Override
-	public PlanetDetailDto getPlanetDetail(String accessToken, Long planetId) {
-		Long memberId = jwtTokenProvider.getMemberId(accessToken);
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(MemberNotFoundException::new);
+	public PlanetDetailDto getPlanetDetail(Long memberId, Long planetId) {
 		Planet planet = planetRepository.findById(planetId)
 			.orElseThrow(PlanetNotFoundException::new);
-		boolean joined = residentRepositoryCustom.isResidentOfPlanet(memberId, planetId);
+		boolean joined = false;
+		if (isNotNull(memberId)) {
+			Member member = memberRepository.findById(memberId)
+				.orElseThrow(MemberNotFoundException::new);  // TODO: Member 조회 HelperService로 대체할 것
+			joined = residentRepositoryCustom.isResidentOfPlanet(memberId, planetId);
+		}
 		return PlanetDetailDto.builder()
 			.planetId(planet.getId())
 			.name(planet.getName())
@@ -81,6 +83,10 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.planetStatus(String.valueOf(planet.getStatus()))
 			.joined(joined)
 			.build();
+	}
+
+	private boolean isNotNull(Long memberId) {
+		return memberId != null;
 	}
 
 }
