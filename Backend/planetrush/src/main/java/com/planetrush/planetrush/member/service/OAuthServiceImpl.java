@@ -8,6 +8,7 @@ import com.planetrush.planetrush.core.jwt.dto.JwtToken;
 import com.planetrush.planetrush.infra.oauth.dto.KakaoUserInfo;
 import com.planetrush.planetrush.infra.oauth.util.KakaoUtil;
 import com.planetrush.planetrush.member.domain.Member;
+import com.planetrush.planetrush.member.domain.Nickname;
 import com.planetrush.planetrush.member.domain.Provider;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.member.service.dto.LoginDto;
@@ -33,7 +34,7 @@ public class OAuthServiceImpl implements OAuthService {
 			member = memberRepository.save(Member.builder()
 				.email(email)
 				.ci(kakaoUserInfo.getId().toString())
-				.nickname("랜덤")  // TODO: 랜덤 닉네임 생성기 추가
+				.nickname(Nickname.getRandomKoreanNickname())
 				.provider(Provider.KAKAO)
 				.build());
 		}

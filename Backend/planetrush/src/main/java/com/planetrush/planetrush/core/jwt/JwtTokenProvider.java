@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.planetrush.planetrush.core.exception.ExpiredJwtException;
+import com.planetrush.planetrush.core.exception.UnAuthorizedException;
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
 
 import io.jsonwebtoken.Claims;
@@ -75,20 +76,15 @@ public class JwtTokenProvider {
 	}
 
 	public Long getMemberId(String accessToken) {
-		Claims claims = parseClaims(accessToken);
+		Claims claims = null;
+		try {
+			claims = parseClaims(accessToken);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new UnAuthorizedException();
+		}
 		return claims.get("memberId", Long.class);
 	}
-
-	// security용
-	// public Authentication getAuthentication(String accessToken) {
-	// 	Claims claims = parseClaims(accessToken);
-	// 	Collection<GrantedAuthority> authorities =
-	// 		Arrays.stream(claims.get("authorities").toString().split(","))
-	// 			.map(SimpleGrantedAuthority::new)
-	// 			.collect(Collectors.toList());
-	// 	UserDetails principal = new User(claims.getSubject(), "", authorities);
-	// 	return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
-	// }
 
 	private Claims parseClaims(String accessToken) {
 		return Jwts.parserBuilder()
