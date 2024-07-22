@@ -1,16 +1,27 @@
 .challengeList {
-    display: flex;
-    position: relative;
-    align-items: center;
-    margin-bottom: '10px';
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  margin-bottom: '10px';
+}
+
+.challengeImgArea {
+  text-align: center;
+  margin-right: '20px';
 }
 
 .challengeImg {
-    margin-right: '10px';
+  display: block;
+  margin: 0 auto;
+}
+
+.participantsNumber {
+  margin-top: 5px;
 }
 
 .challengeExp {
     margin-left: '30%';
+    text-align: left;
 }
 
 .results-container {
@@ -42,3 +53,7 @@
     margin: 0;
   }
   
+  .date_participant {
+    display: flex;
+    justify-content: 'space-between';
+  }

@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import "./App.css";
 import { Router, Route, Routes, useLocation } from "react-router-dom";
 
@@ -8,10 +9,8 @@ import MainPage from "./pages/MainPage/MainPage";
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
-
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
-
 import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
 import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
 
@@ -20,8 +19,9 @@ import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
 function App() {
   const location = useLocation();
   const isStartPage = location.pathname === "/";
+
   return (
-    <div className="App">
+    <div className = 'App'>
       <BackGround />
       <Routes>
         <Route path="/" element={<StartPage />} />
