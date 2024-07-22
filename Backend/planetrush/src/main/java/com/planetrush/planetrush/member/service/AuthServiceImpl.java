@@ -10,6 +10,8 @@ import com.planetrush.planetrush.infra.oauth.util.KakaoUtil;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.domain.Nickname;
 import com.planetrush.planetrush.member.domain.Provider;
+import com.planetrush.planetrush.member.domain.Status;
+import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.member.service.dto.LoginDto;
 
@@ -18,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class OAuthServiceImpl implements OAuthService {
+public class AuthServiceImpl implements AuthService {
 
 	private final KakaoUtil kakaoUtil;
 	private final JwtTokenProvider jwtTokenProvider;
@@ -36,6 +38,7 @@ public class OAuthServiceImpl implements OAuthService {
 				.ci(kakaoUserInfo.getId().toString())
 				.nickname(Nickname.getRandomKoreanNickname())
 				.provider(Provider.KAKAO)
+				.status(Status.ACITVE)
 				.build());
 		}
 		/* 로그인 */
@@ -52,4 +55,12 @@ public class OAuthServiceImpl implements OAuthService {
 		Member member = memberRepository.findById(memberId).orElseThrow();
 		kakaoUtil.kakaoLogout(member.getCi());
 	}
+
+	@Override
+	public void withdrawnMember(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
+		member.withdrawn();
+	}
+
 }
