@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.planetrush.planetrush.member.exception.NicknameOverflowException;
 import com.planetrush.planetrush.planet.domain.Resident;
 
 import jakarta.persistence.CollectionTable;
@@ -71,6 +72,26 @@ public class Member {
 		this.email = email;
 		this.ci = ci;
 		this.provider = provider;
+	}
+
+	public void updateNickname(String newNickname) {
+		if (checkNicknameNull(newNickname)) {
+			throw new IllegalArgumentException();
+		}
+
+		if (checkNicknameLength(newNickname)) {
+			throw new NicknameOverflowException();
+		}
+
+		this.nickname = newNickname;
+	}
+
+	private boolean checkNicknameNull(String nickname) {
+		return nickname == null;
+	}
+
+	private boolean checkNicknameLength(String nickname) {
+		return nickname.trim().isEmpty() || nickname.length() > 10;
 	}
 
 }
