@@ -21,5 +21,5 @@ public class NegativeParticipantCountException extends RuntimeException {
 		boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
-	
+
 }
