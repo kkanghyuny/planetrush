@@ -2,6 +2,8 @@ package com.planetrush.planetrush.planet.service.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +23,7 @@ public class PlanetDetailDto {
 	private int currentParticipants;
 	private int maxParticipants;
 	private String planetStatus;
+	@JsonProperty(value = "isJoined")
 	private boolean joined;
 
 }
