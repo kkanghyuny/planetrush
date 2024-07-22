@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import "./App.css";
 import { Router, Route, Routes, useLocation } from "react-router-dom";
 
@@ -21,7 +21,7 @@ function App() {
   const isStartPage = location.pathname === "/";
 
   return (
-    <div className = 'App'>
+    <div className="App">
       <BackGround />
       <Routes>
         <Route path="/" element={<StartPage />} />
