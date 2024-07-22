@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class PlanetInfoDto {
+public class PlanetDetailDto {
 
 	private Long planetId;
 	private String planetImg;
@@ -21,5 +21,6 @@ public class PlanetInfoDto {
 	private int currentParticipants;
 	private int maxParticipants;
 	private String planetStatus;
+	private boolean joined;
 
 }
