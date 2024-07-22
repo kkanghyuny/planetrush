@@ -9,7 +9,7 @@ import MainPage from "./pages/MainPage/MainPage";
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
-import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruting";
+import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruiting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
 import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
 import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
