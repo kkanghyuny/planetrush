@@ -1,0 +1,40 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${DEV_RDS_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DEV_USER}
+    password: ${DEV_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+    com:
+      example: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  issuer: ${JWT_ISSUER}
+  salt: ${JWT_SALT}
+  access-token:
+    expiretime: ${DEV_JWT_ACCESS_TOKEN_EXPIRETIME}
+  refresh-token:
+    expiretime: ${DEV_JWT_REFRESH_TOKEN_EXPIRETIME}
