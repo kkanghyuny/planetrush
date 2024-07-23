@@ -42,7 +42,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.map(p -> PlanetDetailDto.builder()
 				.planetId(p.getId())
 				.name(p.getName())
-				.planetImg(null)  // TODO: 행성 이미지 URL 추가할 것
+				.planetImg(p.getPlanetImgUrl())
 				.content(p.getContent())
 				.startDate(p.getStartDate())
 				.endDate(p.getEndDate())
@@ -67,13 +67,13 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 		boolean joined = false;
 		if (isNotNull(memberId)) {
 			Member member = memberRepository.findById(memberId)
-				.orElseThrow(MemberNotFoundException::new);  // TODO: Member 조회 HelperService로 대체할 것
+				.orElseThrow(MemberNotFoundException::new);
 			joined = residentRepositoryCustom.isResidentOfPlanet(memberId, planetId);
 		}
 		return PlanetDetailDto.builder()
 			.planetId(planet.getId())
 			.name(planet.getName())
-			.planetImg(null)  // TODO: 행성 이미지 URL 추가할 것
+			.planetImg(planet.getPlanetImgUrl())
 			.content(planet.getContent())
 			.startDate(planet.getStartDate())
 			.endDate(planet.getEndDate())

@@ -134,4 +134,15 @@ public class Planet {
 		}
 	}
 
+	public String getPlanetImgUrl() {
+		if (hasCustomImg()) {
+			return this.customPlanetImg.getImgUrl();
+		}
+		return this.defaultPlanetImg.getImgUrl();
+	}
+
+	private boolean hasCustomImg() {
+		return customPlanetImg != null;
+	}
+
 }
