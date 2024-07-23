@@ -42,3 +42,16 @@ kakao:
     key: ${KAKAO_SECRET_KEY}
   loginurl: ${KAKAO_LOGIN_URL}
   logouturl: ${KAKAO_LOGOUT_URL}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+    region:
+      static: ${AWS_S3_BUCKET_REGION}
+    stack:
+      auto: false
+    s3:
+      bucket: ${AWS_S3_BUCKET_NAME}
+

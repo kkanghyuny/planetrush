@@ -19,5 +19,8 @@ public class RegisterPlanetDto {
 	private LocalDate endDate;
 	private int maxParticipants;
 	private String authCond;
-	private long memberId;
+	private Long memberId;
+	private Long defaultImgId;
+	private Long customPlanetImgId;
+	private Long standardPlanetImgId;
 }
