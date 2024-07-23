@@ -1,6 +1,5 @@
 package com.planetrush.planetrush.planet.controller.response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SearchPlanetRes {
 
-	private List<PlanetDetailDto> planets = new ArrayList<>();
+	private List<PlanetDetailDto> planets;
 	@JsonProperty(value = "hasNext")
 	private boolean hasNext;
 

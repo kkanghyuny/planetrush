@@ -27,10 +27,8 @@ public class BaseResponse<T> {
 
 	/**
 	 * 반환 데이터가 없는 성공 메시지 템플릿
-	 * @param code 상태코드
-	 * @param message 응답 메시지
-	 * @return 자기 자신을 반환
-	 * @param <T> null
+	 * @return BaseResponse 객체만 반한
+	 * @param <T> 반환 데이터의 타입을 나타내는 제네릭 타입 파라미터
 	 */
 	public static <T> BaseResponse<T> ofSuccess() {
 		return BaseResponse.<T>builder()
@@ -43,11 +41,9 @@ public class BaseResponse<T> {
 
 	/**
 	 * 반환 데이터가 있는 성공 메시지 템플릿
-	 * @param code 상태 코드
-	 * @param message 응답 메시지
 	 * @param data 반환 데이터
-	 * @return 자기 자신을 반환
-	 * @param <T> 반환되는 객체
+	 * @return BaseResponse 객체만 반한
+	 * @param <T> 반환 데이터의 타입을 나타내는 제네릭 타입 파라미터
 	 */
 	public static <T> BaseResponse<T> ofSuccess(T data) {
 		return BaseResponse.<T>builder()
@@ -60,10 +56,10 @@ public class BaseResponse<T> {
 
 	/**
 	 * 예외를 반환하는 실패 메시지 템플릿
-	 * @param code 상태코드
-	 * @param message 응답 메시지
-	 * @return 자기 자신을 반환
-	 * @param <T> null
+	 * @param responseCode 상태코드 enum 클래스
+	 * @return 예외를 반환하는 실패 메시지 템플릿
+	 * @param <T> 반환 데이터의 타입을 나타내는 제네릭 타입 파라미터
+	 * @see ResponseCode
 	 */
 	public static <T> BaseResponse<T> ofFail(ResponseCode responseCode) {
 		return BaseResponse.<T>builder()
