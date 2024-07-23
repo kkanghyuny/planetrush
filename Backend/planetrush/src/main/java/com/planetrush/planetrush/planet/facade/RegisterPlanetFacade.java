@@ -2,10 +2,9 @@ package com.planetrush.planetrush.planet.facade;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.planetrush.planetrush.image.service.ImageSaveService;
-import com.planetrush.planetrush.planet.controller.request.RegisterPlanetReq;
+import com.planetrush.planetrush.planet.facade.dto.RegisterPlanetFacadeDto;
 import com.planetrush.planetrush.planet.service.RegisterPlanetService;
 import com.planetrush.planetrush.planet.service.dto.RegisterPlanetDto;
 
@@ -24,20 +23,21 @@ public class RegisterPlanetFacade {
 		this.standardImageSaveService = standardImageSaveService;
 	}
 
-	public void registerPlanet(MultipartFile planetFile, MultipartFile authFile, RegisterPlanetReq req) {
-		Long planetImgId = planetFile.isEmpty() ? null : planetImageSaveService.saveImage(planetFile, req.getMemberId());
-		Long standardImgId = standardImageSaveService.saveImage(authFile, req.getMemberId());
+	public void registerPlanet(RegisterPlanetFacadeDto dto) {
+		Long planetImgId = dto.getPlanetImage().isEmpty() ? null :
+			planetImageSaveService.saveImage(dto.getPlanetImage(), dto.getMemberId());
+		Long standardImgId = standardImageSaveService.saveImage(dto.getVerificationImage(), dto.getMemberId());
 
 		registerPlanetService.registerPlanet(RegisterPlanetDto.builder()
-			.name(req.getName())
-			.memberId(req.getMemberId())
-			.startDate(req.getStartDate())
-			.endDate(req.getEndDate())
-			.content(req.getContent())
-			.maxParticipants(req.getMaxParticipants())
-			.category(req.getCategory())
-			.authCond(req.getAuthCond())
-			.defaultImgId(req.getDefaultImgId())
+			.name(dto.getName())
+			.memberId(dto.getMemberId())
+			.startDate(dto.getStartDate())
+			.endDate(dto.getEndDate())
+			.content(dto.getContent())
+			.maxParticipants(dto.getMaxParticipants())
+			.category(dto.getCategory())
+			.authCond(dto.getAuthCond())
+			.defaultImgId(dto.getDefaultImgId())
 			.customPlanetImgId(planetImgId)
 			.standardPlanetImgId(standardImgId)
 			.build());
