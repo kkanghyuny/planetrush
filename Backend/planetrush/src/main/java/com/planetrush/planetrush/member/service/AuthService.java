@@ -6,7 +6,6 @@ public interface AuthService {
 
 	/**
 	 * 카카오 로그인을 진행합니다.
-	 * 첫 로그인 시 회원가입을 진행합니다.
 	 * @param accessToken 카카오에서 발급 받은 accessToken
 	 * @return 자체적으로 발급한 accessToken, refreshToken
 	 * @see LoginDto

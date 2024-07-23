@@ -32,7 +32,6 @@ public class KakaoUtil {
 	 * @param accessToken 카카오에서 발급해 준 accessToken
 	 * @return 카카오에서 넘겨주는 유저 정보
 	 * @see KakaoUserInfo
-	 * @throws JsonProcessingException JSON 처리 중 오류 발생
 	 */
 	public KakaoUserInfo getUserInfo(String accessToken) {
 		KakaoUserInfo userInfo = new KakaoUserInfo();

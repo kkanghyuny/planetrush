@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
 	/**
 	 * {@inheritDoc}
-	 *
+	 * <br/>
 	 * 첫 로그인 시 회원가입을 진행합니다.
 	 */
 	@Override
