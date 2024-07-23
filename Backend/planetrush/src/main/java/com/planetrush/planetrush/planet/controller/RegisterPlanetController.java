@@ -2,11 +2,12 @@ package com.planetrush.planetrush.planet.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
+import com.planetrush.planetrush.core.aop.member.MemberContext;
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.planet.controller.request.RegisterPlanetReq;
@@ -24,13 +25,13 @@ public class RegisterPlanetController extends PlanetController {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RegisterPlanetFacade registerPlanetFacade;
 
+	@RequireJwtToken
 	@PostMapping
 	public ResponseEntity<BaseResponse<?>> registerPlanet(
-		@RequestHeader(value = "Authorization") String accessToken,
 		@RequestPart(name = "planetImage", required = false) MultipartFile planetImage,
 		@RequestPart(name = "verificationImage") MultipartFile verificationImage,
 		@RequestPart(name = "req") RegisterPlanetReq req) {
-		Long memberId = jwtTokenProvider.getMemberId(accessToken);
+		Long memberId = MemberContext.getMemberId();
 		registerPlanetFacade.registerPlanet(RegisterPlanetFacadeDto.builder()
 			.name(req.getName())
 			.content(req.getContent())
