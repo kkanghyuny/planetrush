@@ -39,3 +39,10 @@
 .tab-button {
   margin: 0 10px;
 }
+
+.alert {
+  margin: 10px;
+  padding: 10px;
+  border: 1.5px solid cyan;
+  border-radius: 50px;
+}
