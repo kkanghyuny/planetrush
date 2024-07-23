@@ -40,7 +40,7 @@ public class Member {
 	private Long id;
 
 	@ElementCollection
-	@CollectionTable(name = "MEMBER_AUTHORITY", joinColumns = @JoinColumn(name = "member_id"))
+	@CollectionTable(name = "member_authority", joinColumns = @JoinColumn(name = "member_id"))
 	private List<String> authorities = new ArrayList<>();
 
 	@Column(name = "nickname", length = 10, nullable = false)
