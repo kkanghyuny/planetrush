@@ -7,17 +7,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
-import com.planetrush.planetrush.member.exception.MemberNotFoundException;
+import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
-public class MemberExceptionHandler {
+public class ResidentExceptionHandler {
 
-	@ExceptionHandler(MemberNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(MemberNotFoundException ex) {
+	@ExceptionHandler(ResidentAlreadyExistsException.class)
+	public ResponseEntity<BaseResponse<Object>> handleResidentAlreadyExistsException(
+		ResidentAlreadyExistsException ex) {
 		log.error(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.ALREADY_EXIST_RESIDENT));
 	}
 }

@@ -7,17 +7,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
-import com.planetrush.planetrush.member.exception.MemberNotFoundException;
+import com.planetrush.planetrush.image.exception.S3Exception;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
-public class MemberExceptionHandler {
+public class S3imageExceptionHandler {
 
-	@ExceptionHandler(MemberNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(MemberNotFoundException ex) {
+	// TODO: IMAGE 에러처리 더 자세하게 해야됨 (ResponseCode 임시값)
+	@ExceptionHandler(S3Exception.class)
+	public ResponseEntity<BaseResponse<Object>> handleS3ExceptionException(
+		S3Exception ex) {
 		log.error(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.FAIL_TO_UPLOAD_FILE));
 	}
 }
