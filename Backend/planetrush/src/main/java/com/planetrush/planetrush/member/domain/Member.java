@@ -80,6 +80,10 @@ public class Member {
 		this.status = status;
 	}
 
+	/**
+	 * 유저의 닉네임을 변경합니다.
+	 * @param newNickname 변경할 닉네임
+	 */
 	public void updateNickname(String newNickname) {
 		if (checkNicknameNull(newNickname)) {
 			throw new IllegalArgumentException();
@@ -92,14 +96,29 @@ public class Member {
 		this.nickname = newNickname;
 	}
 
+	/**
+	 * 변경할 닉네임이 null인지 확인합니다.
+	 * @param nickname 변경할 닉네임
+	 * @return null 여부
+	 */
 	private boolean checkNicknameNull(String nickname) {
 		return nickname == null;
 	}
 
+	/**
+	 * 변경할 닉네임의 길이를 확인합니다.
+	 * @param nickname 변경할 닉네임
+	 * @return 10글자 초과 또는 비어있는지 여부
+	 */
 	private boolean checkNicknameLength(String nickname) {
 		return nickname.trim().isEmpty() || nickname.length() > 10;
 	}
 
+	/**
+	 * 회원을 탈퇴시키며 상태를 INACTIVE로 변경합니다.
+	 *
+	 * @throws AlreadyWithdrawnException 이미 탈퇴한 회원일 때 발생
+	 */
 	public void withdrawn() {
 		if (alreadyWithdrawn()) {
 			throw new AlreadyWithdrawnException();
@@ -107,6 +126,10 @@ public class Member {
 		this.status = Status.INACTIVE;
 	}
 
+	/**
+	 * 이미 탈퇴한 회원인지 확인합니다.
+	 * @return 회원의 탈퇴 여부
+	 */
 	private boolean alreadyWithdrawn() {
 		return this.status.equals(Status.INACTIVE);
 	}

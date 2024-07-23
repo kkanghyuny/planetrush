@@ -26,6 +26,11 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * 첫 로그인 시 회원가입을 진행합니다.
+	 */
 	@Override
 	public LoginDto kakaoLogin(String accessToken) {
 		KakaoUserInfo kakaoUserInfo = kakaoUtil.getUserInfo(accessToken);
@@ -49,13 +54,23 @@ public class AuthServiceImpl implements AuthService {
 			.build();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws MemberNotFoundException 유저를 찾을 수 없을 때 발생
+	 */
 	@Override
-	public void kakaoLogout(String accessToken) {
-		Long memberId = jwtTokenProvider.getMemberId(accessToken); // TODO: refreshToken 추가되고 jwtToken 수정
-		Member member = memberRepository.findById(memberId).orElseThrow();
+	public void kakaoLogout(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 		kakaoUtil.kakaoLogout(member.getCi());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws MemberNotFoundException 유저를 찾을 수 없을 때 발생
+	 */
 	@Override
 	public void withdrawnMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)

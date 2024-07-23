@@ -19,6 +19,12 @@ public class UpdateMemberController extends MemberController {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final UpdateMemberService updateMemberService;
 
+	/**
+	 * 유저의 닉네임을 변경합니다.
+	 * @param accessToken 발급해 준 accessToken
+	 * @param nickname 변경할 닉네임
+	 * @return ResponseEntity
+	 */
 	@PatchMapping("/profile")
 	public ResponseEntity<BaseResponse<?>> updateMemberNickname(
 		@RequestHeader("Authorization") String accessToken,
