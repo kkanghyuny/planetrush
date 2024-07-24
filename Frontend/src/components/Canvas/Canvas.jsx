@@ -2,20 +2,16 @@ import React, { useRef, useState, useEffect } from "react";
 import * as fabric from "fabric";
 import "../../styles/Canvas.css";
 
+//createImg에서 saveImage를 props 받아옴
 const Canvas = ({ onSaveImage }) => {
-  // 캔버스 객체
+  //캔버스 컴포넌트 호출
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
-
-  // 그림 그리기 모드, 색, 픽셀 사이즈 디폴트
   const [drawingMode, setDrawingMode] = useState(true);
-  const [drawingColor, setDrawingColor] = useState("#000000");
+  const [drawingColor, setDrawingColor] = useState("#FFFFFF");
   const [pixelSize, setPixelSize] = useState(10);
-
-  // 지우개 모드
   const [isErasing, setIsErasing] = useState(false);
 
-  // PixelBrush 클래스 정의
   class PixelBrush extends fabric.BaseBrush {
     constructor(canvas) {
       super(canvas);
@@ -23,7 +19,6 @@ const Canvas = ({ onSaveImage }) => {
       this.points = [];
     }
 
-    // 마우스 이벤트 별로 함수 설정
     onMouseDown(pointer) {
       this.points = [];
       this.addPoint(pointer);
@@ -37,7 +32,6 @@ const Canvas = ({ onSaveImage }) => {
       this.convertToPixelArt();
     }
 
-    // 마우스 좌표값 받아오기
     addPoint(pointer) {
       const x = Math.floor(pointer.x / this.pixelSize) * this.pixelSize;
       const y = Math.floor(pointer.y / this.pixelSize) * this.pixelSize;
@@ -45,7 +39,6 @@ const Canvas = ({ onSaveImage }) => {
       this._render();
     }
 
-    // 픽셀로 바꾸기
     convertToPixelArt() {
       const pixelMap = {};
       this.points.forEach((point) => {
@@ -93,7 +86,6 @@ const Canvas = ({ onSaveImage }) => {
         enablePointerEvents: true,
       });
 
-      // 픽셀 브러쉬 추가
       const pixelBrush = new PixelBrush(fabricCanvas);
       pixelBrush.color = drawingColor;
       pixelBrush.width = pixelSize;
@@ -102,7 +94,6 @@ const Canvas = ({ onSaveImage }) => {
       setCanvas(fabricCanvas);
     };
 
-    // 초기화
     initCanvas();
 
     return () => {
@@ -112,16 +103,45 @@ const Canvas = ({ onSaveImage }) => {
     };
   }, []);
 
-  // 다시 그리기
+  const updateCanvasImage = () => {
+    if (canvas) {
+      // 캔버스에 객체가 있는지 확인
+      if (canvas.getObjects().length > 0) {
+        const dataURL = canvas.toDataURL({
+          format: "png",
+          quality: 1,
+        });
+        onSaveImage(dataURL);
+      } else {
+        // 캔버스가 비어있으면 null을 전달
+        onSaveImage(null);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (canvas) {
+      canvas.on("object:added", updateCanvasImage);
+      canvas.on("object:removed", updateCanvasImage);
+      canvas.on("object:modified", updateCanvasImage);
+
+      return () => {
+        canvas.off("object:added", updateCanvasImage);
+        canvas.off("object:removed", updateCanvasImage);
+        canvas.off("object:modified", updateCanvasImage);
+      };
+    }
+  }, [canvas]);
+
   const clearCanvas = () => {
     if (canvas) {
       canvas.clear();
       canvas.backgroundColor = "transparent";
       canvas.renderAll();
+      updateCanvasImage();
     }
   };
 
-  // 지우기 기능
   const handleErase = (opt) => {
     const pointer = canvas.getPointer(opt.e);
     const objects = canvas.getObjects();
@@ -131,28 +151,25 @@ const Canvas = ({ onSaveImage }) => {
       }
     }
     canvas.renderAll();
+    updateCanvasImage();
   };
 
-  // 그리기 모드 전환
   const toggleEraser = () => {
     setIsErasing(!isErasing);
     if (canvas) {
       if (isErasing) {
-        // 지우개 모드로 전환
         canvas.off("mouse:down", handleErase);
         const pixelBrush = new PixelBrush(canvas);
         pixelBrush.color = drawingColor;
         pixelBrush.width = pixelSize;
         canvas.freeDrawingBrush = pixelBrush;
       } else {
-        // 그리기 모드로 전환
         canvas.isDrawingMode = false;
         canvas.on("mouse:down", handleErase);
       }
     }
   };
 
-  // 그림이 그려질 때 사용
   useEffect(() => {
     if (canvas && canvas.freeDrawingBrush) {
       if (isErasing) {
@@ -169,7 +186,6 @@ const Canvas = ({ onSaveImage }) => {
     }
   }, [canvas, drawingColor, pixelSize, isErasing]);
 
-  // 이미지 저장 및 다운로드
   const saveCanvasAsImage = () => {
     if (canvas) {
       const dataURL = canvas.toDataURL({
@@ -177,16 +193,12 @@ const Canvas = ({ onSaveImage }) => {
         quality: 1,
       });
 
-      // 이미지 다운로드
       const link = document.createElement("a");
       link.href = dataURL;
       link.download = "planet_image.png";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // 부모 컴포넌트로 이미지 데이터 전달
-      onSaveImage(dataURL);
     }
   };
 
@@ -208,7 +220,7 @@ const Canvas = ({ onSaveImage }) => {
               type="color"
               value={drawingColor}
               onChange={(e) => setDrawingColor(e.target.value)}
-              disabled={isErasing} // 지우개 모드일 때 색상 변경 비활성화
+              disabled={isErasing}
             />
           </label>
           <label>

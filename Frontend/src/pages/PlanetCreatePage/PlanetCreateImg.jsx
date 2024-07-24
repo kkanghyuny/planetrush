@@ -26,13 +26,17 @@ function PlanetCreateImg() {
 
     let imageToSend;
 
-    if (view === "custom" && canvasRef) {
-      // Canvas에서 그린 이미지 가져오기
-      imageToSend = canvasRef.getCurrentCanvasImage();
+    if (view === "custom") {
+      imageToSend = canvasData;
     } else {
-      // 선택된 기본 이미지 사용
       imageToSend = selectedImage;
     }
+
+    if (!imageToSend) {
+      setShowAlert(true);
+      return;
+    }
+
     navigate("/create-foam", { state: { savedImage: imageToSend } });
   };
 
@@ -66,7 +70,7 @@ function PlanetCreateImg() {
   return (
     <div className="container">
       <button onClick={() => navigate(-1)} className="back-button">
-        뒤로가기버튼
+        뒤로가기
       </button>
       <h3>행성을 생성해주세요</h3>
       <button onClick={getNewPlanetInfo} className="create-button">
