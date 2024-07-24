@@ -9,9 +9,10 @@ import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
+import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
-import com.planetrush.planetrush.planet.service.dto.RegisterResidentDto;
+import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Service
-public class RegisterResidentServiceImpl implements RegisterResidentService {
+public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService {
 
 	private final MemberRepository memberRepository;
 	private final PlanetRepository planetRepository;
@@ -35,7 +36,7 @@ public class RegisterResidentServiceImpl implements RegisterResidentService {
 	 * @param dto 사용자의 id, 행성의 id 등을 포함합니다.
 	 */
 	@Override
-	public void registerResident(RegisterResidentDto dto) {
+	public void registerResident(PlanetSubscriptionDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new MemberNotFoundException());
 		Planet planet = planetRepository.findById(dto.getPlanetId())
 			.orElseThrow(() -> new PlanetNotFoundException("planet not found id: " + dto.getPlanetId()));
@@ -45,5 +46,16 @@ public class RegisterResidentServiceImpl implements RegisterResidentService {
 			});
 		planet.addParticipant();
 		residentRepository.save(Resident.isNotCreator(member, planet));
+	}
+
+	@Override
+	public void deleteResident(PlanetSubscriptionDto dto) {
+		Resident resident = residentRepository.findByMemberIdAndPlanetId(dto.getMemberId(), dto.getPlanetId())
+			.orElseThrow(() -> new ResidentNotFoundException(
+				"resident not found member id: " + dto.getMemberId() + " and planet id: " + dto.getPlanetId()));
+		residentRepository.delete(resident);
+		Planet planet = planetRepository.findById(dto.getPlanetId())
+			.orElseThrow(() -> new PlanetNotFoundException("planet not found id: " + dto.getPlanetId()));
+		planet.removeParticipant();
 	}
 }

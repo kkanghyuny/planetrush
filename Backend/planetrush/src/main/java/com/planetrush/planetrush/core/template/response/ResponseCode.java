@@ -30,7 +30,7 @@ public enum ResponseCode {
 
 	// 6000 - RESIDENT
 	RESIDENT_NOT_FOUND("6000", "거주자가 존재하지 않습니다."),
-	ALREADY_EXIST_RESIDENT("5003", "이미 행성에 거주 중입니다."),
+	ALREADY_EXIST_RESIDENT("6001", "이미 행성에 거주 중입니다."),
 	;
 
 	private String code;
