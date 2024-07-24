@@ -7,21 +7,33 @@ const Canvas = ({ onSaveImage }) => {
   //캔버스 컴포넌트 호출
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
+  const initRef = useRef(false);
+
+  //드로잉 모드
   const [drawingMode, setDrawingMode] = useState(true);
   const [drawingColor, setDrawingColor] = useState("#FFFFFF");
   const [pixelSize, setPixelSize] = useState(10);
-  const [isErasing, setIsErasing] = useState(false);
 
+  //실행취소 구현하기 위한 변수
+  const [history, setHistory] = useState([]);
+  // const [currentGroup, setCurrentGroup] = useState(null);
+
+  //Pixel 브러쉬 커스텀
   class PixelBrush extends fabric.BaseBrush {
     constructor(canvas) {
       super(canvas);
       this.pixelSize = pixelSize;
       this.points = [];
+      this.currentGroup = null;
     }
 
     onMouseDown(pointer) {
       this.points = [];
       this.addPoint(pointer);
+      this.currentGroup = new fabric.Group([], {
+        selectable: false,
+        evented: false,
+      });
     }
 
     onMouseMove(pointer) {
@@ -30,8 +42,12 @@ const Canvas = ({ onSaveImage }) => {
 
     onMouseUp() {
       this.convertToPixelArt();
+      this.canvas.add(this.currentGroup);
+      setHistory((prev) => [...prev, this.currentGroup]);
+      updateCanvasImage();
     }
 
+    //브러쉬 움직이는 포인트 추가
     addPoint(pointer) {
       const x = Math.floor(pointer.x / this.pixelSize) * this.pixelSize;
       const y = Math.floor(pointer.y / this.pixelSize) * this.pixelSize;
@@ -39,6 +55,7 @@ const Canvas = ({ onSaveImage }) => {
       this._render();
     }
 
+    //픽셀로 모양을 바꾸는 메서드
     convertToPixelArt() {
       const pixelMap = {};
       this.points.forEach((point) => {
@@ -57,12 +74,14 @@ const Canvas = ({ onSaveImage }) => {
           selectable: false,
           evented: false,
         });
-        this.canvas.add(rect);
+        this.currentGroup.add(rect);
       });
 
+      this.currentGroup.setCoords();
       this.canvas.renderAll();
     }
 
+    //해당 그림을 렌더링하기
     _render() {
       const ctx = this.canvas.contextTop;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -74,24 +93,28 @@ const Canvas = ({ onSaveImage }) => {
     }
   }
 
+  //그리고 제일 처음에 canvas, pixelBrush 마운트해줘
   useEffect(() => {
     const initCanvas = () => {
-      const fabricCanvas = new fabric.Canvas(canvasRef.current, {
-        isDrawingMode: drawingMode,
-        backgroundColor: "transparent",
-        width: 380,
-        height: 380,
-        stopContextMenu: true,
-        fireRightClick: true,
-        enablePointerEvents: true,
-      });
+      if (!initRef.current) {
+        const fabricCanvas = new fabric.Canvas(canvasRef.current, {
+          isDrawingMode: drawingMode,
+          backgroundColor: "transparent",
+          width: 380,
+          height: 380,
+          stopContextMenu: true,
+          fireRightClick: true,
+          enablePointerEvents: true,
+        });
 
-      const pixelBrush = new PixelBrush(fabricCanvas);
-      pixelBrush.color = drawingColor;
-      pixelBrush.width = pixelSize;
+        const pixelBrush = new PixelBrush(fabricCanvas);
+        pixelBrush.color = drawingColor;
+        pixelBrush.width = pixelSize;
 
-      fabricCanvas.freeDrawingBrush = pixelBrush;
-      setCanvas(fabricCanvas);
+        fabricCanvas.freeDrawingBrush = pixelBrush;
+        setCanvas(fabricCanvas);
+        initRef.current = true;
+      }
     };
 
     initCanvas();
@@ -103,9 +126,32 @@ const Canvas = ({ onSaveImage }) => {
     };
   }, []);
 
+  //그림그리기 모드
+  useEffect(() => {
+    if (canvas && canvas.freeDrawingBrush) {
+      canvas.isDrawingMode = true;
+      const pixelBrush = new PixelBrush(canvas);
+      pixelBrush.color = drawingColor;
+      pixelBrush.width = pixelSize;
+      canvas.freeDrawingBrush = pixelBrush;
+    }
+  }, [canvas, drawingColor, pixelSize]);
+
+  // 새로운 useEffect: history가 변경될 때마다 캔버스 업데이트
+  useEffect(() => {
+    if (canvas) {
+      canvas.clear();
+      history.forEach((group) => {
+        canvas.add(group);
+      });
+      canvas.renderAll();
+      updateCanvasImage();
+    }
+  }, [history]);
+
+  //캔버스에 그림객체 업데이트 확인
   const updateCanvasImage = () => {
     if (canvas) {
-      // 캔버스에 객체가 있는지 확인
       if (canvas.getObjects().length > 0) {
         const dataURL = canvas.toDataURL({
           format: "png",
@@ -113,19 +159,39 @@ const Canvas = ({ onSaveImage }) => {
         });
         onSaveImage(dataURL);
       } else {
-        // 캔버스가 비어있으면 null을 전달
         onSaveImage(null);
       }
     }
   };
 
+  // const saveCanvasState = () => {
+  //   if (canvas) {
+  //     const json = JSON.stringify(canvas.toJSON());
+  //     const newHistory = history.slice(0, currentStep + 1);
+  //     newHistory.push(json);
+  //     setHistory(newHistory);
+  //     setCurrentStep(newHistory.length - 1);
+  //     updateCanvasImage();
+  //   }
+  // };
+
+  //실행취소
+  const handleUndoClick = () => {
+    if (history.length > 0) {
+      setHistory((prev) => prev.slice(0, -1));
+    }
+  };
+
+  //updateCanvasImage 확인하는 메서드
   useEffect(() => {
     if (canvas) {
+      // canvas.on("path:created", saveCanvasState);
       canvas.on("object:added", updateCanvasImage);
       canvas.on("object:removed", updateCanvasImage);
       canvas.on("object:modified", updateCanvasImage);
 
       return () => {
+        // canvas.off("path:created", saveCanvasState);
         canvas.off("object:added", updateCanvasImage);
         canvas.off("object:removed", updateCanvasImage);
         canvas.off("object:modified", updateCanvasImage);
@@ -133,59 +199,14 @@ const Canvas = ({ onSaveImage }) => {
     }
   }, [canvas]);
 
+  //다시그리기
   const clearCanvas = () => {
     if (canvas) {
-      canvas.clear();
-      canvas.backgroundColor = "transparent";
-      canvas.renderAll();
-      updateCanvasImage();
+      setHistory([]);
     }
   };
 
-  const handleErase = (opt) => {
-    const pointer = canvas.getPointer(opt.e);
-    const objects = canvas.getObjects();
-    for (let i = 0; i < objects.length; i++) {
-      if (objects[i].containsPoint(pointer)) {
-        canvas.remove(objects[i]);
-      }
-    }
-    canvas.renderAll();
-    updateCanvasImage();
-  };
-
-  const toggleEraser = () => {
-    setIsErasing(!isErasing);
-    if (canvas) {
-      if (isErasing) {
-        canvas.off("mouse:down", handleErase);
-        const pixelBrush = new PixelBrush(canvas);
-        pixelBrush.color = drawingColor;
-        pixelBrush.width = pixelSize;
-        canvas.freeDrawingBrush = pixelBrush;
-      } else {
-        canvas.isDrawingMode = false;
-        canvas.on("mouse:down", handleErase);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (canvas && canvas.freeDrawingBrush) {
-      if (isErasing) {
-        canvas.isDrawingMode = false;
-        canvas.on("mouse:down", handleErase);
-      } else {
-        canvas.isDrawingMode = true;
-        const pixelBrush = new PixelBrush(canvas);
-        pixelBrush.color = drawingColor;
-        pixelBrush.width = pixelSize;
-        canvas.freeDrawingBrush = pixelBrush;
-        canvas.off("mouse:down", handleErase);
-      }
-    }
-  }, [canvas, drawingColor, pixelSize, isErasing]);
-
+  //그림 저장하기 (다운)
   const saveCanvasAsImage = () => {
     if (canvas) {
       const dataURL = canvas.toDataURL({
@@ -193,6 +214,7 @@ const Canvas = ({ onSaveImage }) => {
         quality: 1,
       });
 
+      //이미지 url 만들기
       const link = document.createElement("a");
       link.href = dataURL;
       link.download = "planet_image.png";
@@ -210,9 +232,7 @@ const Canvas = ({ onSaveImage }) => {
       <div className="controls">
         <button onClick={() => clearCanvas()}>다시 그리기</button>
         <button onClick={() => saveCanvasAsImage()}>다운받기</button>
-        <button onClick={() => toggleEraser()}>
-          {isErasing ? "그리기 모드" : "지우개 모드"}
-        </button>
+        <button onClick={() => handleUndoClick()}>실행 취소</button>
         <div className="color-size-controls" style={{ marginTop: "10px" }}>
           <label style={{ marginRight: "10px" }}>
             색:
@@ -220,7 +240,6 @@ const Canvas = ({ onSaveImage }) => {
               type="color"
               value={drawingColor}
               onChange={(e) => setDrawingColor(e.target.value)}
-              disabled={isErasing}
             />
           </label>
           <label>
