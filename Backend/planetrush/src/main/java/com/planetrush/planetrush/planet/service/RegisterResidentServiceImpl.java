@@ -8,6 +8,7 @@ import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
+import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
 import com.planetrush.planetrush.planet.service.dto.RegisterResidentDto;
@@ -27,7 +28,10 @@ public class RegisterResidentServiceImpl implements RegisterResidentService {
 		Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new MemberNotFoundException());
 		Planet planet = planetRepository.findById(dto.getPlanetId())
 			.orElseThrow(() -> new PlanetNotFoundException("planet not found id: " + dto.getPlanetId()));
-		// TODO: 이미 참여한 행성 예외처리
+		residentRepository.findByMemberIdAndPlanetId(member.getId(), planet.getId())
+			.ifPresent(resident -> {
+				throw new ResidentAlreadyExistsException("resident already exists: " + resident.getId());
+			});
 		planet.addParticipant();
 		residentRepository.save(Resident.isNotCreator(member, planet));
 	}
