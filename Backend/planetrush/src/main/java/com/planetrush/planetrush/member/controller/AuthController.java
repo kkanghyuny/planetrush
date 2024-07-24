@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.member.controller.request.KakaoLoginReq;
+import com.planetrush.planetrush.member.controller.request.KakaoLogoutReq;
 import com.planetrush.planetrush.member.service.AuthService;
 import com.planetrush.planetrush.member.service.dto.LoginDto;
 
@@ -41,9 +42,10 @@ public class AuthController extends MemberController {
 	 */
 	// TODO: refreshToken을 넘겨받아 삭제하기, accessToken 어노테이션으로 변경하기
 	@PostMapping("/auth/logout/kakao")
-	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestHeader("Authorization") String accessToken) {
+	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestHeader("Authorization") String accessToken, @RequestBody
+	KakaoLogoutReq req) {
 		Long memberId = jwtTokenProvider.getMemberId(accessToken);
-		authService.kakaoLogout(memberId);
+		authService.kakaoLogout(memberId, req.getRefreshToken());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 

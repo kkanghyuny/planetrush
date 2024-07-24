@@ -60,9 +60,10 @@ public class AuthServiceImpl implements AuthService {
 	 * @throws MemberNotFoundException 유저를 찾을 수 없을 때 발생
 	 */
 	@Override
-	public void kakaoLogout(Long memberId) {
+	public void kakaoLogout(Long memberId, String refreshToken) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
+		jwtTokenProvider.deleteRefreshToken(refreshToken);
 		kakaoUtil.kakaoLogout(member.getCi());
 	}
 
