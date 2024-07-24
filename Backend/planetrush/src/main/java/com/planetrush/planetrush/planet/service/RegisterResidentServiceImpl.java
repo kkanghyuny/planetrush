@@ -15,6 +15,11 @@ import com.planetrush.planetrush.planet.service.dto.RegisterResidentDto;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@inheritDoc}
+ *
+ * 이 클래스는 RegisterResidentService 인터페이스를 구현하여 행성 입주 신청 기능을 제공합니다.
+ */
 @RequiredArgsConstructor
 @Service
 public class RegisterResidentServiceImpl implements RegisterResidentService {
@@ -23,6 +28,12 @@ public class RegisterResidentServiceImpl implements RegisterResidentService {
 	private final PlanetRepository planetRepository;
 	private final ResidentRepository residentRepository;
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * 이 메서드는 데이터베이스에 입주기록을 등록합니다.
+	 * @param dto 사용자의 id, 행성의 id 등을 포함합니다.
+	 */
 	@Override
 	public void registerResident(RegisterResidentDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new MemberNotFoundException());
