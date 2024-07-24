@@ -12,6 +12,13 @@ function PlanetCreateForm() {
     endDate: "",
     peopleCount: 2,
     missionCondition: "",
+    imageFile: null,
+    imageUrl: "",
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    challenge: "",
+    date: "",
   });
 
   const handleInputChange = (e) => {
@@ -20,6 +27,30 @@ function PlanetCreateForm() {
       ...prevState,
       [name]: value,
     }));
+
+    if (name === "name" && value.length > 10) {
+      setErrors((prevState) => ({
+        ...prevState,
+        name: "10자 이하로 적어주세요",
+      }));
+    } else if (name === "name") {
+      setErrors((prevState) => ({
+        ...prevState,
+        name: "",
+      }));
+    }
+
+    if (name === "challenge" && value.length > 20) {
+      setErrors((prevState) => ({
+        ...prevState,
+        challenge: "20자 이하로 적어주세요",
+      }));
+    } else if (name === "challenge") {
+      setErrors((prevState) => ({
+        ...prevState,
+        challenge: "",
+      }));
+    }
   };
 
   const handlePeopleCountChange = (increment) => {
@@ -29,11 +60,79 @@ function PlanetCreateForm() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setPlanetInfo((prevState) => ({
+        ...prevState,
+        imageFile: file,
+        imageUrl: imageUrl,
+      }));
+    }
+  };
+
+  const handleUploadButtonClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send the data to your backend
     console.log(planetInfo);
     // Navigate to next page or show success message
+  };
+
+  const validateDate = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const today = new Date();
+    const minDate = new Date();
+    const maxDate = new Date();
+    minDate.setDate(today.getDate() + 5);
+    maxDate.setDate(today.getDate() + 10);
+
+    if (start < today || end < today) {
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "시작일과 종료일은 현재 날짜 이후여야 합니다.",
+      }));
+      return false;
+    } else if (end - start < 4 * 24 * 60 * 60 * 1000) {
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "기간은 최소 5일 이상이어야 합니다.",
+      }));
+      return false;
+    } else if (end - start > 10 * 24 * 60 * 60 * 1000) {
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "기간은 최대 10일이어야 합니다.",
+      }));
+      return false;
+    } else {
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "",
+      }));
+      return true;
+    }
+  };
+
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    setPlanetInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
+    if (name === "startDate" || name === "endDate") {
+      validateDate(planetInfo.startDate, planetInfo.endDate);
+    }
+  };
+
+  const submitResult = () => {
+    navigate("/result");
   };
 
   return (
@@ -50,6 +149,7 @@ function PlanetCreateForm() {
             placeholder="10자 이내로 작성해주세요"
             maxLength={10}
           />
+          {errors.name && <p className="error">{errors.name}</p>}
         </div>
         <div className="form-group">
           <label>챌린지명</label>
@@ -61,19 +161,62 @@ function PlanetCreateForm() {
             placeholder="20자 이내로 작성해주세요"
             maxLength={20}
           />
+          {errors.challenge && <p className="error">{errors.challenge}</p>}
         </div>
         <div className="form-group">
           <label>카테고리</label>
-          <select
-            name="category"
-            value={planetInfo.category}
-            onChange={handleInputChange}
-          >
-            <option value="">선택하세요</option>
-            <option value="health">건강</option>
-            <option value="study">학습</option>
-            <option value="hobby">취미</option>
-          </select>
+          <div id="category">
+            <label>
+              <input
+                type="radio"
+                name="category"
+                value="EXERCISE"
+                checked={planetInfo.category === "EXERCISE"}
+                onChange={handleInputChange}
+              />
+              운동
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="category"
+                value="LIFE"
+                checked={planetInfo.category === "LIFE"}
+                onChange={handleInputChange}
+              />
+              생활
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="category"
+                value="BEAUTY"
+                checked={planetInfo.category === "BEAUTY"}
+                onChange={handleInputChange}
+              />
+              미용
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="category"
+                value="STUDY"
+                checked={planetInfo.category === "STUDY"}
+                onChange={handleInputChange}
+              />
+              학습
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="category"
+                value="ETC"
+                checked={planetInfo.category === "ETC"}
+                onChange={handleInputChange}
+              />
+              기타
+            </label>
+          </div>
         </div>
         <div className="form-group date-group">
           <label>기간</label>
@@ -82,15 +225,16 @@ function PlanetCreateForm() {
               type="date"
               name="startDate"
               value={planetInfo.startDate}
-              onChange={handleInputChange}
+              onChange={handleDateChange}
             />
             <input
               type="date"
               name="endDate"
               value={planetInfo.endDate}
-              onChange={handleInputChange}
+              onChange={handleDateChange}
             />
           </div>
+          {errors.date && <p className="error">{errors.date}</p>}
         </div>
         <div className="form-group people-count">
           <label>인원 수</label>
@@ -120,11 +264,24 @@ function PlanetCreateForm() {
         </div>
         <div className="form-group">
           <label>인증 사진 업로드</label>
-          <button type="button" className="upload-button">
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+          <button
+            type="button"
+            className="upload-button"
+            onClick={handleUploadButtonClick}
+          >
             사진 찍으러가기
           </button>
+          {planetInfo.imageUrl && (
+            <img src={planetInfo.imageUrl} alt="선택된 사진" />
+          )}
         </div>
-        <button type="submit" className="submit-button">
+        <button type="submit" className="submit-button" onClick={submitResult}>
           창조하기
         </button>
       </form>
