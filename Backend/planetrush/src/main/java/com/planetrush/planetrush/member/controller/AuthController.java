@@ -39,6 +39,7 @@ public class AuthController extends MemberController {
 	 * @param accessToken 발급해 준 accessToken
 	 * @return ResponseEntity
 	 */
+	// TODO: refreshToken을 넘겨받아 삭제하기, accessToken 어노테이션으로 변경하기
 	@PostMapping("/auth/logout/kakao")
 	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestHeader("Authorization") String accessToken) {
 		Long memberId = jwtTokenProvider.getMemberId(accessToken);

@@ -2,8 +2,10 @@ package com.planetrush.planetrush.core.jwt;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.planetrush.planetrush.core.exception.ExpiredJwtException;
@@ -16,17 +18,24 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
+
+	private final RedisTemplate<String, String> redisTemplate;
 
 	@Value("${jwt.secret.key}")
 	private String SECRET_KEY;
 
 	@Value("${jwt.access-token.expiretime}")
 	private int ACCESS_TOKEN_EXPRIATION_TIME;
+
+	@Value("${jwt.refresh-token.expiretime}")
+	private int REFRESH_TOKEN_EXPIRATION_TIME;
 
 	/**
 	 * 토큰을 생성합니다.
@@ -36,6 +45,12 @@ public class JwtTokenProvider {
 	public JwtToken createToken(Long memberId) {
 		String accessToken = createAccessToken(memberId);
 		String refreshToken = createRefreshToken();
+		redisTemplate.opsForValue().set(
+			refreshToken,
+			memberId.toString(),
+			REFRESH_TOKEN_EXPIRATION_TIME,
+			TimeUnit.MILLISECONDS
+		);
 		return JwtToken.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 	}
 
@@ -62,11 +77,11 @@ public class JwtTokenProvider {
 	}
 
 	/**
-	 * RefreshToken을 생성합니다.
+	 * 현재 시간을 포함하여 refreshToken을 생성합니다.
 	 * @return 새로운 refreshToken
 	 */
 	private String createRefreshToken() {
-		return UUID.randomUUID().toString();
+		return UUID.randomUUID().toString() + "-" + System.currentTimeMillis();
 	}
 
 	/**
@@ -114,6 +129,20 @@ public class JwtTokenProvider {
 			throw new UnAuthorizedException();
 		}
 		return claims.get("memberId", Long.class);
+	}
+
+	/**
+	 * 주어진 리프레시 토큰을 키로 사용하여 Redis에서 저장된 회원 ID를 검색해 반환합니다.
+	 * @param refreshToken 유효성을 검사할 리프레시 토큰
+	 * @return 리프레시 토큰에 해당하는 회원 ID
+	 * @throws UnAuthorizedException 리프레시 토큰이 유효하지 않거나 존재하지 않는 경우
+	 */
+	public Long getMemberIdFromRefreshToken(String refreshToken) {
+		String memberId = redisTemplate.opsForValue().get(refreshToken);
+		if (memberId == null) {
+			throw new UnAuthorizedException("Invalid refresh token");
+		}
+		return Long.parseLong(memberId);
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class ExtractMemberIdAspect {
 	 *
 	 * @see com.planetrush.planetrush.core.interceptor.JwtInterceptor
 	 *
-	 * @param joinPoint 대상 메서드의 정보와 제어를 제공하는 객체
+	 * @param pjp 대상 메서드의 정보와 제어를 제공하는 객체
 	 * @param requireJwtToken Aspect를 트리거하는 커스텀 어노테이션
 	 * @return 대상 메서드의 실행 결과
 	 * @throws Throwable 대상 메서드에서 발생한 예외
