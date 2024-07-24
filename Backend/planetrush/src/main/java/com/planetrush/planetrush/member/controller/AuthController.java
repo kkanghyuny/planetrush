@@ -4,9 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
+import com.planetrush.planetrush.core.aop.member.MemberContext;
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.member.controller.request.KakaoLoginReq;
@@ -37,28 +38,25 @@ public class AuthController extends MemberController {
 
 	/**
 	 * 카카오 로그아웃을 진행합니다.
-	 * @param accessToken 발급해 준 accessToken
+	 * @param req 로그인 시 발급해준 refreshToken
 	 * @return ResponseEntity
 	 */
-	// TODO: refreshToken을 넘겨받아 삭제하기, accessToken 어노테이션으로 변경하기
+	@RequireJwtToken
 	@PostMapping("/auth/logout/kakao")
-	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestHeader("Authorization") String accessToken, @RequestBody
-	KakaoLogoutReq req) {
-		Long memberId = jwtTokenProvider.getMemberId(accessToken);
+	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestBody	KakaoLogoutReq req) {
+		Long memberId = MemberContext.getMemberId();
 		authService.kakaoLogout(memberId, req.getRefreshToken());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
 	/**
 	 * 회원을 탈퇴시킵니다.
-	 * @param accessToken 발급해 준 accessToken
 	 * @return ResponseEntity
 	 */
+	@RequireJwtToken
 	@PatchMapping("/auth/exit")
-	public ResponseEntity<BaseResponse<?>> withdrawnMember(
-		@RequestHeader("Authorization") String accessToken
-	) {
-		Long memberId = jwtTokenProvider.getMemberId(accessToken);
+	public ResponseEntity<BaseResponse<?>> withdrawnMember() {
+		Long memberId = MemberContext.getMemberId();
 		authService.withdrawnMember(memberId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
