@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class RegisterResidentDto {
+public class PlanetSubscriptionDto {
 	private long memberId;
 	private long planetId;
 }
