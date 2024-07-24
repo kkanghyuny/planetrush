@@ -3,8 +3,8 @@ package com.planetrush.planetrush.image.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.planetrush.planetrush.image.domain.CustomPlanetImg;
 import com.planetrush.planetrush.image.repository.CustomPlanetImgRepository;
+import com.planetrush.planetrush.planet.domain.image.CustomPlanetImg;
 
 import lombok.RequiredArgsConstructor;
 

@@ -2,9 +2,6 @@ package com.planetrush.planetrush.planet.service;
 
 import org.springframework.stereotype.Service;
 
-import com.planetrush.planetrush.image.domain.CustomPlanetImg;
-import com.planetrush.planetrush.image.domain.DefaultPlanetImg;
-import com.planetrush.planetrush.image.domain.StandardVerificationImg;
 import com.planetrush.planetrush.image.repository.CustomPlanetImgRepository;
 import com.planetrush.planetrush.image.repository.DefaultPlanetImgRepository;
 import com.planetrush.planetrush.image.repository.StandardVerificationImgRepository;
@@ -14,6 +11,9 @@ import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Category;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
+import com.planetrush.planetrush.planet.domain.image.CustomPlanetImg;
+import com.planetrush.planetrush.planet.domain.image.DefaultPlanetImg;
+import com.planetrush.planetrush.planet.domain.image.StandardVerificationImg;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
 import com.planetrush.planetrush.planet.service.dto.RegisterPlanetDto;

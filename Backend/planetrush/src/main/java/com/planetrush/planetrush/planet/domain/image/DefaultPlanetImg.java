@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.image.domain;
+package com.planetrush.planetrush.planet.domain.image;
 
 import java.time.LocalDateTime;
 

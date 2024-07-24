@@ -3,8 +3,8 @@ package com.planetrush.planetrush.image.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.planetrush.planetrush.image.domain.StandardVerificationImg;
 import com.planetrush.planetrush.image.repository.StandardVerificationImgRepository;
+import com.planetrush.planetrush.planet.domain.image.StandardVerificationImg;
 
 import lombok.RequiredArgsConstructor;
 
