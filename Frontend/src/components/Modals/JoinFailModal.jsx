@@ -1,6 +1,7 @@
 import React from 'react';
 import '../../styles/Modal.css';
 
+// 사람이 꽉 차서 가입할 수 없는 경우
 function JoinFailModal({ setIsJoinFailModalOpen, imageUrl }) {
   const handleCloseModal = () => {
     setIsJoinFailModalOpen(false);
