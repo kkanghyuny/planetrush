@@ -21,7 +21,7 @@ function SearchBar() {
   // 스크롤을 내렸을 때 다음 페이지가 필요한 지 여부를 알려주는 변수
   const [hasNext, setHasNext] = useState(true);
   // 가장 최근에 만들어진 행성 (latestPlanetId로 바꾸어야 하나 고민중)
-  // null로 설정한 이유는 처음 페이지 로드나 처음 검색 시 페이징 처리가 필요하지 않으므로 
+  // null로 설정한 이유는 처음 페이지 로드나 처음 검색 시 페이징 처리가 필요하지 않으므로
   const [lastPlanetId, setLastPlanetId] = useState(null);
 
   // 백엔드에서 value를 영어로 받고 있어서 labeling을 위한 객체 내 배열들 생성
@@ -111,14 +111,13 @@ function SearchBar() {
         (a, b) => b.planetId - a.planetId
       );
 
-      // 10개가 보여지면 다음 
+      // 10개가 보여지면 다음
       const challengesToShow = sortedChallenges.slice(
         isLoadMore ? displayedChallenges.length : 0,
         isLoadMore ? displayedChallenges.length + 10 : 10
       );
 
-
-      // 
+      //
       if (isLoadMore) {
         setDisplayedChallenges((prevChallenges) => [
           ...prevChallenges,
@@ -191,7 +190,6 @@ function SearchBar() {
     );
   };
   // 더미데이터 관련 내용 종료
-
 
   // 검색어 입력 시마다 상태가 query에 저장되는 형태로 작동
   const handleInputChange = (event) => {
