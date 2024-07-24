@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.planetrush.planetrush.image.domain.CustomPlanetImg;
-import com.planetrush.planetrush.image.domain.DefaultPlanetImg;
-import com.planetrush.planetrush.image.domain.StandardVerificationImg;
+import com.planetrush.planetrush.planet.domain.image.CustomPlanetImg;
+import com.planetrush.planetrush.planet.domain.image.DefaultPlanetImg;
+import com.planetrush.planetrush.planet.domain.image.StandardVerificationImg;
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
 import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
 
