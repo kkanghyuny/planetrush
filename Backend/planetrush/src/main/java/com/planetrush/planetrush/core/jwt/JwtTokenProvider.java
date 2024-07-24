@@ -85,6 +85,14 @@ public class JwtTokenProvider {
 	}
 
 	/**
+	 * redis에서 키 값인 refreshToken을 사용해 토큰을 만료시킵니다.
+	 * @param refreshToken 발급해 준 refreshToken
+	 */
+	public void deleteRefreshToken(String refreshToken) {
+		redisTemplate.delete(refreshToken);
+	}
+
+	/**
 	 * 토큰의 유효성을 확인합니다.
 	 * @param accessToken 발급해 준 accessToken
 	 * @return 토큰의 유효성
