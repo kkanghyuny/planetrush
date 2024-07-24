@@ -6,6 +6,7 @@ import BackGround from "./components/BackGround/BackGround";
 
 import StartPage from "./pages/StartPage/StartPage";
 import MainPage from "./pages/MainPage/MainPage";
+import MyPage from './pages/MyPage/MyPage';
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
@@ -15,6 +16,7 @@ import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
 import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
 
 import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
+
 
 function App() {
   const location = useLocation();
@@ -26,13 +28,14 @@ function App() {
       <Routes>
         <Route path="/" element={<StartPage />} />
         <Route path="/main" element={<MainPage />} />
+        <Route path="/mypage" element={<MyPage />} />
 
         <Route path="/create" element={<PlanetCreateImg />} />
         <Route path="/create-foam" element={<PlanetCreateInfo />} />
 
         <Route path="/search" element={<SearchBar />} />
 
-        <Route path="/planet-recruit" element={<PlanetDetailRecruiting />} />
+        <Route path="/planet/:id" element={<PlanetDetailRecruiting />} />
         <Route path="/planet-inProgress" element={<PlanetDetailInProgress />} />
 
         <Route path="/auth" element={<Auth />} />
