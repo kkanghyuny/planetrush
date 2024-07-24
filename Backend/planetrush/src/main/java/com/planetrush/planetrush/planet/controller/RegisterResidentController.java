@@ -13,6 +13,9 @@ import com.planetrush.planetrush.planet.service.dto.RegisterResidentDto;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 행성 입주 신청을 하는 api입니다.
+ */
 @RequiredArgsConstructor
 @RestController
 public class RegisterResidentController extends PlanetController {
