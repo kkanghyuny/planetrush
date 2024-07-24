@@ -23,7 +23,7 @@ public class ReissueTokenController extends MemberController {
 	 * @param req 리프레시 토큰을 담고 있는 요청 객체 (ReissueReq)
 	 * @return 새로운 액세스 토큰이 포함된 ReissueDto 객체를 감싸는 ResponseEntity 객체
 	 */
-	@PostMapping("/reissue")
+	@PostMapping("/auth/reissue")
 	public ResponseEntity<BaseResponse<ReissueDto>> reissueToken(@RequestBody ReissueReq req) {
 		ReissueDto newToken = reissueTokenService.reissueToken(req.getRefreshToken());
 		return ResponseEntity.ok(BaseResponse.ofSuccess(newToken));
