@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 				.ci(kakaoUserInfo.getId().toString())
 				.nickname(Nickname.getRandomKoreanNickname())
 				.provider(Provider.KAKAO)
-				.status(Status.ACITVE)
+				.status(Status.ACTIVE)
 				.build());
 		}
 		/* 로그인 */
