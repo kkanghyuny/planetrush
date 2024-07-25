@@ -19,7 +19,7 @@ public class PlanetExceptionHandler {
 	@ExceptionHandler(PlanetNotFoundException.class)
 	public ResponseEntity<BaseResponse<Object>> handlePlanetNotFoundException(PlanetNotFoundException ex) {
 		log.error(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.PLANET_NOT_FOUND));
 	}
 
 	@ExceptionHandler(NegativeParticipantCountException.class)
