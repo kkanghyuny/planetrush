@@ -45,9 +45,15 @@ public class VerificationRecord {
 	@JoinColumn(name = "planet_id")
 	private Planet planet;
 
+	/**
+	 * 인증 여부를 나타냅니다.
+	 */
 	@Column(name = "verified")
 	private boolean verified;
 
+	/**
+	 * 인증사진 유사도를 나타냅니다.
+	 */
 	@Column(name = "similarity_score")
 	private double similarityScore;
 

@@ -2,9 +2,12 @@ package com.planetrush.planetrush.planet.repository.custom;
 
 import static com.planetrush.planetrush.planet.domain.QResident.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.planetrush.planetrush.planet.domain.ChallengerStatus;
+import com.planetrush.planetrush.planet.domain.Resident;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -33,6 +36,15 @@ public class ResidentRepositoryCustom {
 			.fetchOne() != null;
 	}
 
+	public List<Resident> getResidentsNotBanned(Long planetId) {
+		return queryFactory.selectFrom(resident)
+			.where(
+				planetIdEq(planetId),
+				isNotBanned(),
+				isInProgressStatus())
+			.fetch();
+	}
+
 	private BooleanExpression planetIdEq(Long planetId) {
 		return resident.planet.id.eq(planetId);
 	}
@@ -43,6 +55,14 @@ public class ResidentRepositoryCustom {
 
 	private BooleanExpression isReadyStatus() {
 		return resident.challengerStatus.eq(ChallengerStatus.READY);
+	}
+
+	private BooleanExpression isInProgressStatus() {
+		return resident.challengerStatus.eq(ChallengerStatus.IN_PROGRESS);
+	}
+
+	private BooleanExpression isNotBanned() {
+		return resident.banned.isFalse();
 	}
 
 }

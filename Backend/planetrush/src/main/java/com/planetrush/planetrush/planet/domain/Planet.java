@@ -2,6 +2,7 @@ package com.planetrush.planetrush.planet.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -261,6 +262,15 @@ public class Planet {
 	 */
 	private boolean hasCustomImg() {
 		return customPlanetImg != null;
+	}
+
+	/**
+	 * 두 날짜 사이의 일 수를 계산합니다.
+	 *
+	 * @return 시작 날짜와 종료 날짜 사이의 일 수
+	 */
+	public long calcTotalVerificationCnt() {
+		return ChronoUnit.DAYS.between(this.startDate, this.endDate);
 	}
 
 }
