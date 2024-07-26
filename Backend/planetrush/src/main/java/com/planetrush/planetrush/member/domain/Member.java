@@ -3,6 +3,7 @@ package com.planetrush.planetrush.member.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -177,4 +178,21 @@ public class Member {
 	private boolean alreadyWithdrawn() {
 		return this.status.equals(Status.INACTIVE);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(getId(), member.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getAuthorities(), getNickname(), getEmail(), getCi(), getProvider(), getStatus(),
+			getResidents(), getCreatedAt(), getUpdatedAt());
+	}
+	
 }
