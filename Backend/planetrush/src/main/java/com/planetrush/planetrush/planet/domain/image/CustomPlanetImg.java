@@ -48,8 +48,8 @@ public class CustomPlanetImg {
 	/**
 	 * 커스텀 행성 이미지의 파일 크기입니다.
 	 */
-	@Column(name = "img_size", length = 100, nullable = false)
-	private String imgSize;
+	@Column(name = "img_size", nullable = false)
+	private Long imgSize;
 
 	/**
 	 * 커스텀 행성 이미지의 파일 url입니다.
@@ -70,17 +70,15 @@ public class CustomPlanetImg {
 	 *
 	 * @param imgName 이미지의 이름
 	 * @param imgFormat 이미지의 포맷 (예: JPG, PNG)
-	 * @param imgSize 이미지의 크기 (예: "500KB")
+	 * @param imgSize 이미지의 크기
 	 * @param imgUrl 이미지의 URL
-	 * @param uploadDate 이미지의 업로드 날짜 및 시간
 	 */
 	@Builder
-	public CustomPlanetImg(String imgName, String imgFormat, String imgSize, String imgUrl,
-		LocalDateTime uploadDate) {
+	public CustomPlanetImg(String imgName, String imgFormat, Long imgSize, String imgUrl) {
 		this.imgName = imgName;
 		this.imgFormat = imgFormat;
 		this.imgSize = imgSize;
 		this.imgUrl = imgUrl;
-		this.uploadDate = uploadDate;
 	}
+	
 }

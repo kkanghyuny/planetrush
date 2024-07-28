@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
-import com.planetrush.planetrush.image.exception.S3Exception;
+import com.planetrush.planetrush.infra.s3.exception.S3Exception;
 
 import lombok.extern.slf4j.Slf4j;
 

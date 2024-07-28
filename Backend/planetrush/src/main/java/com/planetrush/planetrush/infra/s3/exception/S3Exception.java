@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.image.exception;
+package com.planetrush.planetrush.infra.s3.exception;
 
 public class S3Exception extends RuntimeException {
 
