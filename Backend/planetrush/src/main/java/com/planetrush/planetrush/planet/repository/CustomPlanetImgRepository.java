@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.image.repository;
+package com.planetrush.planetrush.planet.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
