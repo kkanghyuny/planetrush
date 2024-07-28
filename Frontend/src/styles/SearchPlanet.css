@@ -33,7 +33,13 @@
   padding: 0 5px; /* 내부 여백 */
   z-index: 1; /* 오버레이보다 위에 표시 */
   background-color: white; /* 입력 필드 배경색 */
+  color: black;
 }
+
+.searchInput::placeholder {
+  color: gray; /* 원하는 색상으로 변경 */
+}
+
 
 .searchInput:focus::after {
   content: "";
