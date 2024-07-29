@@ -19,6 +19,8 @@ import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
+import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
+import com.planetrush.planetrush.planet.service.dto.GetMyPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
 import com.planetrush.planetrush.planet.service.dto.PlanetDetailDto;
 import com.planetrush.planetrush.planet.service.dto.ResidentDto;
@@ -179,6 +181,30 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			sum += stdPoint;
 		}
 		return sum;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @param memberId
+	 * @return
+	 */
+	@Override
+	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
+		return planetRepositoryCustom.getMyPlanetList(memberId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @param memberId
+	 * @return
+	 */
+	@Override
+	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
+		return planetRepositoryCustom.getMainPlanetList(memberId);
+	}
+
+	private boolean isNotNull(Long memberId) {
+		return memberId != null;
 	}
 
 }
