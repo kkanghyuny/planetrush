@@ -12,6 +12,8 @@ import com.planetrush.planetrush.planet.domain.image.DefaultPlanetImg;
 import com.planetrush.planetrush.planet.domain.image.StandardVerificationImg;
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
 import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
+import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutException;
+import com.planetrush.planetrush.planet.exception.ResidentExitTimeoutException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -210,9 +212,13 @@ public class Planet {
 	 * 최대 참가자 수를 초과하면 {@code ParticipantsOverflowException}이 발생합니다.
 	 * </p>
 	 *
+	 * @throws RegisterResidentTimeoutException 챌린지 시작 일자를 지났을 경우
 	 * @throws ParticipantsOverflowException 최대 참가자 수를 초과할 경우
 	 */
 	public void addParticipant() {
+		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(LocalDate.now())) {
+			throw new RegisterResidentTimeoutException();
+		}
 		if (currentParticipants == maxParticipants) {
 			throw new ParticipantsOverflowException();
 		}
@@ -226,16 +232,20 @@ public class Planet {
 	 * 참가자 수가 음수가 되면 {@code NegativeParticipantCountException}이 발생합니다.
 	 * </p>
 	 *
+	 * @throws ResidentExitTimeoutException 챌린지가 시작하여 행성 탈퇴가 불가능한 경우
 	 * @throws NegativeParticipantCountException 참가자 수가 음수가 될 경우
 	 */
 	public void removeParticipant() {
-		this.currentParticipants--;
+		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(LocalDate.now())) {
+			throw new ResidentExitTimeoutException();
+		}
 		if (currentParticipants == 0) {
 			this.status = PlanetStatus.DESTROYED;
 		}
 		if (currentParticipants < 0) {
 			throw new NegativeParticipantCountException();
 		}
+		this.currentParticipants--;
 	}
 
 	/**
