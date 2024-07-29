@@ -7,9 +7,9 @@ import "../../styles/PlanetCreateImg.css"; // CSS 파일 import
 function PlanetCreateImg() {
   const navigate = useNavigate();
   const [view, setView] = useState("default");
-  const [selectedImage, setSelectedImage] = useState(
-    "https://placehold.co/150x150"
-  );
+
+  //선택된 이미지
+  const [selectedImage, setSelectedImage] = useState(null);
 
   //이미지를 props해서 받아오기 위함
   const [canvasRef, setCanvasRef] = useState(null);
@@ -18,25 +18,29 @@ function PlanetCreateImg() {
   const [canvasData, setCanvasData] = useState(null); // 캔버스 데이터를 저장할 상태 추가
 
   const getNewPlanetInfo = () => {
+    const planetImg = {
+      imageToSend: null,
+      defaultImgId: 1,
+    };
+
     if (view === "custom" && !canvasData) {
       setShowAlert(true);
       return;
     }
 
-    let imageToSend;
-
     if (view === "custom") {
-      imageToSend = canvasData;
+      planetImg.imageToSend = canvasData;
     } else {
-      imageToSend = selectedImage;
+      planetImg.imageToSend = selectedImage.url;
+      planetImg.defaultImgId = selectedImage.id;
     }
 
-    if (!imageToSend) {
+    if (!planetImg.imageToSend) {
       setShowAlert(true);
       return;
     }
 
-    navigate("/create-foam", { state: { savedImage: imageToSend } });
+    navigate("/create-foam", { state: { savedImage: planetImg } });
   };
 
   //view를 바꿀 수 있게함 (기본화면 - 고르기)

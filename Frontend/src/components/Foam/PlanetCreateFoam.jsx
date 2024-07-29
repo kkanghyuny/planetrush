@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/PlanetCreateForm.css";
 
@@ -18,9 +18,10 @@ function PlanetCreateForm() {
     endDate: "",
     maxParticipants: 2,
     authCond: "",
+    defaultImgId: savedImage ? savedImage.defaultImgId : 1,
     missionFile: null,
     missionUrl: "",
-    planetImg: savedImage || null,
+    planetImg: savedImage ? savedImage.imageToSend : null,
   });
 
   //에러출력
@@ -29,6 +30,16 @@ function PlanetCreateForm() {
     content: "",
     date: "",
   });
+
+  useEffect(() => {
+    if (savedImage) {
+      setPlanetInfo((prevState) => ({
+        ...prevState,
+        defaultImgId: savedImage.defaultImgId || 1,
+        planetImg: savedImage.imageToSend || null,
+      }));
+    }
+  }, [savedImage]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -150,6 +161,13 @@ function PlanetCreateForm() {
   //제출하기 누르면
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!planetInfo.missionFile) {
+      alert("인증 사진을 업로드해주세요.");
+      return;
+    }
+
+    submitResult();
   };
 
   const submitResult = () => {

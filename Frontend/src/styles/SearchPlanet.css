@@ -40,7 +40,6 @@
   color: gray; /* 원하는 색상으로 변경 */
 }
 
-
 .searchInput:focus::after {
   content: "";
   position: absolute;
@@ -94,7 +93,11 @@
 }
 
 .cateButton.selected {
-  background: radial-gradient(circle, #31fff2 30%, rgba(255, 255, 255, 0.5) 90%);
+  background: radial-gradient(
+    circle,
+    #31fff2 30%,
+    rgba(255, 255, 255, 0.5) 90%
+  );
 }
 
 .challengeList {
