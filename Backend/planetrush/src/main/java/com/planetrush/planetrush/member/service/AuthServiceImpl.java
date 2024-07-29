@@ -49,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
 		/* 로그인 */
 		JwtToken jwtToken = jwtTokenProvider.createToken(member.getId());
 		return LoginDto.builder()
+			.nickname(member.getNickname())
 			.accessToken(jwtToken.getAccessToken())
 			.refreshToken(jwtToken.getRefreshToken())
 			.build();

@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginDto {
 
+	private String nickname;
 	private String accessToken;
 	private String refreshToken;
 
