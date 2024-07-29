@@ -26,7 +26,7 @@ public class PlanetExceptionHandler {
 	public ResponseEntity<BaseResponse<Object>> handleResidentLimitExceededException(
 		NegativeParticipantCountException ex) {
 		log.error(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.CONFLICT)
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.PARTICIPANTS_OVERFLOW));
 	}
 
