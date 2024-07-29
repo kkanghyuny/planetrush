@@ -14,6 +14,8 @@ import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.planet.controller.response.SearchPlanetRes;
 import com.planetrush.planetrush.planet.service.GetPlanetService;
+import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
+import com.planetrush.planetrush.planet.service.dto.GetMyPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
 import com.planetrush.planetrush.planet.service.dto.PlanetDetailDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
@@ -75,4 +77,25 @@ public class GetPlanetController extends PlanetController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(res));
 	}
 
+	/**
+	 * 현재 사용자의 마이페이지를 위한 참여 중이면서 종료되지 않은 행성 목록을 가져옵니다.
+	 * @return 현재 사용자의 행성 목록을 포함한 ResponseEntity 객체
+	 */
+	@RequireJwtToken
+	@GetMapping("/me/list")
+	public ResponseEntity<BaseResponse<List<GetMyPlanetListDto>>> getMyPlanetList() {
+		Long memberId = MemberContext.getMemberId();
+		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getMyPlanetList(memberId)));
+	}
+
+	/**
+	 * 현재 사용자의 메인페이지를 위한 참여 중이면서 종료되지 않은 행성 목록을 가져옵니다.
+	 * @return 현재 사용자의 행성 목록을 포함한 ResponseEntity 객체
+	 */
+	@RequireJwtToken
+	@GetMapping("/main/list")
+	public ResponseEntity<BaseResponse<List<GetMainPlanetListDto>>> getMainPlanetList() {
+		Long memberId = MemberContext.getMemberId();
+		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getMainPlanetList(memberId)));
+	}
 }
