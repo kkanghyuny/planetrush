@@ -1,45 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/PlanetResult.css";
+import axios from "axios";
+import instance from "../AuthenticaitionPage/Axiosinstance";
+import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccess";
 
 function PlanetResult() {
   const navigate = useNavigate();
   const location = useLocation(); //url 정보 가져오는 함수
   const { planetInfo } = location.state || {}; //받아온 정보
 
+  //모달용 상태
+  const [isSuccess, setIsSuccess] = useState(null);
+
   const handleSumbit = async () => {
     // JSON 데이터 전송
     try {
-      const response = await axios.post("/api/planet", {
-        name: planetInfo.name,
-        content: planetInfo.content,
-        category: planetInfo.category,
-        startDate: planetInfo.startDate,
-        endDate: planetInfo.endDate,
-        maxParticipants: planetInfo.maxParticipants,
-        authCond: planetInfo.authCond,
+      const formdata = new FormData();
+
+      formdata.append(
+        "json",
+        JSON.stringify({
+          name: planetInfo.name,
+          content: planetInfo.content,
+          category: planetInfo.category,
+          startDate: planetInfo.startDate,
+          endDate: planetInfo.endDate,
+          maxParticipants: planetInfo.maxParticipants,
+          authCond: planetInfo.authCond,
+          defaultImgId: planetInfo.defaultImgId,
+        })
+      );
+
+      if (planetInfo.missionFile) {
+        //미션인증사진
+        formdata.append("verificationImage", planetInfo.missionFile);
+      }
+      if (planetInfo.planetImg) {
+        formdata.append("planetImage", planetInfo.planetImg);
+      }
+
+      const response = await instance.post(`/planets`, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      // 서버 응답에 따라 페이지 이동
       if (response.status === 200) {
-        const planetId = response.data.id; // 서버에서 반환한 행성 ID
-
-        // form-data로 파일 전송
-        const formData = new FormData();
-        if (planetInfo.missionFile) {
-          formData.append("missionFile", planetInfo.missionFile);
-        }
-        if (planetInfo.planetImg) {
-          formData.append("planetImg", planetInfo.planetImg);
-        }
-
-        await axios.post(`/api/planet/${planetId}/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        navigate("/result", { state: { planetInfo: response.data } });
+        setIsSuccess(true);
+      } else {
+        setIsSuccess(false);
       }
     } catch (error) {
       console.error("There was an error!", error);
@@ -72,7 +82,7 @@ function PlanetResult() {
         <p>
           기간: {planetInfo.startDate}부터 {planetInfo.endDate}까지
         </p>
-        <p>인원 수: {planetInfo.peopleCount}명</p>
+        <p>인원 수: {planetInfo.maxParticipants}명</p>
         <p>미션 조건: {planetInfo.authCond}</p>
         <img
           src={planetInfo.missionUrl}
@@ -83,6 +93,10 @@ function PlanetResult() {
       <p>생성 후 수정이 불가능합니다</p>
       <p>정말 새로운 행성의 개척자가 맞으신가요?</p>
       <button onClick={() => handleSumbit()}>맞습니다</button>
+      {isSuccess === true && <CreatePlanetSuccess />}
+      {isSuccess === false && (
+        <CreatePlanetFail onClose={() => setIsSuccess(null)} />
+      )}
     </div>
   );
 }
