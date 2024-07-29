@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
+import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
+import com.planetrush.planetrush.planet.exception.ResidentExitTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,5 +31,19 @@ public class ResidentExceptionHandler {
 		log.error(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.RESIDENT_NOT_FOUND));
+	}
+
+	@ExceptionHandler(ResidentExitTimeoutException.class)
+	public ResponseEntity<BaseResponse<Object>> handleResidentExitTimeoutException(ResidentExitTimeoutException ex) {
+		log.error(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.RESIDENT_EXIT_TIMEOUT));
+	}
+
+	@ExceptionHandler(RegisterResidentTimeoutException.class)
+	public ResponseEntity<BaseResponse<Object>> handleResidentTimeoutException(RegisterResidentTimeoutException ex) {
+		log.error(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.REGISTER_RESIDENT_TIMEOUT));
 	}
 }
