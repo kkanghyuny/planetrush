@@ -10,8 +10,21 @@ import com.planetrush.planetrush.planet.service.dto.SearchCond;
 
 public interface GetPlanetService {
 
+	/**
+	 * 챌린지가 시작되지 않은 행성을 검색합니다.
+	 *
+	 * @param cond 검색 조건(키워드, 카테고리, 페이지 크기, 마지막 조회 행성 id)
+	 * @return 검색 결과가 담긴 목록
+	 */
 	List<PlanetDetailDto> searchPlanet(SearchCond cond);
 
+	/**
+	 * 행성 상세정보를 조회합니다.
+	 *
+	 * @param memberId 조회하고 있는 회원 id
+	 * @param planetId 조회하는 행성 id
+	 * @return 행성 상세정보
+	 */
 	PlanetDetailDto getPlanetDetail(Long memberId, Long planetId);
 
 	/**

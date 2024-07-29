@@ -43,9 +43,14 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	private final VerificationRecordRepositoryCustom verificationRecordRepositoryCustom;
 
 	/**
-	 * 검색어, 카테고리로 검색, 챌린지 시작 시간이 지나지 않아 참가 가능성이 있는 행성들을 검색할 수 있다.
-	 * @param cond  검색 조건
-	 * @return 행성 상세정보 목록
+	 * {@inheritDoc}
+	 *
+	 * <p>이 메서드는 주어진 검색 조건에 따라 챌린지 행성 정보를 검색합니다.</p>
+	 * <p>검색 조건에는 키워드, 카테고리, 페이지 크기, 마지막 조회된 행성 id가 포함됩니다.</p>
+	 * <p>검색 결과는 챌린지가 READY 상태인 것만 조회하여 최신순으로 반환됩니다.</p>
+	 *
+	 * @param cond 검색 조건(키워드, 카테고리, 페이지 크기, 마지막 조회 행성 id)
+	 * @return 검색 결과가 담긴 목록
 	 */
 	@Override
 	public List<PlanetDetailDto> searchPlanet(SearchCond cond) {
@@ -67,10 +72,13 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	}
 
 	/**
-	 * 챌린지가 시작되지 않은 행성 상세 조회한다.
-	 * @param memberId 회원 id
-	 * @param planetId 행성 id
-	 * @return 행성 상세 정보
+	 * {@inheritDoc}
+	 *
+	 * @param memberId 행성 상세 정보를 요청하는 회원의 id; null일 수 있습니다.
+	 * @param planetId 상세 정보를 요청하는 행성의 id
+	 * @return 행성에 대한 상세 정보를 포함하는 {@link PlanetDetailDto}.
+	 * @throws PlanetNotFoundException 지정된 ID를 가진 행성을 찾을 수 없는 경우.
+	 * @throws MemberNotFoundException 지정된 ID를 가진 회원을 찾을 수 없는 경우 (memberId가 null이 아닌 경우).
 	 */
 	@Override
 	public PlanetDetailDto getPlanetDetail(Long memberId, Long planetId) {

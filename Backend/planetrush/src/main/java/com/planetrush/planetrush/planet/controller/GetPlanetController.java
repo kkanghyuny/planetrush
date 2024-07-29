@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +32,7 @@ public class GetPlanetController extends PlanetController {
 	private final S3ImageService s3ImageService;
 	private final GetPlanetService getPlanetService;
 
+	@RequireJwtToken
 	@GetMapping
 	public ResponseEntity<BaseResponse<SearchPlanetRes>> searchPlanet(
 		@RequestParam(value = "category", required = false) String category,
@@ -57,19 +57,15 @@ public class GetPlanetController extends PlanetController {
 		return planets.size() == size;
 	}
 
+	@RequireJwtToken
 	@GetMapping("/detail")
-	public ResponseEntity<BaseResponse<PlanetDetailDto>> getPlanetDetail(
-		@RequestHeader(value = "Authorization", required = false) String accessToken,
-		@RequestParam("planet-id") Long planetId) {
-		Long memberId = null;
-		if (accessToken != null) {
-			memberId = jwtTokenProvider.getMemberId(accessToken);
-		}
+	public ResponseEntity<BaseResponse<PlanetDetailDto>> getPlanetDetail(@RequestParam("planet-id") Long planetId) {
+		Long memberId = MemberContext.getMemberId();
 		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getPlanetDetail(memberId, planetId)));
 	}
 
 	@RequireJwtToken
-	@GetMapping("/me")
+	@GetMapping("/ongoing")
 	public ResponseEntity<BaseResponse<OngoingPlanetDto>> getOngoingPlanetDto(
 		@RequestParam("planet-id") Long planetId) {
 		Long memberId = MemberContext.getMemberId();
