@@ -87,22 +87,3 @@ input::placeholder {
   font-size: 16px;
   margin-top: 20px;
 }
-
-/* Add some star-like decorations */
-.planet-create-container::before,
-.planet-create-container::after {
-  content: "✦";
-  position: absolute;
-  color: white;
-  opacity: 0.3;
-}
-
-.planet-create-container::before {
-  top: 10%;
-  left: 5%;
-}
-
-.planet-create-container::after {
-  bottom: 15%;
-  right: 8%;
-}

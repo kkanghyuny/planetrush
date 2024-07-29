@@ -1,28 +1,39 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/PlanetCreateForm.css";
 
 function PlanetCreateForm() {
   const navigate = useNavigate();
+
+  //이미지 받아옴
+  const location = useLocation();
+  const { savedImage } = location.state || {};
+
+  //행성 정보 받을 위치
   const [planetInfo, setPlanetInfo] = useState({
     name: "",
-    challenge: "",
+    content: "",
     category: "",
     startDate: "",
     endDate: "",
-    peopleCount: 2,
-    missionCondition: "",
-    imageFile: null,
-    imageUrl: "",
+    maxParticipants: 2,
+    authCond: "",
+    missionFile: null,
+    missionUrl: "",
+    planetImg: savedImage || null,
   });
+
+  //에러출력
   const [errors, setErrors] = useState({
     name: "",
-    challenge: "",
+    content: "",
     date: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    //이름 설정시
     setPlanetInfo((prevState) => ({
       ...prevState,
       [name]: value,
@@ -40,34 +51,41 @@ function PlanetCreateForm() {
       }));
     }
 
-    if (name === "challenge" && value.length > 20) {
+    //챌린지명 설정시
+    if (name === "content" && value.length > 20) {
       setErrors((prevState) => ({
         ...prevState,
-        challenge: "20자 이하로 적어주세요",
+        content: "20자 이하로 적어주세요",
       }));
-    } else if (name === "challenge") {
+    } else if (name === "content") {
       setErrors((prevState) => ({
         ...prevState,
-        challenge: "",
+        content: "",
       }));
     }
   };
 
+  //인원수 체크
   const handlePeopleCountChange = (increment) => {
     setPlanetInfo((prevState) => ({
       ...prevState,
-      peopleCount: Math.min(Math.max(prevState.peopleCount + increment, 2), 10),
+      maxParticipants: Math.min(
+        Math.max(prevState.maxParticipants + increment, 2),
+        10
+      ), //2와 10 사이로만 설정가능
     }));
   };
 
+  //인증 사진 파일 업로드
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
+      const missionUrl = URL.createObjectURL(file);
+
       setPlanetInfo((prevState) => ({
         ...prevState,
-        imageFile: file,
-        imageUrl: imageUrl,
+        missionFile: file,
+        missionUrl: missionUrl,
       }));
     }
   };
@@ -76,19 +94,14 @@ function PlanetCreateForm() {
     document.getElementById("fileInput").click();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log(planetInfo);
-    // Navigate to next page or show success message
-  };
-
+  //유효 기간 체크
   const validateDate = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const today = new Date();
     const minDate = new Date();
     const maxDate = new Date();
+
     minDate.setDate(today.getDate() + 5);
     maxDate.setDate(today.getDate() + 10);
 
@@ -127,12 +140,20 @@ function PlanetCreateForm() {
     }));
 
     if (name === "startDate" || name === "endDate") {
-      validateDate(planetInfo.startDate, planetInfo.endDate);
+      validateDate(
+        name === "startDate" ? value : planetInfo.startDate,
+        name === "endDate" ? value : planetInfo.endDate
+      );
     }
   };
 
+  //제출하기 누르면
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   const submitResult = () => {
-    navigate("/result");
+    navigate("/result", { state: { planetInfo } });
   };
 
   return (
@@ -155,13 +176,13 @@ function PlanetCreateForm() {
           <label>챌린지명</label>
           <input
             type="text"
-            name="challenge"
-            value={planetInfo.challenge}
+            name="content"
+            value={planetInfo.content}
             onChange={handleInputChange}
             placeholder="20자 이내로 작성해주세요"
             maxLength={20}
           />
-          {errors.challenge && <p className="error">{errors.challenge}</p>}
+          {errors.content && <p className="error">{errors.content}</p>}
         </div>
         <div className="form-group">
           <label>카테고리</label>
@@ -227,12 +248,14 @@ function PlanetCreateForm() {
               value={planetInfo.startDate}
               onChange={handleDateChange}
             />
+            부터
             <input
               type="date"
               name="endDate"
               value={planetInfo.endDate}
               onChange={handleDateChange}
             />
+            까지
           </div>
           {errors.date && <p className="error">{errors.date}</p>}
         </div>
@@ -245,7 +268,7 @@ function PlanetCreateForm() {
             <input
               type="number"
               name="peopleCount"
-              value={planetInfo.peopleCount}
+              value={planetInfo.maxParticipants}
               readOnly
             />
             <button type="button" onClick={() => handlePeopleCountChange(1)}>
@@ -257,8 +280,8 @@ function PlanetCreateForm() {
           <label>미션 조건</label>
           <input
             type="text"
-            name="missionCondition"
-            value={planetInfo.missionCondition}
+            name="authCond"
+            value={planetInfo.authCond}
             onChange={handleInputChange}
           />
         </div>
@@ -277,8 +300,12 @@ function PlanetCreateForm() {
           >
             사진 찍으러가기
           </button>
-          {planetInfo.imageUrl && (
-            <img src={planetInfo.imageUrl} alt="선택된 사진" />
+          {planetInfo.missionUrl && (
+            <img
+              src={planetInfo.missionUrl}
+              alt="선택된 사진"
+              className="image-preview"
+            />
           )}
         </div>
         <button type="submit" className="submit-button" onClick={submitResult}>

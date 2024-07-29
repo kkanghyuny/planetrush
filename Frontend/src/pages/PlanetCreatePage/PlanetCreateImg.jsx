@@ -10,7 +10,6 @@ function PlanetCreateImg() {
   const [selectedImage, setSelectedImage] = useState(
     "https://placehold.co/150x150"
   );
-  const [savedImage, setSavedImage] = useState(null);
 
   //이미지를 props해서 받아오기 위함
   const [canvasRef, setCanvasRef] = useState(null);
@@ -56,7 +55,6 @@ function PlanetCreateImg() {
   };
 
   const handleSaveImage = (image) => {
-    setSavedImage(image);
     setCanvasData(image); // 캔버스 데이터 저장
   };
 
@@ -77,7 +75,6 @@ function PlanetCreateImg() {
         생성하기
       </button>
       {showAlert && <div className="alert">그림을 그려주세요!</div>}{" "}
-      {/* 알림 추가 */}
       {view === "default" ? (
         <div>
           <div className="image-container">

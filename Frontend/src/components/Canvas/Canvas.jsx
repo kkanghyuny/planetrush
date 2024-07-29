@@ -126,17 +126,6 @@ const Canvas = ({ onSaveImage }) => {
     };
   }, []);
 
-  //그림그리기 모드
-  useEffect(() => {
-    if (canvas && canvas.freeDrawingBrush) {
-      canvas.isDrawingMode = true;
-      const pixelBrush = new PixelBrush(canvas);
-      pixelBrush.color = drawingColor;
-      pixelBrush.width = pixelSize;
-      canvas.freeDrawingBrush = pixelBrush;
-    }
-  }, [canvas, drawingColor, pixelSize]);
-
   // 새로운 useEffect: history가 변경될 때마다 캔버스 업데이트
   useEffect(() => {
     if (canvas) {
@@ -163,17 +152,6 @@ const Canvas = ({ onSaveImage }) => {
       }
     }
   };
-
-  // const saveCanvasState = () => {
-  //   if (canvas) {
-  //     const json = JSON.stringify(canvas.toJSON());
-  //     const newHistory = history.slice(0, currentStep + 1);
-  //     newHistory.push(json);
-  //     setHistory(newHistory);
-  //     setCurrentStep(newHistory.length - 1);
-  //     updateCanvasImage();
-  //   }
-  // };
 
   //실행취소
   const handleUndoClick = () => {
