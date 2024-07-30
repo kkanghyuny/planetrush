@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 import com.planetrush.planetrush.core.exception.ExpiredJwtException;
 import com.planetrush.planetrush.core.exception.UnAuthorizedException;
+import com.planetrush.planetrush.core.exception.UnSupportedJwtException;
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +98,7 @@ public class JwtTokenProvider {
 	 * @return 토큰의 유효성
 	 * @throws SecurityException 잘못된 JWT 서명일 때 발생
 	 * @throws MalformedJwtException 잘못된 JWT 서명일 때 발생
-	 * @throws UnsupportedJwtException 지원하지 않는 JWT 토근일 때 발생
+	 * @throws UnSupportedJwtException 지원하지 않는 JWT 토근일 때 발생
 	 * @throws IllegalArgumentException JWT 토큰이 없거나 잘못되었을 때 발생
 	 * @throws ExpiredJwtException JWT 토큰이 만료되었을 때 발생
 	 */
@@ -111,7 +111,7 @@ public class JwtTokenProvider {
 			return parseClaims(accessToken).getExpiration().after(new Date());
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			log.error("잘못된 JWT 서명입니다.", e);
-		} catch (UnsupportedJwtException e) {
+		} catch (UnSupportedJwtException e) {
 			log.error("지원하지 않는 JWT 토큰입니다.", e);
 		} catch (IllegalArgumentException e) {
 			log.error("JWT 토큰이 없거나 잘못되었습니다.", e);
