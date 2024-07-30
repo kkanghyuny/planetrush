@@ -20,7 +20,7 @@ public class RegisterPlanetDto {
 	private int maxParticipants;
 	private String authCond;
 	private Long memberId;
-	private Long defaultImgId;
-	private Long customPlanetImgId;
-	private Long standardPlanetImgId;
+	private String planetImgUrl;
+	private String standardVerificationImgUrl;
+
 }

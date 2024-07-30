@@ -12,7 +12,7 @@ import lombok.Getter;
 public class GetMyPlanetListDto {
 
 	private Long planetId;
-	private String planetImgUrl;
+	private String planetImg;
 	private String category;
 	private String name;
 	private String content;

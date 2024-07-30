@@ -28,8 +28,8 @@ public class RegisterPlanetController extends PlanetController {
 	@RequireJwtToken
 	@PostMapping
 	public ResponseEntity<BaseResponse<?>> registerPlanet(
-		@RequestPart(name = "planetImage", required = false) MultipartFile planetImage,
-		@RequestPart(name = "verificationImage") MultipartFile verificationImage,
+		@RequestPart(name = "customPlanetImg", required = false) MultipartFile customPlanetImg,
+		@RequestPart(name = "stdVerificationImg") MultipartFile stdVerificationImg,
 		@RequestPart(name = "req") RegisterPlanetReq req) {
 		Long memberId = MemberContext.getMemberId();
 		registerPlanetFacade.registerPlanet(RegisterPlanetFacadeDto.builder()
@@ -41,10 +41,8 @@ public class RegisterPlanetController extends PlanetController {
 			.maxParticipants(req.getMaxParticipants())
 			.authCond(req.getAuthCond())
 			.memberId(memberId)
-			.defaultImgId(req.getDefaultImgId())
-			.planetImage(planetImage)
-			.verificationImage(verificationImage)
-			.build());
+			.planetImgUrl(req.getPlanetImgUrl())
+			.build(), customPlanetImg, stdVerificationImg);
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 }

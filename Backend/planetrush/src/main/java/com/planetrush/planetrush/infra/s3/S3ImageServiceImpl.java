@@ -13,8 +13,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.planetrush.planetrush.infra.s3.dto.FileMetaInfo;
 import com.planetrush.planetrush.infra.s3.exception.S3Exception;
-import com.planetrush.planetrush.planet.service.dto.FileMetaInfo;
 import com.planetrush.planetrush.planet.service.image.S3ImageService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,12 +29,13 @@ public class S3ImageServiceImpl implements S3ImageService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
-	private final static String CUSTOM_IMG_DIR = "custom_img/";
-	private final static String VERIFICATION_IMG_DIR = "verification_img/";
+	private final String CUSTOM_PLANET_IMG_DIR = "custom_planet_img/";
+	private final String STD_VERIFICATION_IMG_DIR = "std_verification_img/";
+	private final String VERIFICATION_IMG_DIR = "verification_img/";
 
 	@Override
 	public FileMetaInfo uploadPlanetImg(MultipartFile file, long memberId) {
-		String url = upload(file, CUSTOM_IMG_DIR, memberId);
+		String url = upload(file, CUSTOM_PLANET_IMG_DIR, memberId);
 		String name = file.getOriginalFilename();
 		String format = getFileExtension(name);
 		long size = file.getSize();
@@ -48,6 +49,20 @@ public class S3ImageServiceImpl implements S3ImageService {
 
 	@Override
 	public FileMetaInfo uploadStandardVerificationImg(MultipartFile file, long memberId) {
+		String url = upload(file, STD_VERIFICATION_IMG_DIR, memberId);
+		String name = file.getOriginalFilename();
+		String format = getFileExtension(name);
+		long size = file.getSize();
+		return FileMetaInfo.builder()
+			.url(url)
+			.name(name)
+			.format(format)
+			.size(size)
+			.build();
+	}
+
+	@Override
+	public FileMetaInfo uploadVerificationImg(MultipartFile file, Long memberId) {
 		String url = upload(file, VERIFICATION_IMG_DIR, memberId);
 		String name = file.getOriginalFilename();
 		String format = getFileExtension(name);

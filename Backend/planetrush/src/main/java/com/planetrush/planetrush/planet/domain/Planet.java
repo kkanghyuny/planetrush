@@ -8,9 +8,6 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.planetrush.planetrush.planet.domain.image.CustomPlanetImg;
-import com.planetrush.planetrush.planet.domain.image.DefaultPlanetImg;
-import com.planetrush.planetrush.planet.domain.image.StandardVerificationImg;
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
 import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
 import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutException;
@@ -20,14 +17,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -124,25 +117,16 @@ public class Planet {
 	private LocalDateTime createdAt;
 
 	/**
-	 * 행성 생성시 기본 제공 이미지를 선택했을 경우 해당 제공 이미지에 대한 정보입니다.
+	 * 행성 대표 이미지 URL 정보입니다.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "default_img_id", nullable = false)
-	private DefaultPlanetImg defaultPlanetImg;
-
-	/**
-	 * 행성 생성시 커스텀 이미지를 선택했을 경우 해당 커스텀 이미지에 대한 정보입니다.
-	 */
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "custom_planet_img_id", nullable = true)
-	private CustomPlanetImg customPlanetImg;
+	@Column(name = "planet_img_url", length = 300)
+	private String planetImg;
 
 	/**
 	 * 챌린지를 인증하기 위한 예시 이미지입니다.
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "standard_verification_img_id", nullable = false)
-	private StandardVerificationImg standardVerificationImg;
+	@Column(name = "standard_verification_img", length = 300)
+	private String standardVerificationImg;
 
 	/**
 	 * 행성 객체를 생성하는 생성자입니다.
@@ -157,17 +141,14 @@ public class Planet {
 	 * @param endDate 행성의 종료 날짜
 	 * @param maxParticipants 최대 참가자 수
 	 * @param verificationCond 인증 조건
-	 * @param customPlanetImg 커스텀 행성 이미지 (null일 수 있음)
-	 * @param defaultPlanetImg 기본 행성 이미지
-	 * @param standardVerificationImg 인증 예시 이미지
+	 * @param planetImg 기본 행성 이미지
+	 * @param standardVerificationImg 인증 기준 사진
 	 */
 	@Builder
 	public Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
-		int maxParticipants, String verificationCond, CustomPlanetImg customPlanetImg,
-		DefaultPlanetImg defaultPlanetImg,
-		StandardVerificationImg standardVerificationImg) {
+		int maxParticipants, String verificationCond, String planetImg, String standardVerificationImg) {
 		this(name, category, content, startDate, endDate, maxParticipants, 1, verificationCond, PlanetStatus.READY,
-			defaultPlanetImg, customPlanetImg, standardVerificationImg);
+			planetImg, standardVerificationImg);
 	}
 
 	/**
@@ -185,14 +166,12 @@ public class Planet {
 	 * @param currentParticipants 현재 참가자 수
 	 * @param verificationCond 인증 조건
 	 * @param status 행성의 상태
-	 * @param defaultPlanetImg 기본 행성 이미지
-	 * @param customPlanetImg 커스텀 행성 이미지 (null일 수 있음)
+	 * @param planetImg 행성 이미지
 	 * @param standardVerificationImg 인증 예시 이미지
 	 */
-	private Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
-		int maxParticipants, int currentParticipants, String verificationCond, PlanetStatus status,
-		DefaultPlanetImg defaultPlanetImg,
-		CustomPlanetImg customPlanetImg, StandardVerificationImg standardVerificationImg) {
+	public Planet(String name, Category category, String content, LocalDate startDate, LocalDate endDate,
+		int maxParticipants, int currentParticipants, String verificationCond, PlanetStatus status, String planetImg,
+		String standardVerificationImg) {
 		this.name = name;
 		this.category = category;
 		this.content = content;
@@ -202,8 +181,7 @@ public class Planet {
 		this.currentParticipants = currentParticipants;
 		this.verificationCond = verificationCond;
 		this.status = status;
-		this.defaultPlanetImg = defaultPlanetImg;
-		this.customPlanetImg = customPlanetImg;
+		this.planetImg = planetImg;
 		this.standardVerificationImg = standardVerificationImg;
 	}
 
@@ -247,31 +225,6 @@ public class Planet {
 			throw new NegativeParticipantCountException();
 		}
 		this.currentParticipants--;
-	}
-
-	/**
-	 * 행성의 이미지 URL을 반환합니다.
-	 * <p>
-	 * 사용자 정의 이미지가 설정되어 있으면 해당 이미지의 URL을 반환하고,
-	 * 그렇지 않으면 기본 이미지의 URL을 반환합니다.
-	 * </p>
-	 *
-	 * @return 행성 이미지의 URL
-	 */
-	public String getPlanetImgUrl() {
-		if (hasCustomImg()) {
-			return this.customPlanetImg.getImgUrl();
-		}
-		return this.defaultPlanetImg.getImgUrl();
-	}
-
-	/**
-	 * 사용자 정의 이미지가 설정되어 있는지 여부를 확인합니다.
-	 *
-	 * @return 사용자 정의 이미지가 설정되어 있으면 {@code true}, 그렇지 않으면 {@code false}
-	 */
-	private boolean hasCustomImg() {
-		return customPlanetImg != null;
 	}
 
 	/**
