@@ -5,9 +5,9 @@
   padding: 10px;
 }
 
-.grid-item {
-  width: 100%;
+.grid-Item {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   cursor: pointer;
-  border-radius: 10px;
-  border: 1px solid white;
 }

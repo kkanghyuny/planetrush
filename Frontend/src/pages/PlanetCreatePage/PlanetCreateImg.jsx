@@ -31,8 +31,8 @@ function PlanetCreateImg() {
     if (view === "custom") {
       planetImg.imageToSend = canvasData;
     } else {
-      planetImg.imageToSend = selectedImage.url;
-      planetImg.defaultImgId = selectedImage.id;
+      planetImg.imageToSend = selectedImage.imgUrl;
+      planetImg.defaultImgId = selectedImage.imgId;
     }
 
     if (!planetImg.imageToSend) {
@@ -54,7 +54,9 @@ function PlanetCreateImg() {
   };
 
   //고르기에서 이미지 선택시 선택된 이미지 뜨기
+  //고르기에서 이미지 선택시 선택된 이미지 뜨기
   const handleImageSelect = (image) => {
+    console.log("Selected image:", image); // 디버깅을 위한 로그 추가
     setSelectedImage(image);
   };
 
@@ -62,6 +64,7 @@ function PlanetCreateImg() {
     setCanvasData(image); // 캔버스 데이터 저장
   };
 
+  //빈칸일때 알림
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => setShowAlert(false), 3000);
@@ -81,13 +84,15 @@ function PlanetCreateImg() {
       {showAlert && <div className="alert">그림을 그려주세요!</div>}{" "}
       {view === "default" ? (
         <div>
-          <div className="image-container">
-            <img
-              src={selectedImage}
-              alt="Selected Planet"
-              className="selected-image"
-            />
-          </div>
+          {selectedImage && (
+            <div className="image-container">
+              <img
+                src={selectedImage.imgUrl}
+                alt="Selected Planet"
+                className="selected-image"
+              />
+            </div>
+          )}
           <div className="button-container">
             <button onClick={handleDefaultClick} className="tab-button">
               고르기

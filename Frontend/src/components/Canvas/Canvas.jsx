@@ -138,6 +138,14 @@ const Canvas = ({ onSaveImage }) => {
     }
   }, [history]);
 
+  // 새로운 useEffect: drawingColor와 pixelSize가 변경될 때마다 브러시 업데이트
+  useEffect(() => {
+    if (canvas && canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush.color = drawingColor;
+      canvas.freeDrawingBrush.pixelSize = pixelSize;
+    }
+  }, [drawingColor, pixelSize, canvas]);
+
   //캔버스에 그림객체 업데이트 확인
   const updateCanvasImage = () => {
     if (canvas) {
