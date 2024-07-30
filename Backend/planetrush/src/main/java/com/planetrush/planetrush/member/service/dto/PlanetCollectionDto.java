@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class PlanetCollectionDto {
 
-	private long id;
+	private long planetId;
 	private String name;
 	private Category category;
 	private String content;
