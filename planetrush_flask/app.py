@@ -1,10 +1,17 @@
+import os
+
 from flask import Flask, jsonify, request
 import cv2
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 from flask_sqlalchemy import SQLAlchemy
 import enum
-
+import numpy as np
+from konlpy.tag import Mecab
+from collections import Counter
+from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 app = Flask(__name__)
 
 # URL 이미지 로드
@@ -62,84 +69,31 @@ def get_img_url():
     })
 
 # 인기 키워드 조회
-from gensim.models import Word2Vec
-from gensim.utils import simple_preprocess
-import numpy as np
-from konlpy.tag import Okt
-from collections import Counter
+# 의미없는 단어 제거
+def remove_stop_words(words):
+    stop_words = set("매일 하루 일 분 시간 초 번 하나 운동 챌린지".split())
+    return [word for word in words if word not in stop_words]
 
+def get_mode_keywords(texts):
+    # 명사만 남기기
+    nouns = []
+    mecab = Mecab(dicpath=r"C:\mecab\mecab-ko-dic")
+    for text in texts:
+        nouns+=list(set(mecab.nouns(text)))
+    print("nouns",nouns)
 
-# 문장 벡터화 함수
-def get_sentence_vector(sentence, model):
-    words = simple_preprocess(sentence)
-    word_vectors = [model.wv[word] for word in words if word in model.wv]
-    if not word_vectors:
-        return np.zeros(model.vector_size)
-    return np.mean(word_vectors, axis=0)
-
-
-# 단어 중요도 계산 함수
-def get_word_importance(sentence, model):
-    words = simple_preprocess(sentence)
-    word_vectors = [model.wv[word] for word in words if word in model.wv]
-    if not word_vectors:
-        return {}
-    sentence_vector = np.mean(word_vectors, axis=0)
-    word_importance = {}
-    for word in words:
-        if word in model.wv:
-            word_vector = model.wv[word]
-            similarity = np.dot(sentence_vector, word_vector) / (
-                        np.linalg.norm(sentence_vector) * np.linalg.norm(word_vector))
-            word_importance[word] = similarity
-    return word_importance
-
-
-def get_mode_keyword(texts):
-    # 문장을 토큰화
-    tokenized_texts = [simple_preprocess(text) for text in texts]
-
-    # Word2Vec 모델 학습
-    model = Word2Vec(sentences=tokenized_texts, vector_size=50, window=5, min_count=1, workers=4)
-
-    # 불용어
-    stop_words = "매일 하루 분 시간 초 번 하나 운동 챌린지"
-    stop_words = set(stop_words.split(' '))
-
-    # 각 문장에서 상위 N개의 키워드 추출
-    okt = Okt()
-
-    top_n = 5
-    keyword = []
-    for i, text in enumerate(texts):
-        importance = get_word_importance(text, model)
-        sorted_words = sorted(importance.items(), key=lambda x: x[1], reverse=True)
-
-        for word, score in sorted_words[:top_n]:
-            word_pos = okt.pos(word)
-            is_nouns = 0
-            for w, pos in word_pos:
-                if w in stop_words: # 불용어 제거
-                    continue
-                if pos != "Noun":
-                    is_nouns = 0
-                elif is_nouns == 1:
-                    keyword[-1] += w
-                else:  # Noun=true, is_nouns=0
-                    is_nouns = 1
-                    keyword.append(w)
+    clean_nouns = remove_stop_words(nouns)
 
     # 단어 빈도 계산
-    word_counts = Counter(keyword)
+    word_counts = Counter(clean_nouns)
 
     # 최빈값 추출
-    mode_keyword = [item[0] for item in word_counts.most_common(6)]
+    mode_keyword = [item[0] for item in word_counts.most_common(7)]
     return mode_keyword
 
 
 # 데이터베이스 설정
-# env로 빼기
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://planetrush-test-user:plt1234@han-rds.cjnh2jkizbrs.ap-northeast-2.rds.amazonaws.com:3306/planetrush'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -176,6 +130,27 @@ class Planet(db.Model):
     category = db.Column(db.Enum(CategoryEnum), nullable=False)
     planet_status = db.Column(db.Enum(PlanetStatusEnum), nullable=False)
 
+class Keyword(db.Model):
+    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    keyword_name = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __repr__(self):
+        return f'<Keyword {self.keyword_name}>'
+
+with app.app_context():
+    db.create_all()
+
+def add_keyword(mode_keyword, category):
+    new_keyword = Keyword(keyword_name=mode_keyword, category=category)
+    try:
+        db.session.add(new_keyword)
+        db.session.commit()
+        return jsonify({'message': 'Keyword created successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        raise e  # 예외를 호출한 함수로 전달
 
 @app.route('/api/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
@@ -188,11 +163,15 @@ def get_challenge_content():
 
     if planets:
         challenge_contents = [planet.challenge_content for planet in planets]
-        mode_keyword = get_mode_keyword(challenge_contents)
-        return jsonify({'mode_keyword': mode_keyword})
+        mode_keyword = get_mode_keywords(challenge_contents)
+        # add_keyword를 호출하고 예외를 처리
+        try:
+            result = add_keyword(mode_keyword, category)
+            return result  # add_keyword가 반환하는 응답을 직접 반환
+        except Exception as e:
+            return jsonify({'message': 'There was an issue adding the keyword', 'error': str(e)}), 500
     else:
         return jsonify({'message': 'No planets found for this category'}), 404
-
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=5000)
