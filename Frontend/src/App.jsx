@@ -26,22 +26,24 @@ function App() {
   return (
     <div className="App">
       <BackGround />
-      <Routes>
-        <Route path="/" element={<StartPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/mypage" element={<MyPage />} />
+      <div className="route-wrapper">
+        <Routes>
+          <Route path="/" element={<StartPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/mypage" element={<MyPage />} />
 
-        <Route path="/create" element={<PlanetCreateImg />} />
-        <Route path="/create-foam" element={<PlanetCreateInfo />} />
-        <Route path="/result" element={<PlanetResult />} />
+          <Route path="/create" element={<PlanetCreateImg />} />
+          <Route path="/create-foam" element={<PlanetCreateInfo />} />
+          <Route path="/result" element={<PlanetResult />} />
 
-        <Route path="/search" element={<SearchBar />} />
+          <Route path="/search" element={<SearchBar />} />
 
-        <Route path="/planet/:id" element={<PlanetDetailRecruiting />} />
-        <Route path="/planet-inProgress" element={<PlanetDetailInProgress />} />
+          <Route path="/planet/:id" element={<PlanetDetailRecruiting />} />
+          <Route path="/planet-progress" element={<PlanetDetailInProgress />} />
 
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </div>
       {!isStartPage && <Navigation />}
     </div>
   );

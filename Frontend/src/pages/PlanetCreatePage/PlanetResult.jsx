@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/PlanetResult.css";
-import axios from "axios";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccess";
 
@@ -18,17 +17,23 @@ function PlanetResult() {
     try {
       const formdata = new FormData();
 
+      console.log(planetInfo);
+
+      const req = {
+        name: planetInfo.name,
+        content: planetInfo.content,
+        category: planetInfo.category,
+        startDate: planetInfo.startDate,
+        endDate: planetInfo.endDate,
+        maxParticipants: planetInfo.maxParticipants,
+        authCond: planetInfo.authCond,
+        defaultImgId: planetInfo.defaultImgId,
+      };
+
       formdata.append(
-        "json",
-        JSON.stringify({
-          name: planetInfo.name,
-          content: planetInfo.content,
-          category: planetInfo.category,
-          startDate: planetInfo.startDate,
-          endDate: planetInfo.endDate,
-          maxParticipants: planetInfo.maxParticipants,
-          authCond: planetInfo.authCond,
-          defaultImgId: planetInfo.defaultImgId,
+        "req",
+        new Blob([JSON.stringify(req)], {
+          type: "application/json",
         })
       );
 
@@ -44,6 +49,7 @@ function PlanetResult() {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 5000,
       });
 
       if (response.status === 200) {
