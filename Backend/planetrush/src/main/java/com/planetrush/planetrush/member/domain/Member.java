@@ -93,6 +93,12 @@ public class Member {
 	private List<Resident> residents = new ArrayList<>();
 
 	/**
+	 * 사용자의 완료된 행성 정보입니다.
+	 */
+	@OneToMany(mappedBy = "member")
+	private List<ChallengeHistory> challengeHistories = new ArrayList<>();
+
+	/**
 	 * 사용자의 가입일자입니다.
 	 * 자동으로 현재 타임스탬프로 설정됩니다.
 	 */
