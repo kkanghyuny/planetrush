@@ -82,6 +82,7 @@ function SearchBar() {
 
       // axios를 instance로 만들어서 가져오는 행위 (AxiosInstace.jsx에 존재)
       const response = await instance.get("/planets", { params });
+
       // 주어진 조건에 맞는 DB 내 자료들의 집합이다.
       const backendChallenges = response.data.data.planets || [];
 

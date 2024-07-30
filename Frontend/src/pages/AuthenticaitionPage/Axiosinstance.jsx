@@ -5,8 +5,11 @@ import Cookies from "js-cookie"; // js-cookie import
 
 // Axios 인스턴스 생성
 // 1초 시간을 걸어서 시간 내 응답이 안 될 시 에러로 판명
+
+const devURL = 'http://i11a509.p.ssafy.io:8080/api/v1'
+const SIMURL = 'https://www.hanserver.site'
 const instance = axios.create({
-  baseURL: 'http://70.12.114.73:8080/api/v1', // 기본 URL 설정
+  baseURL: devURL, // 기본 URL 설정
   timeout: 1000, // 요청 제한 시간 1초 설정
   headers: {
     'Content-Type': 'application/json', // 기본 헤더 설정
@@ -18,14 +21,14 @@ instance.interceptors.request.use(
   (config) => {
 
     // 쿠키에서 액세스 토큰 가져오기
-    const accessToken = Cookies.get('access_token');
+    const accessToken = Cookies.get('access-token');
  
     if (accessToken) {
       // 액세스 토큰이 존재하면 Authorization 헤더에 추가
       config.headers['Authorization'] = `${accessToken}`; 
     }
 
-    console.log(config.headers)
+    console.log('check' + config.headers)
 
     return config; // 설정된 config 반환
   },
