@@ -26,7 +26,7 @@ public class GetMyCollectionController extends MemberController {
 	 */
 	@RequireJwtToken
 	@GetMapping("/collections")
-	public ResponseEntity<BaseResponse<?>> getPlanetCollections() {
+	public ResponseEntity<BaseResponse<List<PlanetCollectionDto>>> getPlanetCollections() {
 		Long memberId = MemberContext.getMemberId();
 		List<PlanetCollectionDto> planetCollections = getPlanetCollectionService.getPlanetCollections(memberId);
 		return ResponseEntity.ok(BaseResponse.ofSuccess(planetCollections));

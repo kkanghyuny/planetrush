@@ -31,7 +31,7 @@ public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 			.orElseGet(List::of);
 		return historyList.stream()
 			.map(history -> PlanetCollectionDto.builder()
-				.id(history.getId())
+				.planetId(history.getId())
 				.name(history.getPlanetName())
 				.category(history.getCategory())
 				.content(history.getChallengeContent())
