@@ -18,7 +18,6 @@ import com.planetrush.planetrush.planet.service.dto.SearchCond;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -44,13 +43,7 @@ public class PlanetRepositoryCustom {
 	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
 		return queryFactory.select(Projections.constructor(GetMyPlanetListDto.class,
 				planet.id,
-				Expressions.as(
-					Expressions.cases()
-						.when(planet.customPlanetImg.isNotNull())
-						.then(planet.customPlanetImg.imgUrl)
-						.otherwise(planet.defaultPlanetImg.ImgUrl),
-					"planetImgUrl"
-				),
+				planet.planetImg,
 				planet.category.stringValue(),
 				planet.name,
 				planet.content,
@@ -62,8 +55,6 @@ public class PlanetRepositoryCustom {
 			))
 			.from(resident)
 			.join(resident.planet, planet)
-			.leftJoin(planet.defaultPlanetImg)
-			.leftJoin(planet.customPlanetImg)
 			.where(
 				resident.member.id.eq(memberId),
 				resident.challengerStatus.in(ChallengerStatus.READY, ChallengerStatus.IN_PROGRESS)
@@ -74,13 +65,7 @@ public class PlanetRepositoryCustom {
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
 		return queryFactory.select(Projections.constructor(GetMainPlanetListDto.class,
 				planet.id,
-				Expressions.as(
-					Expressions.cases()
-						.when(planet.customPlanetImg.isNotNull())
-						.then(planet.customPlanetImg.imgUrl)
-						.otherwise(planet.defaultPlanetImg.ImgUrl),
-					"planetImgUrl"
-				),
+				planet.planetImg,
 				planet.name,
 				planet.status.stringValue(),
 				ExpressionUtils.as(
@@ -95,8 +80,6 @@ public class PlanetRepositoryCustom {
 			))
 			.from(resident)
 			.join(resident.planet, planet)
-			.leftJoin(planet.defaultPlanetImg)
-			.leftJoin(planet.customPlanetImg)
 			.where(
 				resident.member.id.eq(memberId),
 				resident.challengerStatus.in(ChallengerStatus.READY, ChallengerStatus.IN_PROGRESS)

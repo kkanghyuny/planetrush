@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.planet.service.dto;
+package com.planetrush.planetrush.infra.s3.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
