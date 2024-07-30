@@ -217,7 +217,7 @@ public class Planet {
 	 * @throws ParticipantsOverflowException 최대 참가자 수를 초과할 경우
 	 */
 	public void addParticipant() {
-		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(LocalDate.now())) {
+		if (LocalDate.now().isBefore(this.startDate) || LocalDate.now().equals(LocalDate.now())) {
 			throw new RegisterResidentTimeoutException();
 		}
 		if (currentParticipants == maxParticipants) {
