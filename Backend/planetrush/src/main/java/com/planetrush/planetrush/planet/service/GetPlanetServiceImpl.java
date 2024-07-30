@@ -198,7 +198,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	 */
 	@Override
 	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
-		return planetRepositoryCustom.getMyPlanetList(memberId);
+		Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+		return planetRepositoryCustom.getMyPlanetList(member.getId());
 	}
 
 	/**
@@ -208,11 +209,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	 */
 	@Override
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
-		return planetRepositoryCustom.getMainPlanetList(memberId);
-	}
-
-	private boolean isNotNull(Long memberId) {
-		return memberId != null;
+		Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+		return planetRepositoryCustom.getMainPlanetList(member.getId());
 	}
 
 }
