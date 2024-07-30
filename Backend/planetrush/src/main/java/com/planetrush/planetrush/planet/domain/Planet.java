@@ -215,7 +215,7 @@ public class Planet {
 	 * @throws NegativeParticipantCountException 참가자 수가 음수가 될 경우
 	 */
 	public void removeParticipant() {
-		if (LocalDate.now().isBefore(this.startDate) || LocalDate.now().equals(this.startDate)) {
+		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(this.startDate)) {
 			throw new ResidentExitTimeoutException();
 		}
 		if (currentParticipants == 0) {
