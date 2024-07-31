@@ -4,8 +4,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.planetrush.planetrush.core.exception.UnAuthorizedException;
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
+import com.planetrush.planetrush.core.jwt.exception.UnAuthorizedException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

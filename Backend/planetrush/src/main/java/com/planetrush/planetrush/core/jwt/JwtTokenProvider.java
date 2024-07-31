@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.planetrush.planetrush.core.exception.ExpiredJwtException;
-import com.planetrush.planetrush.core.exception.UnAuthorizedException;
-import com.planetrush.planetrush.core.exception.UnSupportedJwtException;
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
+import com.planetrush.planetrush.core.jwt.exception.ExpiredJwtException;
+import com.planetrush.planetrush.core.jwt.exception.UnAuthorizedException;
+import com.planetrush.planetrush.core.jwt.exception.UnSupportedJwtException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -20,29 +20,29 @@ public class ResidentExceptionHandler {
 
 	@ExceptionHandler(ResidentAlreadyExistsException.class)
 	public ResponseEntity<BaseResponse<Object>> handleResidentAlreadyExistsException(
-		ResidentAlreadyExistsException ex) {
-		log.error(ex.getMessage());
+		ResidentAlreadyExistsException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.ALREADY_EXIST_RESIDENT));
 	}
 
 	@ExceptionHandler(ResidentNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handleResidentNotFoundException(ResidentNotFoundException ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handleResidentNotFoundException(ResidentNotFoundException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.RESIDENT_NOT_FOUND));
 	}
 
 	@ExceptionHandler(ResidentExitTimeoutException.class)
-	public ResponseEntity<BaseResponse<Object>> handleResidentExitTimeoutException(ResidentExitTimeoutException ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handleResidentExitTimeoutException(ResidentExitTimeoutException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.RESIDENT_EXIT_TIMEOUT));
 	}
 
 	@ExceptionHandler(RegisterResidentTimeoutException.class)
-	public ResponseEntity<BaseResponse<Object>> handleResidentTimeoutException(RegisterResidentTimeoutException ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handleResidentTimeoutException(RegisterResidentTimeoutException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.REGISTER_RESIDENT_TIMEOUT));
 	}

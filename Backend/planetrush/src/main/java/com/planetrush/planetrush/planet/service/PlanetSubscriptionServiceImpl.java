@@ -39,9 +39,10 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 	 */
 	@Override
 	public void registerResident(PlanetSubscriptionDto dto) {
-		Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new MemberNotFoundException());
+		Member member = memberRepository.findById(dto.getMemberId())
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
 		Planet planet = planetRepository.findById(dto.getPlanetId())
-			.orElseThrow(() -> new PlanetNotFoundException("planet not found id: " + dto.getPlanetId()));
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
 		residentRepository.findByMemberIdAndPlanetId(member.getId(), planet.getId())
 			.ifPresent(resident -> {
 				throw new ResidentAlreadyExistsException("resident already exists: " + resident.getId());
@@ -60,9 +61,9 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 	public void deleteResident(PlanetSubscriptionDto dto) {
 		Resident resident = residentRepository.findByMemberIdAndPlanetId(dto.getMemberId(), dto.getPlanetId())
 			.orElseThrow(() -> new ResidentNotFoundException(
-				"resident not found member id: " + dto.getMemberId() + " and planet id: " + dto.getPlanetId()));
+				"Resident not found member id: " + dto.getMemberId() + " and planet id: " + dto.getPlanetId()));
 		Planet planet = planetRepository.findById(dto.getPlanetId())
-			.orElseThrow(() -> new PlanetNotFoundException("planet not found id: " + dto.getPlanetId()));
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
 		planet.removeParticipant();
 		residentRepository.delete(resident);
 	}

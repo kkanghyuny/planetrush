@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.core.exception;
+package com.planetrush.planetrush.core.jwt.exception;
 
 public class UnSupportedJwtException extends RuntimeException {
 

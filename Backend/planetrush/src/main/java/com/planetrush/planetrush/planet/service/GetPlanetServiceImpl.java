@@ -83,11 +83,11 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	@Override
 	public PlanetDetailDto getPlanetDetail(Long memberId, Long planetId) {
 		Planet planet = planetRepository.findById(planetId)
-			.orElseThrow(PlanetNotFoundException::new);
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + planetId));
 		boolean joined = false;
 		if (memberId != null) {
 			Member member = memberRepository.findById(memberId)
-				.orElseThrow(MemberNotFoundException::new);
+				.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 			joined = residentRepositoryCustom.isResidentOfPlanet(memberId, planetId);
 		}
 		return PlanetDetailDto.builder()
@@ -123,9 +123,9 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	@Override
 	public OngoingPlanetDto getOngoingPlanet(Long memberId, Long planetId) {
 		Member querriedMember = memberRepository.findById(memberId)
-			.orElseThrow(MemberNotFoundException::new);
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 		Planet planet = planetRepository.findById(planetId)
-			.orElseThrow(PlanetNotFoundException::new);
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + planetId));
 		List<Resident> residents = residentRepositoryCustom.getResidentsNotBanned(planetId);
 		return OngoingPlanetDto.builder()
 			.planetId(planet.getId())
@@ -199,7 +199,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	 */
 	@Override
 	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
-		Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 		return planetRepositoryCustom.getMyPlanetList(member.getId());
 	}
 
@@ -210,7 +211,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	 */
 	@Override
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
-		Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 		return planetRepositoryCustom.getMainPlanetList(member.getId());
 	}
 

@@ -16,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberExceptionHandler {
 
 	@ExceptionHandler(MemberNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(MemberNotFoundException ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(MemberNotFoundException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
 	}
 }
