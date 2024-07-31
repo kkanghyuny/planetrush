@@ -11,6 +11,7 @@ import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
 import com.planetrush.planetrush.core.aop.member.MemberContext;
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
+import com.planetrush.planetrush.infra.s3.S3ImageService;
 import com.planetrush.planetrush.planet.controller.response.SearchPlanetRes;
 import com.planetrush.planetrush.planet.service.GetPlanetService;
 import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
@@ -18,7 +19,6 @@ import com.planetrush.planetrush.planet.service.dto.GetMyPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
 import com.planetrush.planetrush.planet.service.dto.PlanetDetailDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
-import com.planetrush.planetrush.planet.service.image.S3ImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

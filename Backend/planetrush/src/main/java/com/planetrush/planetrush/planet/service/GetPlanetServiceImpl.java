@@ -13,7 +13,6 @@ import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
-import com.planetrush.planetrush.planet.domain.VerificationRecord;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom;
@@ -25,6 +24,7 @@ import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
 import com.planetrush.planetrush.planet.service.dto.PlanetDetailDto;
 import com.planetrush.planetrush.planet.service.dto.ResidentDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
+import com.planetrush.planetrush.verification.domain.VerificationRecord;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.planet.service.image;
+package com.planetrush.planetrush.infra.s3;
 
 import org.springframework.web.multipart.MultipartFile;
 

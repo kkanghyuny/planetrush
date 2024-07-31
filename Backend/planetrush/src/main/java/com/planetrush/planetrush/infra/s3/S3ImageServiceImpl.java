@@ -15,7 +15,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.planetrush.planetrush.infra.s3.dto.FileMetaInfo;
 import com.planetrush.planetrush.infra.s3.exception.S3Exception;
-import com.planetrush.planetrush.planet.service.image.S3ImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

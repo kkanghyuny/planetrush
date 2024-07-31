@@ -1,12 +1,12 @@
 package com.planetrush.planetrush.planet.repository.custom;
 
-import static com.planetrush.planetrush.planet.domain.QVerificationRecord.*;
+import static com.planetrush.planetrush.verification.domain.QVerificationRecord.*;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.planetrush.planetrush.planet.domain.VerificationRecord;
+import com.planetrush.planetrush.verification.domain.VerificationRecord;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

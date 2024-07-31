@@ -1,6 +1,7 @@
 package com.planetrush.planetrush.planet.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
@@ -8,9 +9,7 @@ import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
-import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
-import com.planetrush.planetrush.planet.exception.ResidentExitTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
@@ -23,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  *
  * 이 클래스는 RegisterResidentService 인터페이스를 구현하여 행성 입주 신청 기능을 제공합니다.
  */
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService {

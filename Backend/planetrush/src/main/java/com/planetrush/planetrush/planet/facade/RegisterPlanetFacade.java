@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.planetrush.planetrush.infra.s3.S3ImageService;
 import com.planetrush.planetrush.infra.s3.dto.FileMetaInfo;
 import com.planetrush.planetrush.planet.facade.dto.RegisterPlanetFacadeDto;
 import com.planetrush.planetrush.planet.service.RegisterPlanetService;
 import com.planetrush.planetrush.planet.service.dto.RegisterPlanetDto;
-import com.planetrush.planetrush.planet.service.image.S3ImageService;
 
 import lombok.RequiredArgsConstructor;
 
