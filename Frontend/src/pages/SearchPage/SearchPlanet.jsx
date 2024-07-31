@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 import ChallengeList from "../../components/Lists/ChallengeList";
 import "../../styles/SearchPlanet.css";
-import challenges from "./challengesData";
 import "../../App.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
@@ -82,9 +81,10 @@ function SearchBar() {
 
       // axios를 instance로 만들어서 가져오는 행위 (AxiosInstace.jsx에 존재)
       const response = await instance.get("/planets", { params });
+      const data = response.data.data
 
       // 주어진 조건에 맞는 DB 내 자료들의 집합이다.
-      const backendChallenges = response.data.data.planets || [];
+      const backendChallenges = data.planets || [];
 
       // 입력한 키워드나 선태한 카테고리에 따라 결과물을 필터링한다.
       let filteredBackendChallenges = backendChallenges.filter((challenge) => {
@@ -96,6 +96,20 @@ function SearchBar() {
           : true;
         return matchesQuery && matchesCategory;
       });
+
+      const today = new Date();
+      console.log(today.getMonth()) // 7월인데 6이 찍힌다.
+      
+      // filteredBackendChallenges = filteredBackendChallenges.filter(
+      //   (challenge) => {
+      //     const startDate = new Date(
+      //       challenge.startDate[0],
+      //       challenge.startDate[1] - 1, // 자바스크립트의 월은 0부터 시작하기 때문에 1을 빼주어야 한다.
+      //       challenge.startDate[2]
+      //     );
+      //     return startDate > today;
+      //   }
+      // );
 
       // 카테고리와 날짜는 앞에서 봤듯이 자료 형태의 수정이 필요하므로 수정 과정을 거친다.
       const formattedChallenges = filteredBackendChallenges.map(
@@ -134,63 +148,12 @@ function SearchBar() {
         setLastPlanetId(sortedChallenges[sortedChallenges.length - 1].planetId);
       }
 
-      setHasNext(response.data.data.hasNext);
+      setHasNext(data.hasNext);
     } catch (error) {
       // axios 안 잡힐 때 Dummy data 이용하라고 만들어둔 로직이다
-      useDummyChallenges(isLoadMore, query, selectedCategory);
+      console.log(error)
     }
   };
-
-  // 현재 더미데이터를 사용해서 가지고 있는 거고 위와 로직은 똑같아서 이하 생략
-  const useDummyChallenges = (isLoadMore, query, selectedCategory) => {
-    let filteredDummyChallenges = challenges.filter((challenge) => {
-      const matchesQuery = query
-        ? challenge.name.includes(query) || challenge.content.includes(query)
-        : true;
-      const matchesCategory = selectedCategory
-        ? challenge.category === selectedCategory
-        : true;
-      return matchesQuery && matchesCategory;
-    });
-
-    let sortedDummyChallenges = filteredDummyChallenges.sort(
-      (a, b) => b.planetId - a.planetId
-    );
-
-    const dummyChallengesToShow = sortedDummyChallenges.slice(
-      isLoadMore ? displayedChallenges.length : 0,
-      isLoadMore ? displayedChallenges.length + 10 : 10
-    );
-
-    const formattedChallenges = dummyChallengesToShow.map((challenge) => ({
-      ...challenge,
-      category: getCategoryLabel(challenge.category),
-      startDate: formatDate(challenge.startDate),
-      endDate: formatDate(challenge.endDate),
-    }));
-
-    if (isLoadMore) {
-      setDisplayedChallenges((prevChallenges) => [
-        ...prevChallenges,
-        ...formattedChallenges,
-      ]);
-    } else {
-      setFilteredChallenges(formattedChallenges);
-      setDisplayedChallenges(formattedChallenges);
-      setIsSearchPerformed(true);
-    }
-
-    if (formattedChallenges.length > 0) {
-      setLastPlanetId(
-        formattedChallenges[formattedChallenges.length - 1].planetId
-      );
-    }
-
-    setHasNext(
-      filteredDummyChallenges.length > displayedChallenges.length + 10
-    );
-  };
-  // 더미데이터 관련 내용 종료
 
   // 검색어 입력 시마다 상태가 query에 저장되는 형태로 작동
   const handleInputChange = (event) => {
