@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
 import "../../styles/Modal.css";
-import challenges from "../SearchPage/challengesData";
+import instance from "../AuthenticaitionPage/Axiosinstance";
 
 // 모집 중인 행성의 세부 정보를 표시하고 관리하는 메인 컴포넌트
 function PlanetDetailRecruiting() {
@@ -18,26 +19,109 @@ function PlanetDetailRecruiting() {
   const [isJoinFailModalOpen, setIsJoinFailModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [currentParticipants, setCurrentParticipants] = useState(null);
+  const [planet, setPlanet] = useState(null);
 
-  // navigate(`/planet/${id}`, { state: { displayedChallenges } });
-  // 리스트 컴포넌트에서 이거 받아온 거라고 생각하면 된다.
+  const accessToken = Cookies.get("access-token");
+  // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
   const { displayedChallenges } = location.state || {};
 
-  const planet = displayedChallenges?.find(
-    (challenge) => challenge.planetId === parseInt(id)
-  );
-
-  // 현재 참여 인원에 따라 modal을 띄울 경우를 나누었다.
   useEffect(() => {
-    if (planet && currentParticipants === null) {
-      setCurrentParticipants(planet.currentParticipants);
-    }
-  }, [planet, currentParticipants]);
+    const fetchPlanetDetail = async () => {
+      try {
+        console.log(location);
+        const response = await instance.get(`/planets/detail`, {
+          params: { "planet-id": id },
+        });
+        if (response.data.isSuccess) {
+          const planetData = response.data.data;
+          setPlanet(planetData); // planet 데이터 설정
+          setIsJoined(planetData.isJoined); // isJoined 설정
+          setCurrentParticipants(planetData.currentParticipants); // currentParticipants 설정
+          console.log(planetData);
+        }
+      } catch (error) {
+        console.error("Error fetching planet details:", error);
+      }
+    };
+    fetchPlanetDetail();
+  }, [id, accessToken]);
 
   // 행성이 없는 경우
   if (!planet) {
     return <div>행성을 찾을 수 없습니다.</div>;
   }
+
+  const handleJoin = async () => {
+    try {
+      console.log("Joining planet:", planet.planetId);
+      const responseJoin = await instance.post(
+        `/planets/${planet.planetId}`,
+        {} // 빈 객체를 요청 본문으로 보냄
+      );
+
+      if (responseJoin.status === 200) {
+        setIsJoined(true);
+        setIsJoinSuccessModalOpen(true);
+        setCurrentParticipants((prevParticipants) => prevParticipants + 1);
+      } else {
+        console.error(
+          "Failed to join planet, status code:",
+          responseJoin.status
+        );
+        setIsJoinFailModalOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        // 서버가 2xx 외의 상태 코드를 반환한 경우
+        console.error("Error response:", error.response);
+        console.error("Data:", error.response.data);
+        console.error("Status:", error.response.status);
+        console.error("Headers:", error.response.headers);
+      } else if (error.request) {
+        // 요청이 만들어졌지만 응답을 받지 못한 경우
+        console.error("Error request:", error.request);
+      } else {
+        // 요청을 설정하는 중에 문제가 발생한 경우
+        console.error("Error message:", error.message);
+      }
+      setIsJoinFailModalOpen(true);
+    }
+  };
+
+  const handleLeave = async () => {
+    try {
+      const responseLeave = await instance.delete(
+        `/planets/${planet.planetId}`,
+        {}
+      );
+      if (responseLeave.status === 200) {
+        setIsJoined(false);
+        setIsExitModalOpen(true);
+        setCurrentParticipants(currentParticipants - 1);
+      } else {
+        console.error(
+          "Failed to join planet, status code:",
+          responseLeave.status
+        );
+        setIsJoinFailModalOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        // 서버가 2xx 외의 상태 코드를 반환한 경우
+        console.error("Error response:", error.response);
+        console.error("Data:", error.response.data);
+        console.error("Status:", error.response.status);
+        console.error("Headers:", error.response.headers);
+      } else if (error.request) {
+        // 요청이 만들어졌지만 응답을 받지 못한 경우
+        console.error("Error request:", error.request);
+      } else {
+        // 요청을 설정하는 중에 문제가 발생한 경우
+        console.error("Error message:", error.message);
+      }
+      setIsJoinFailModalOpen(true);
+    }
+  };
 
   const handleButtonClick = () => {
     setImageUrl(planet.planetImg);
@@ -50,15 +134,13 @@ function PlanetDetailRecruiting() {
 
     // 2. 이미 가입한 경우 / 가입을 아직 안 한 경우
     if (isJoined) {
-      setIsJoined(false);
-      setIsExitModalOpen(true);
-      setCurrentParticipants(currentParticipants - 1);
+      handleLeave();
     } else {
-      setIsJoined(true);
-      setIsJoinSuccessModalOpen(true);
-      setCurrentParticipants(currentParticipants + 1);
+      handleJoin();
     }
   };
+
+  const isFull = currentParticipants === planet.maxParticipants;
 
   // displayChallenges를 기준으로 받아왔기 때문에 이미 기준에 의해 필터링된 데이터들이 객체로 묶여있을거다.
   // 그래서 주소를 planet/:id로 해도 prev / next 실행 시 객체 내 다음 배열로 넘어가게 할 수 있었던 것
@@ -85,7 +167,9 @@ function PlanetDetailRecruiting() {
     <>
       <div>
         <div>{planet.category}</div>
-        <div>{`${planet.startDate} ~ ${planet.endDate}`}</div>
+        <div>{`${planet.startDate.join("-")} ~ ${planet.endDate.join(
+          "-"
+        )}`}</div>
       </div>
       <div>{planet.content}</div>
       <div>{currentParticipants}</div>
@@ -97,9 +181,13 @@ function PlanetDetailRecruiting() {
         <button onClick={() => navigateToPlanet("next")}> → </button>
       </div>
       <div>
-        <button onClick={handleButtonClick}>
-          {isJoined ? "떠나기" : "가입하기"}
-        </button>
+        {isFull && !isJoined ? (
+          <button onClick={handleButtonClick}>가입 불가</button>
+        ) : (
+          <button onClick={handleButtonClick}>
+            {isJoined ? "떠나기" : "가입하기"}
+          </button>
+        )}
         <div>공유버튼</div>
       </div>
       {isJoinSuccessModalOpen && (
