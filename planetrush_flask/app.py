@@ -98,7 +98,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Enum 정의 (필요한 경우)
 # Enum 정의
 class CategoryEnum(enum.Enum):
     BEAUTY = 'BEAUTY'
@@ -132,26 +131,30 @@ class Planet(db.Model):
 
 
 class Keyword(db.Model):
-    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    keyword_name = db.Column(db.String(20), nullable=False)
-    category = db.Column(db.String(20), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    __tablename__ = 'keyword'  # 테이블 이름 설정
 
-    def __repr__(self):
-        return f'<Keyword {self.keyword_name}>'
+    # 컬럼 정의
+    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # 자동 증가 기본 키
+    keyword_name = db.Column(db.String(20), nullable=False)  # NOT NULL
+    category = db.Column(db.String(20), nullable=False)  # NOT NULL
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
 
-with app.app_context():
-    db.create_all()
 
-def add_keyword(mode_keyword, category):
-    new_keyword = Keyword(keyword_name=mode_keyword, category=category)
+
+def add_keyword(mode_keywords, category):
     try:
-        db.session.add(new_keyword)
+        # `mode_keywords의 각 항목에 객체 생성
+        for keyword in mode_keywords:
+            new_keyword = Keyword(keyword_name=keyword, category=category)
+            db.session.add(new_keyword)
+        # 모든 객체를 데이터베이스에 커밋
         db.session.commit()
-        return jsonify({'message': 'Keyword created successfully'}), 201
+
+        return jsonify({'message': 'Keywords created successfully'}), 201
     except Exception as e:
+        # 예외 발생 시 롤백
         db.session.rollback()
-        raise e  # 예외를 호출한 함수로 전달
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
