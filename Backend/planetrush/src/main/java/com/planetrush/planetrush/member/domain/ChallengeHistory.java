@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -68,4 +69,16 @@ public class ChallengeHistory {
 	 */
 	@Column(name = "progress", nullable = false)
 	private Double progress;
+
+	@Builder
+	public ChallengeHistory(Member member, String planetName, String planetImgUrl, String challengeContent,
+		Category category, Double progress) {
+		this.member = member;
+		this.planetName = planetName;
+		this.planetImgUrl = planetImgUrl;
+		this.challengeContent = challengeContent;
+		this.category = category;
+		this.progress = progress;
+	}
+
 }
