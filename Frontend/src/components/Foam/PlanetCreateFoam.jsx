@@ -51,7 +51,7 @@ const PlanetCreateForm = () => {
     }));
 
     //이름 설정시
-    if (key === "name" && value.length > 10) {
+    if (name === "name" && value.length > 10) {
       setErrors((prevState) => ({
         ...prevState,
         key: "10자 이하로 적어주세요",
@@ -114,7 +114,7 @@ const PlanetCreateForm = () => {
     const end = new Date(endDate);
     const today = new Date();
 
-    if (start < today || end < today) {
+    if (start <= today || end <= today) {
       setErrors((prevState) => ({
         ...prevState,
         date: "시작일과 종료일은 현재 날짜 이후여야 합니다.",
@@ -146,7 +146,7 @@ const PlanetCreateForm = () => {
   };
 
   const handleDateChange = (e) => {
-    const { key, value } = e.target;
+    const { name, value } = e.target;
 
     setPlanetInfo((prevState) => ({
       ...prevState,
@@ -165,8 +165,29 @@ const PlanetCreateForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!planetInfo.missionFile) {
+    // 입력 값 유효성 검사
+    if (planetInfo.name.trim() === "") {
+      alert("행성 이름을 입력해주세요.");
+      return;
+    }
+
+    if (planetInfo.content.trim() === "") {
+      alert("챌린지명을 입력해주세요.");
+      return;
+    }
+
+    if (!planetInfo.startDate || !planetInfo.endDate) {
+      alert("기간을 설정해주세요.");
+      return;
+    }
+
+    if (planetInfo.missionFile === null) {
       alert("인증 사진을 업로드해주세요.");
+      return;
+    }
+
+    if (errors.date) {
+      alert("기간 설정을 확인해주세요.");
       return;
     }
 
@@ -175,7 +196,26 @@ const PlanetCreateForm = () => {
 
   //최종제출
   const submitResult = () => {
-    navigate("/result", { state: { planetInfo } });
+    navigate("/result", {
+      state: {
+        planetInfo: {
+          ...planetInfo,
+          planetImgUrl: planetInfo.planetImg
+            ? URL.createObjectURL(planetInfo.planetImg)
+            : planetInfo.planetImgUrl,
+        },
+      },
+    });
+  };
+
+  // 현재 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
+  const getTodayDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd}`;
   };
 
   return (
@@ -269,6 +309,7 @@ const PlanetCreateForm = () => {
               name="startDate"
               value={planetInfo.startDate}
               onChange={handleDateChange}
+              min={getTodayDate()}
             />
             부터
             <input
@@ -276,6 +317,7 @@ const PlanetCreateForm = () => {
               name="endDate"
               value={planetInfo.endDate}
               onChange={handleDateChange}
+              min={getTodayDate()}
             />
             까지
           </div>
@@ -330,7 +372,7 @@ const PlanetCreateForm = () => {
             />
           )}
         </div>
-        <button type="submit" className="submit-button" onClick={submitResult}>
+        <button type="submit" className="submit-button">
           창조하기
         </button>
       </form>

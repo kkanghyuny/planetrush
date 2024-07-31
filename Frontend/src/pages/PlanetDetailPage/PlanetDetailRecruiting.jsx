@@ -41,7 +41,7 @@ const PlanetDetailRecruiting = () => {
         if (response.data.isSuccess) {
           const data = response.data.data;
 
-          setplanetDataPlanet(data); // planet 데이터 설정
+          setPlanet(data); // planet 데이터 설정
           setIsJoined(data.isJoined); // isJoined 설정
           setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
           console.log(data);

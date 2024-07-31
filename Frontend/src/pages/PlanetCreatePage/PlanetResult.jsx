@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import instance from "../AuthenticaitionPage/Axiosinstance";
-import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccess";
+import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccessModal";
 
 import "../../styles/PlanetResult.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
@@ -45,7 +45,7 @@ const PlanetResult = () => {
       }
 
       //커스텀행성이면 넣어줘
-      if (planetInfo.custumImg) {
+      if (planetInfo.planetImg) {
         formdata.append("customPlanetImg", planetInfo.planetImg);
       }
 
@@ -78,10 +78,14 @@ const PlanetResult = () => {
       />
       <h1>행성 결과</h1>
       <div className="planet-details">
-        {planetInfo.planetImg && (
+        {(planetInfo.planetImg || planetInfo.planetImgUrl) && (
           <div className="image-container">
             <img
-              src={planetInfo.planetImgUrl}
+              src={
+                planetInfo.planetImg
+                  ? URL.createObjectURL(planetInfo.planetImg)
+                  : planetInfo.planetImgUrl
+              }
               alt="행성 이미지"
               className="planet-image"
             />
@@ -105,7 +109,7 @@ const PlanetResult = () => {
       <p>정말 새로운 행성의 개척자가 맞으신가요?</p>
       <button onClick={() => handleSumbit()}>맞습니다</button>
       {isSuccess === true && (
-        <CreatePlanetSuccess imageUrl={planetInfo.planetImg} />
+        <CreatePlanetSuccess imageUrl={planetInfo.planetImgUrl} />
       )}
       {isSuccess === false && (
         <CreatePlanetFail

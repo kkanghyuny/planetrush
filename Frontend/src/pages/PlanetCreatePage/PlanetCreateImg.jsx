@@ -112,7 +112,7 @@ const PlanetCreateImg = () => {
               커스텀
             </button>
           </div>
-          <ChoosePlanet onSelectImage={handleImageSelect} />
+          <ChoosePlanet selectImage={handleImageSelect} />
         </div>
       ) : (
         <div>
