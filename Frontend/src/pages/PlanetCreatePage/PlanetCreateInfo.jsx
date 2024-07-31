@@ -1,14 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import PlanetCreateFoam from "../../components/Foam/PlanetCreateFoam";
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 function PlanteCreateInfo() {
   const navigate = useNavigate();
 
   return (
     <>
-      <button onClick={() => navigate(-1)} className="back-button">
-        뒤로가기버튼
-      </button>
+      <BiSolidLeftArrowCircle
+        onClick={() => navigate(-1)}
+        className="back-button"
+      />
       <PlanetCreateFoam />
     </>
   );

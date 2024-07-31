@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Canvas from "../../components/Canvas/Canvas";
 import ChoosePlanet from "../../components/Canvas/ChoosePlanet";
+
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
+
 import "../../styles/PlanetCreateImg.css"; // CSS 파일 import
 
 function PlanetCreateImg() {
@@ -16,11 +19,13 @@ function PlanetCreateImg() {
 
   const [showAlert, setShowAlert] = useState(false); // 알림 상태 추가
   const [canvasData, setCanvasData] = useState(null); // 캔버스 데이터를 저장할 상태 추가
+  const [canvasFile, setCanvasFile] = useState(null); // 캔버스 이미지 파일 저장할 상태 추가
 
   const getNewPlanetInfo = () => {
+    //전달할 행성이미지
     const planetImg = {
-      imageToSend: null,
-      defaultImgId: 1,
+      custumImg: null,
+      planetImgUrl: selectedImage ? selectedImage.imgUrl : null,
     };
 
     if (view === "custom" && !canvasData) {
@@ -29,15 +34,17 @@ function PlanetCreateImg() {
     }
 
     if (view === "custom") {
-      planetImg.imageToSend = canvasData;
+      if (!canvasData) {
+        setShowAlert(true);
+        return;
+      }
+      planetImg.custumImg = canvasData; // canvas에서 만든 이미지 URL 사용
     } else {
-      planetImg.imageToSend = selectedImage.imgUrl;
-      planetImg.defaultImgId = selectedImage.imgId;
-    }
-
-    if (!planetImg.imageToSend) {
-      setShowAlert(true);
-      return;
+      if (!selectedImage) {
+        setShowAlert(true);
+        return;
+      }
+      planetImg.planetImgUrl = selectedImage.imgUrl; // 선택된 이미지의 URL 사용
     }
 
     navigate("/create-foam", { state: { savedImage: planetImg } });
@@ -54,14 +61,13 @@ function PlanetCreateImg() {
   };
 
   //고르기에서 이미지 선택시 선택된 이미지 뜨기
-  //고르기에서 이미지 선택시 선택된 이미지 뜨기
   const handleImageSelect = (image) => {
-    console.log("Selected image:", image); // 디버깅을 위한 로그 추가
     setSelectedImage(image);
   };
 
-  const handleSaveImage = (image) => {
-    setCanvasData(image); // 캔버스 데이터 저장
+  const handleSaveImage = (url, file) => {
+    setCanvasData(url); // 캔버스 데이터 URL 저장
+    setCanvasFile(file); // 캔버스 데이터 파일 저장
   };
 
   //빈칸일때 알림
@@ -72,11 +78,24 @@ function PlanetCreateImg() {
     }
   }, [showAlert]);
 
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
   return (
     <div className="container">
-      <button onClick={() => navigate(-1)} className="back-button">
-        뒤로가기
-      </button>
+      <BiSolidLeftArrowCircle
+        onClick={() => navigate(-1)}
+        className="back-button"
+      />
       <h3>행성을 생성해주세요</h3>
       <button onClick={getNewPlanetInfo} className="create-button">
         생성하기
