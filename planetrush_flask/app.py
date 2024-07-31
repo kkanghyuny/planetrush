@@ -80,15 +80,16 @@ def get_mode_keywords(texts):
     mecab = MeCab()
     for text in texts:
         nouns+=list(set(mecab.nouns(text)))
-    print("nouns",nouns)
+
 
     clean_nouns = remove_stop_words(nouns)
 
     # 단어 빈도 계산
     word_counts = Counter(clean_nouns)
-
+    print("word_counts", word_counts)
     # 최빈값 추출
     mode_keyword = [item[0] for item in word_counts.most_common(7)]
+    print(mode_keyword)
     return mode_keyword
 
 
