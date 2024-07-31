@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask, jsonify, request
 import cv2
 from urllib.request import urlopen
@@ -44,7 +43,7 @@ def get_img_url():
             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             hist = cv2.calcHist([hsv], [0, 1], None, [180, 256], [0, 180, 0, 256])
             cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
-            hists.append(hist.astype(np.float32))  # float64 -> float32 변환
+            hists.append(hist.astype(np.float32))
 
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
@@ -62,10 +61,10 @@ def get_img_url():
 
     verified = bool(score >= 35)  # boolean 값으로 변환
 
-    # 0~100 점수, bool(true, false)
+    # 점수, 인증 결과 반환
     return jsonify({
-        "similarity_score": score,  # float32 -> float 변환
-        "verified": verified  # bool 값을 JSON 직렬화
+        "similarity_score": score,
+        "verified": verified
     })
 
 # 인기 키워드 조회
@@ -86,10 +85,8 @@ def get_mode_keywords(texts):
 
     # 단어 빈도 계산
     word_counts = Counter(clean_nouns)
-    print("word_counts", word_counts)
     # 최빈값 추출
     mode_keyword = [item[0] for item in word_counts.most_common(7)]
-    print(mode_keyword)
     return mode_keyword
 
 
@@ -139,22 +136,19 @@ class Keyword(db.Model):
     category = db.Column(db.String(20), nullable=False)  # NOT NULL
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
 
-
-
 def add_keyword(mode_keywords, category):
     try:
         # `mode_keywords의 각 항목에 객체 생성
         for keyword in mode_keywords:
             new_keyword = Keyword(keyword_name=keyword, category=category)
             db.session.add(new_keyword)
-        # 모든 객체를 데이터베이스에 커밋
         db.session.commit()
 
         return jsonify({'message': 'Keywords created successfully'}), 201
     except Exception as e:
         # 예외 발생 시 롤백
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'message': 'There was an issue creating keywords'}), 500
 
 @app.route('/api/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
@@ -173,7 +167,7 @@ def get_challenge_content():
             result = add_keyword(mode_keyword, category)
             return result  # add_keyword가 반환하는 응답을 직접 반환
         except Exception as e:
-            return jsonify({'message': 'There was an issue adding the keyword', 'error': str(e)}), 500
+            return jsonify({'message': 'There was an issue adding the keyword'}), 500
     else:
         return jsonify({'message': 'No planets found for this category'}), 404
 
