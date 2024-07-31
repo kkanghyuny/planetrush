@@ -27,9 +27,9 @@ public class VerificationServiceImpl implements VerificationService {
 	@Override
 	public void saveVerificationResult(VerificationResultDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId())
-			.orElseThrow(MemberNotFoundException::new);
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
 		Planet planet = planetRepository.findById(dto.getPlanetId())
-			.orElseThrow(PlanetNotFoundException::new);
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
 		verificationRecordRepository.save(VerificationRecord.builder()
 			.verified(dto.isVerified())
 			.planet(planet)

@@ -38,7 +38,7 @@ public class RegisterPlanetServiceImpl implements RegisterPlanetService {
 			.standardVerificationImg(dto.getStandardVerificationImgUrl())
 			.build());
 		Member member = memberRepository.findById(dto.getMemberId())
-			.orElseThrow(MemberNotFoundException::new);
+			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
 		residentRepository.save(Resident.isCreator(member, planet));
 	}
 

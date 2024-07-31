@@ -15,11 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class S3imageExceptionHandler {
 
-	// TODO: IMAGE 에러처리 더 자세하게 해야됨 (ResponseCode 임시값)
 	@ExceptionHandler(S3Exception.class)
-	public ResponseEntity<BaseResponse<Object>> handleS3ExceptionException(
-		S3Exception ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handleS3ExceptionException(S3Exception e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.FAIL_TO_UPLOAD_FILE));
 	}

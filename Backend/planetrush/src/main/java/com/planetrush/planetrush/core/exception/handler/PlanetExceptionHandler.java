@@ -17,15 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 public class PlanetExceptionHandler {
 
 	@ExceptionHandler(PlanetNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handlePlanetNotFoundException(PlanetNotFoundException ex) {
-		log.error(ex.getMessage());
+	public ResponseEntity<BaseResponse<Object>> handlePlanetNotFoundException(PlanetNotFoundException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.PLANET_NOT_FOUND));
 	}
 
 	@ExceptionHandler(NegativeParticipantCountException.class)
 	public ResponseEntity<BaseResponse<Object>> handleResidentLimitExceededException(
-		NegativeParticipantCountException ex) {
-		log.error(ex.getMessage());
+		NegativeParticipantCountException e) {
+		log.info(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.PARTICIPANTS_OVERFLOW));
 	}
