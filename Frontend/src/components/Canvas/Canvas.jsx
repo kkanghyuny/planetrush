@@ -16,7 +16,6 @@ const Canvas = ({ onSaveImage }) => {
 
   //실행취소 구현하기 위한 변수
   const [history, setHistory] = useState([]);
-  // const [currentGroup, setCurrentGroup] = useState(null);
 
   //Pixel 브러쉬 커스텀
   class PixelBrush extends fabric.BaseBrush {
@@ -154,11 +153,23 @@ const Canvas = ({ onSaveImage }) => {
           format: "png",
           quality: 1,
         });
-        onSaveImage(dataURL);
-      } else {
-        onSaveImage(null);
+        const file = dataURLtoFile(dataURL, "custom-planet.png");
+        onSaveImage(file);
       }
     }
+  };
+
+  // 파일로 바꾸는 메서드
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   };
 
   //실행취소

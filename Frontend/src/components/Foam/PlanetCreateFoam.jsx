@@ -9,6 +9,8 @@ function PlanetCreateForm() {
   const location = useLocation();
   const { savedImage } = location.state || {};
 
+  console.log(savedImage);
+
   //행성 정보 받을 위치
   const [planetInfo, setPlanetInfo] = useState({
     name: "",
@@ -18,10 +20,10 @@ function PlanetCreateForm() {
     endDate: "",
     maxParticipants: 2,
     authCond: "",
-    defaultImgId: savedImage ? savedImage.defaultImgId : 1,
     missionFile: null,
     missionUrl: "",
-    planetImg: savedImage ? savedImage.imageToSend : null,
+    planetImgUrl: savedImage ? savedImage.planetImgUrl : "",
+    planetImg: savedImage ? savedImage.custumImg : null,
   });
 
   //에러출력
@@ -35,8 +37,8 @@ function PlanetCreateForm() {
     if (savedImage) {
       setPlanetInfo((prevState) => ({
         ...prevState,
-        defaultImgId: savedImage.defaultImgId || 1,
-        planetImg: savedImage.imageToSend || null,
+        planetImgUrl: savedImage.planetImgUrl || "",
+        planetImg: savedImage.custumImg || null,
       }));
     }
   }, [savedImage]);

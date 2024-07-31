@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../../styles/PlanetResult.css";
+
 import instance from "../AuthenticaitionPage/Axiosinstance";
 import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccess";
+
+import "../../styles/PlanetResult.css";
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 function PlanetResult() {
   const navigate = useNavigate();
@@ -12,12 +15,12 @@ function PlanetResult() {
   //모달용 상태
   const [isSuccess, setIsSuccess] = useState(null);
 
+  console.log(planetInfo);
+
   const handleSumbit = async () => {
     // JSON 데이터 전송
     try {
       const formdata = new FormData();
-
-      console.log(planetInfo);
 
       const req = {
         name: planetInfo.name,
@@ -27,7 +30,7 @@ function PlanetResult() {
         endDate: planetInfo.endDate,
         maxParticipants: planetInfo.maxParticipants,
         authCond: planetInfo.authCond,
-        defaultImgId: planetInfo.defaultImgId,
+        planetImgUrl: planetInfo.planetImgUrl,
       };
 
       formdata.append(
@@ -39,10 +42,12 @@ function PlanetResult() {
 
       if (planetInfo.missionFile) {
         //미션인증사진
-        formdata.append("verificationImage", planetInfo.missionFile);
+        formdata.append("stdVerificationImg", planetInfo.missionFile);
       }
-      if (planetInfo.planetImg) {
-        formdata.append("planetImage", planetInfo.planetImg);
+
+      //커스텀행성이면 넣어줘
+      if (planetInfo.custumImg) {
+        formdata.append("customPlanetImg", planetInfo.planetImg);
       }
 
       const response = await instance.post(`/planets`, formdata, {
@@ -68,15 +73,16 @@ function PlanetResult() {
 
   return (
     <div className="planet-result-container">
-      <button onClick={() => navigate(-1)} className="back-button">
-        뒤로가기버튼
-      </button>
+      <BiSolidLeftArrowCircle
+        onClick={() => navigate(-1)}
+        className="back-button"
+      />
       <h1>행성 결과</h1>
       <div className="planet-details">
         {planetInfo.planetImg && (
           <div className="image-container">
             <img
-              src={planetInfo.planetImg}
+              src={planetInfo.planetImgUrl}
               alt="행성 이미지"
               className="planet-image"
             />
@@ -99,9 +105,15 @@ function PlanetResult() {
       <p>생성 후 수정이 불가능합니다</p>
       <p>정말 새로운 행성의 개척자가 맞으신가요?</p>
       <button onClick={() => handleSumbit()}>맞습니다</button>
-      {isSuccess === true && <CreatePlanetSuccess />}
+      {isSuccess === true && (
+        <CreatePlanetSuccess imageUrl={planetInfo.planetImg} />
+      )}
       {isSuccess === false && (
-        <CreatePlanetFail onClose={() => setIsSuccess(null)} />
+        <CreatePlanetFail
+          imageUrl={planetInfo.planetImgUrl}
+          planetName={planetInfo.name}
+          onClose={() => setIsSuccess(null)}
+        />
       )}
     </div>
   );
