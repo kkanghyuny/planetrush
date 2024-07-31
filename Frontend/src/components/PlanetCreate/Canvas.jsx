@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
+
 import * as fabric from "fabric";
+
 import "../../styles/Canvas.css";
 
 //createImg에서 saveImage를 props 받아옴
@@ -107,6 +109,7 @@ const Canvas = ({ onSaveImage }) => {
         });
 
         const pixelBrush = new PixelBrush(fabricCanvas);
+
         pixelBrush.color = drawingColor;
         pixelBrush.width = pixelSize;
 
@@ -125,19 +128,20 @@ const Canvas = ({ onSaveImage }) => {
     };
   }, []);
 
-  // 새로운 useEffect: history가 변경될 때마다 캔버스 업데이트
+  //history가 변경될 때마다 캔버스 업데이트
   useEffect(() => {
     if (canvas) {
       canvas.clear();
       history.forEach((group) => {
         canvas.add(group);
       });
+
       canvas.renderAll();
       updateCanvasImage();
     }
   }, [history]);
 
-  // 새로운 useEffect: drawingColor와 pixelSize가 변경될 때마다 브러시 업데이트
+  //drawingColor와 pixelSize가 변경될 때마다 브러시 업데이트
   useEffect(() => {
     if (canvas && canvas.freeDrawingBrush) {
       canvas.freeDrawingBrush.color = drawingColor;
@@ -153,6 +157,7 @@ const Canvas = ({ onSaveImage }) => {
           format: "png",
           quality: 1,
         });
+
         const file = dataURLtoFile(dataURL, "custom-planet.png");
         onSaveImage(file);
       }
@@ -166,9 +171,11 @@ const Canvas = ({ onSaveImage }) => {
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
+
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
+
     return new File([u8arr], filename, { type: mime });
   };
 
@@ -182,13 +189,11 @@ const Canvas = ({ onSaveImage }) => {
   //updateCanvasImage 확인하는 메서드
   useEffect(() => {
     if (canvas) {
-      // canvas.on("path:created", saveCanvasState);
       canvas.on("object:added", updateCanvasImage);
       canvas.on("object:removed", updateCanvasImage);
       canvas.on("object:modified", updateCanvasImage);
 
       return () => {
-        // canvas.off("path:created", saveCanvasState);
         canvas.off("object:added", updateCanvasImage);
         canvas.off("object:removed", updateCanvasImage);
         canvas.off("object:modified", updateCanvasImage);

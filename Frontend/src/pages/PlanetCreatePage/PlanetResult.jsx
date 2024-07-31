@@ -7,22 +7,21 @@ import CreatePlanetSuccess from "../../components/Modals/CreatePlanetSuccess";
 import "../../styles/PlanetResult.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
-function PlanetResult() {
+const PlanetResult = () => {
   const navigate = useNavigate();
-  const location = useLocation(); //url 정보 가져오는 함수
-  const { planetInfo } = location.state || {}; //받아온 정보
+  const location = useLocation();
+  const { planetInfo } = location.state || {};
 
-  //모달용 상태
   const [isSuccess, setIsSuccess] = useState(null);
 
   console.log(planetInfo);
 
+  //생성하기 axios
   const handleSumbit = async () => {
-    // JSON 데이터 전송
     try {
       const formdata = new FormData();
 
-      const req = {
+      const request = {
         name: planetInfo.name,
         content: planetInfo.content,
         category: planetInfo.category,
@@ -35,13 +34,13 @@ function PlanetResult() {
 
       formdata.append(
         "req",
-        new Blob([JSON.stringify(req)], {
+        new Blob([JSON.stringify(request)], {
           type: "application/json",
         })
       );
 
+      //미션인증사진
       if (planetInfo.missionFile) {
-        //미션인증사진
         formdata.append("stdVerificationImg", planetInfo.missionFile);
       }
 
@@ -117,6 +116,6 @@ function PlanetResult() {
       )}
     </div>
   );
-}
+};
 
 export default PlanetResult;

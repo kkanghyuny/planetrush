@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import { BiSearchAlt } from "react-icons/bi";
 import "../../App.css";
 import "../../styles/Main.css";
+
 import defaultPlanet from "../../assets/DefaultPlanet.png";
 import fire from "../../assets/fire.png";
 import ice from "../../assets/ice.png";
@@ -35,12 +37,9 @@ const gridPositions = [
   { top: "66.66%", left: "66.66%" },
 ];
 
-// 메인 페이지
-function MainPage() {
-  // 행성 정보 저장
+const MainPage = () => {
   const [planets, setPlanets] = useState([]);
 
-  // 처음으로 마운트될 때 planetData를 넣어준다.
   useEffect(() => {
     setPlanets(planetData);
   }, []);
@@ -53,6 +52,7 @@ function MainPage() {
     const baseSize = 140 - (totalPlanets - 1) * 10;
     const sizeAdjustment = (9 - index) * 5;
     const size = baseSize + sizeAdjustment;
+
     return {
       width: `${size}px`,
       height: `${size}px`,
@@ -67,6 +67,7 @@ function MainPage() {
     const maxOffset = 33.33 - (size / 600) * 100;
     const topOffset = Math.random() * maxOffset;
     const leftOffset = Math.random() * maxOffset;
+
     return { topOffset, leftOffset };
   };
 
@@ -83,17 +84,20 @@ function MainPage() {
   // index가 정해지면 usedPosition으로 push 한다.
   const getRandomPosition = (usedPositions) => {
     let index;
+
     do {
       index = Math.floor(Math.random() * gridPositions.length);
     } while (usedPositions.includes(index));
     usedPositions.push(index);
+
     return gridPositions[index];
   };
 
   // duration과 delay를 통해 각자 랜덤한 시간에 floating이 시작해서 랜덤하게 돌아오는 구간을 반복한다.
   const getRandomAnimationTiming = () => {
-    const duration = (Math.random() * 3 + 3).toFixed(2); // 3초에서 6초 사이의 랜덤한 시간
-    const delay = (Math.random() * 2).toFixed(2); // 0초에서 2초 사이의 랜덤한 시간
+    const duration = (Math.random() * 3 + 3).toFixed(2);
+    const delay = (Math.random() * 2).toFixed(2);
+
     return { duration, delay };
   };
 
@@ -110,7 +114,6 @@ function MainPage() {
           <BiSearchAlt />
         </Link>
       </div>
-      {/* 행성이 없는 처음 상황인 경우 */}
       {planets.length === 0 ? (
         <div className="rocket-center-container">
           <Link to="/search">
@@ -158,6 +161,6 @@ function MainPage() {
       )}
     </div>
   );
-}
+};
 
 export default MainPage;

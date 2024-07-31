@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
-import "../../styles/ChoosePlanet.css";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 
-function ChoosePlanet({ onSelectImage }) {
-  const [imgList, setImgList] = useState([]);
+import "../../styles/ChoosePlanet.css";
 
-  const [initialLoad, setInitialLoad] = useState(true); // 이미지가 처음 로드되었는지 여부를 추적하는 상태 추가
+const ChoosePlanet = ({ selectImage }) => {
+  const [imgList, setImgList] = useState([]);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   //마운트 시 불러올 데이터
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const response = await instance.get("/planets/images");
+        const data = response.data;
+
         if (response.status === 200) {
-          const data = response.data;
           setImgList(data.data);
 
           //default
           if (initialLoad && data.data.length > 0) {
-            onSelectImage(data.data[0]); // Select the first image by default
-            setInitialLoad(false); // 첫 로드 이후에는 false로 변경
+            selectImage(data.data[0]);
+            setInitialLoad(false);
           }
         }
       } catch (error) {
@@ -28,7 +29,7 @@ function ChoosePlanet({ onSelectImage }) {
     };
 
     fetchImages();
-  }, [initialLoad, onSelectImage]);
+  }, [initialLoad, selectImage]);
 
   return (
     <div className="grid-container">
@@ -38,11 +39,11 @@ function ChoosePlanet({ onSelectImage }) {
           src={img.imgUrl}
           alt={`행성 ${index + 1}`}
           className="grid-Item"
-          onClick={() => onSelectImage(img)}
+          onClick={() => selectImage(img)}
         />
       ))}
     </div>
   );
-}
+};
 
 export default ChoosePlanet;

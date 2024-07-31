@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import ChallengeList from "../../components/Lists/ChallengeList"; // ChallengeList 컴포넌트 임포트
-import challenges from "../SearchPage/challengesData"; // challenges 데이터 임포트
-import LogoutButton from "../../components/Button/LogoutButton"; // 로그아웃 버튼 컴포넌트 임포트
-import useUserStore from "../../store/userStore";
-import { BiSolidPencil } from "react-icons/bi";
-import NicknameEditModal from "../../components/Modals/EditNicknameModal"; // 닉네임 수정 모달 임포트
-import Cookies from "js-cookie";
-import axios from "axios";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
-function MyPage() {
+import Cookies from "js-cookie";
+
+import useUserStore from "../../store/userStore";
+import LogoutButton from "../../components/Button/LogoutButton"; // 로그아웃 버튼 컴포넌트 임포트
+import NicknameEditModal from "../../components/Modals/EditNicknameModal"; // 닉네임 수정 모달 임포트
+
+import { BiSolidPencil } from "react-icons/bi";
+
+const MyPage = () => {
   const { nickname, setNickname } = useUserStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const accessToken = Cookies.get("access-token");
@@ -24,24 +24,20 @@ function MyPage() {
 
   const handleSaveNickname = async (newNickname) => {
     try {
-      console.log(accessToken);
-      Cookies.set("nickname", newNickname, { secure: true, sameSite: 'Lax' });
+      Cookies.set("nickname", newNickname, { secure: true, sameSite: "Lax" });
+
       // 백엔드로 닉네임 업데이트
-      await instance.patch(
-        `/members/profile`, null, 
-        {
-          params: {
-            'nickname': newNickname, // 쿼리 파라미터로 닉네임 전송
-          },
-          headers: {
-            'Authorization': `${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // 닉네임이 성공적으로 업데이트되면 상태 업데이트
+      await instance.patch(`/members/profile`, null, {
+        params: {
+          nickname: newNickname,
+        },
+        headers: {
+          Authorization: `${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       setNickname(newNickname);
-      console.log("success: " + newNickname);
     } catch (error) {
       console.error("Error updating nickname:", error);
     }
@@ -66,6 +62,6 @@ function MyPage() {
       />
     </>
   );
-}
+};
 
 export default MyPage;

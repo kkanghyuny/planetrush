@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
+
 import PlanetCreateFoam from "../../components/Foam/PlanetCreateFoam";
+
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
-function PlanteCreateInfo() {
+const PlanteCreateInfo = () => {
   const navigate = useNavigate();
 
   return (
@@ -14,6 +16,6 @@ function PlanteCreateInfo() {
       <PlanetCreateFoam />
     </>
   );
-}
+};
 
 export default PlanteCreateInfo;

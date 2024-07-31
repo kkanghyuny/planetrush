@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Canvas from "../../components/Canvas/Canvas";
-import ChoosePlanet from "../../components/Canvas/ChoosePlanet";
+
+import Canvas from "../../components/PlanetCreate/Canvas";
+import ChoosePlanet from "../../components/PlanetCreate/ChoosePlanet";
 
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
+import "../../styles/PlanetCreateImg.css";
 
-import "../../styles/PlanetCreateImg.css"; // CSS 파일 import
-
-function PlanetCreateImg() {
+const PlanetCreateImg = () => {
   const navigate = useNavigate();
   const [view, setView] = useState("default");
 
@@ -17,12 +17,12 @@ function PlanetCreateImg() {
   //이미지를 props해서 받아오기 위함
   const [canvasRef, setCanvasRef] = useState(null);
 
-  const [showAlert, setShowAlert] = useState(false); // 알림 상태 추가
-  const [canvasData, setCanvasData] = useState(null); // 캔버스 데이터를 저장할 상태 추가
-  const [canvasFile, setCanvasFile] = useState(null); // 캔버스 이미지 파일 저장할 상태 추가
+  //캔버스 상태변화에 따른 알림, 저장
+  const [showAlert, setShowAlert] = useState(false);
+  const [canvasData, setCanvasData] = useState(null);
+  const [canvasFile, setCanvasFile] = useState(null);
 
   const getNewPlanetInfo = () => {
-    //전달할 행성이미지
     const planetImg = {
       custumImg: null,
       planetImgUrl: selectedImage ? selectedImage.imgUrl : null,
@@ -38,12 +38,14 @@ function PlanetCreateImg() {
         setShowAlert(true);
         return;
       }
+
       planetImg.custumImg = canvasData; // canvas에서 만든 이미지 URL 사용
     } else {
       if (!selectedImage) {
         setShowAlert(true);
         return;
       }
+
       planetImg.planetImgUrl = selectedImage.imgUrl; // 선택된 이미지의 URL 사용
     }
 
@@ -65,30 +67,20 @@ function PlanetCreateImg() {
     setSelectedImage(image);
   };
 
+  //커스텀 url, file 저장
   const handleSaveImage = (url, file) => {
-    setCanvasData(url); // 캔버스 데이터 URL 저장
-    setCanvasFile(file); // 캔버스 데이터 파일 저장
+    setCanvasData(url);
+    setCanvasFile(file);
   };
 
   //빈칸일때 알림
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => setShowAlert(false), 3000);
+
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
-
-  const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  };
 
   return (
     <div className="container">
@@ -137,6 +129,6 @@ function PlanetCreateImg() {
       )}
     </div>
   );
-}
+};
 
 export default PlanetCreateImg;

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 // 가입 성공한 경우 모달
-function JoinSuccessModal({ setIsJoinSuccessModalOpen, imageUrl }) {
+const JoinSuccessModal = ({ setIsJoinSuccessModalOpen, imageUrl }) => {
   const handleCloseModal = () => {
     setIsJoinSuccessModalOpen(false);
   };
@@ -15,6 +15,6 @@ function JoinSuccessModal({ setIsJoinSuccessModalOpen, imageUrl }) {
       </div>
     </div>
   );
-}
+};
 
 export default JoinSuccessModal;

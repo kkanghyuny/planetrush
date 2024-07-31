@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import "../../styles/PlanetCreateForm.css";
 
-function PlanetCreateForm() {
+const PlanetCreateForm = () => {
   const navigate = useNavigate();
 
   //이미지 받아옴
   const location = useLocation();
   const { savedImage } = location.state || {};
-
-  console.log(savedImage);
 
   //행성 정보 받을 위치
   const [planetInfo, setPlanetInfo] = useState({
@@ -44,33 +43,33 @@ function PlanetCreateForm() {
   }, [savedImage]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { key, value } = e.target;
 
-    //이름 설정시
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [name]: value,
+      [key]: value,
     }));
 
-    if (name === "name" && value.length > 10) {
+    //이름 설정시
+    if (key === "name" && value.length > 10) {
       setErrors((prevState) => ({
         ...prevState,
-        name: "10자 이하로 적어주세요",
+        key: "10자 이하로 적어주세요",
       }));
-    } else if (name === "name") {
+    } else if (key === "name") {
       setErrors((prevState) => ({
         ...prevState,
-        name: "",
+        key: "",
       }));
     }
 
     //챌린지명 설정시
-    if (name === "content" && value.length > 20) {
+    if (key === "content" && value.length > 20) {
       setErrors((prevState) => ({
         ...prevState,
         content: "20자 이하로 적어주세요",
       }));
-    } else if (name === "content") {
+    } else if (key === "content") {
       setErrors((prevState) => ({
         ...prevState,
         content: "",
@@ -85,13 +84,14 @@ function PlanetCreateForm() {
       maxParticipants: Math.min(
         Math.max(prevState.maxParticipants + increment, 2),
         10
-      ), //2와 10 사이로만 설정가능
+      ),
     }));
   };
 
   //인증 사진 파일 업로드
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
       const missionUrl = URL.createObjectURL(file);
 
@@ -103,6 +103,7 @@ function PlanetCreateForm() {
     }
   };
 
+  //인증 업로드 누르기 - 파일 업로드 창 띄우기
   const handleUploadButtonClick = () => {
     document.getElementById("fileInput").click();
   };
@@ -112,50 +113,50 @@ function PlanetCreateForm() {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const today = new Date();
-    const minDate = new Date();
-    const maxDate = new Date();
-
-    minDate.setDate(today.getDate() + 5);
-    maxDate.setDate(today.getDate() + 10);
 
     if (start < today || end < today) {
       setErrors((prevState) => ({
         ...prevState,
         date: "시작일과 종료일은 현재 날짜 이후여야 합니다.",
       }));
+
       return false;
-    } else if (end - start < 4 * 24 * 60 * 60 * 1000) {
+    } else if (end - start < 5 * 24 * 60 * 60 * 1000) {
       setErrors((prevState) => ({
         ...prevState,
         date: "기간은 최소 5일 이상이어야 합니다.",
       }));
+
       return false;
     } else if (end - start > 10 * 24 * 60 * 60 * 1000) {
       setErrors((prevState) => ({
         ...prevState,
         date: "기간은 최대 10일이어야 합니다.",
       }));
+
       return false;
     } else {
       setErrors((prevState) => ({
         ...prevState,
         date: "",
       }));
+
       return true;
     }
   };
 
   const handleDateChange = (e) => {
-    const { name, value } = e.target;
+    const { key, value } = e.target;
+
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [name]: value,
+      [key]: value,
     }));
 
-    if (name === "startDate" || name === "endDate") {
+    if (key === "startDate" || key === "endDate") {
       validateDate(
-        name === "startDate" ? value : planetInfo.startDate,
-        name === "endDate" ? value : planetInfo.endDate
+        key === "startDate" ? value : planetInfo.startDate,
+        key === "endDate" ? value : planetInfo.endDate
       );
     }
   };
@@ -172,6 +173,7 @@ function PlanetCreateForm() {
     submitResult();
   };
 
+  //최종제출
   const submitResult = () => {
     navigate("/result", { state: { planetInfo } });
   };
@@ -334,6 +336,6 @@ function PlanetCreateForm() {
       </form>
     </div>
   );
-}
+};
 
 export default PlanetCreateForm;
