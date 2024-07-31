@@ -9,11 +9,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
-import com.planetrush.planetrush.core.jwt.exception.ExpiredJwtException;
 import com.planetrush.planetrush.core.jwt.exception.UnAuthorizedException;
 import com.planetrush.planetrush.core.jwt.exception.UnSupportedJwtException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -117,7 +117,6 @@ public class JwtTokenProvider {
 			log.error("JWT 토큰이 없거나 잘못되었습니다.", e);
 		} catch (ExpiredJwtException e) {
 			log.error("만료된 JWT 토큰입니다.");
-			throw new ExpiredJwtException();
 		}
 		return false;
 	}
