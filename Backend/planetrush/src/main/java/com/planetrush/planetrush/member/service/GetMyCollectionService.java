@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
 
-/**
- * 이 인터페이스는 사용자의 완료한 행성 컬렉션을 가져오는 기능을 정의합니다.
- */
 public interface GetMyCollectionService {
 
 	/**

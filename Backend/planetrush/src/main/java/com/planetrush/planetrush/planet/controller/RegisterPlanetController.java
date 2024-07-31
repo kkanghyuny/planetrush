@@ -25,6 +25,13 @@ public class RegisterPlanetController extends PlanetController {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RegisterPlanetFacade registerPlanetFacade;
 
+	/**
+	 * 행성을 생성합니다.
+	 * @param customPlanetImg 기본 행성 이미지
+	 * @param stdVerificationImg 인증 대표 이미지
+	 * @param req 행성 내용
+	 * @return ResponseEntity
+	 */
 	@RequireJwtToken
 	@PostMapping
 	public ResponseEntity<BaseResponse<?>> registerPlanet(

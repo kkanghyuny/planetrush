@@ -21,7 +21,7 @@ public interface GetPlanetService {
 	/**
 	 * 행성 상세정보를 조회합니다.
 	 *
-	 * @param memberId 조회하고 있는 회원 id
+	 * @param memberId 유저의 고유 id
 	 * @param planetId 조회하는 행성 id
 	 * @return 행성 상세정보
 	 */
@@ -30,7 +30,7 @@ public interface GetPlanetService {
 	/**
 	 * 현재 진행 중인 행성의 상세 정보를 조회합니다.
 	 *
-	 * @param memberId
+	 * @param memberId 유저의 고유 id
 	 * @param planetId 조회 행성 id
 	 * @return 현재 진행 중인 행성의 상세 정보가 담긴 객체
 	 */
@@ -38,14 +38,14 @@ public interface GetPlanetService {
 
 	/**
 	 * 현재 사용자의 마이페이지를 위한 참여 중인 행성 목록을 조회합니다.
-	 * @param memberId
+	 * @param memberId 유저의 고유 id
 	 * @return 현재 사용자가 참여 중이며 진행 중인 행성의 상세 정보 목록
 	 */
 	List<GetMyPlanetListDto> getMyPlanetList(Long memberId);
 
 	/**
 	 * 현재 사용자의 마이페이지를 위한 참여 중인 행성 목록을 조회합니다.
-	 * @param memberId
+	 * @param memberId 유저의 고유 id
 	 * @return 현재 사용자가 참여 중이며 진행 중인 행성의 목록
 	 */
 	List<GetMainPlanetListDto> getMainPlanetList(Long memberId);

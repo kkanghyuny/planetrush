@@ -24,6 +24,9 @@ public class VerificationServiceImpl implements VerificationService {
 	private final PlanetRepository planetRepository;
 	private final VerificationRecordRepository verificationRecordRepository;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void saveVerificationResult(VerificationResultDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId())

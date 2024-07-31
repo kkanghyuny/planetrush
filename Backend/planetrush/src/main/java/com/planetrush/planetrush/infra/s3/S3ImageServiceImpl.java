@@ -32,6 +32,9 @@ public class S3ImageServiceImpl implements S3ImageService {
 	private final String STD_VERIFICATION_IMG_DIR = "std_verification_img/";
 	private final String VERIFICATION_IMG_DIR = "verification_img/";
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileMetaInfo uploadPlanetImg(MultipartFile file, long memberId) {
 		String url = upload(file, CUSTOM_PLANET_IMG_DIR, memberId);
@@ -46,6 +49,9 @@ public class S3ImageServiceImpl implements S3ImageService {
 			.build();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileMetaInfo uploadStandardVerificationImg(MultipartFile file, long memberId) {
 		String url = upload(file, STD_VERIFICATION_IMG_DIR, memberId);
@@ -60,6 +66,9 @@ public class S3ImageServiceImpl implements S3ImageService {
 			.build();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FileMetaInfo uploadVerificationImg(MultipartFile file, Long memberId) {
 		String url = upload(file, VERIFICATION_IMG_DIR, memberId);

@@ -17,11 +17,6 @@ import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * {@inheritDoc}
- *
- * 이 클래스는 RegisterResidentService 인터페이스를 구현하여 행성 입주 신청 기능을 제공합니다.
- */
 @Transactional
 @RequiredArgsConstructor
 @Service

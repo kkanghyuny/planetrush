@@ -140,6 +140,15 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.build();
 	}
 
+	/**
+	 * Resident 리스트를 ResidentDto 리스트로 변환합니다.
+	 *
+	 * @param memberId 현재 회원의 id
+	 * @param planetId 행성의 id
+	 * @param residents 변환할 Resident 리스트
+	 * @param qurriedMember 현재 조회 중인 회원
+	 * @return 변환된 ResidentDto 리스트를 반환
+	 */
 	private List<ResidentDto> toResidentDto(Long memberId, Long planetId, List<Resident> residents,
 		Member qurriedMember) {
 		List<ResidentDto> dtoList = residents.stream()
@@ -167,6 +176,12 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 		return dtoList;
 	}
 
+	/**
+	 * 검증 기록 리스트를 기반으로 연속성 포인트를 계산합니다.
+	 *
+	 * @param list 검증 기록 리스트
+	 * @return 리스트가 비어있거나 null일 경우 0을, 아니라면 계산된 연속성 포인트를 반환
+	 */
 	private double calcContinuityPoint(List<VerificationRecord> list) {
 		if (list == null || list.isEmpty()) {
 			return 0;

@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.planetrush.planetrush.planet.service.dto.GetDefaultPlanetImgDto;
 
-/**
- * 기본 행성 이미지 서비스 인터페이스입니다.
- */
 public interface GetDefaultPlanetImgService {
 
 	/**

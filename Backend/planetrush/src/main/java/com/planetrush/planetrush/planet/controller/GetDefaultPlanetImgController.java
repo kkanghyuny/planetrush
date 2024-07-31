@@ -12,10 +12,6 @@ import com.planetrush.planetrush.planet.service.dto.GetDefaultPlanetImgDto;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * 기본 행성 이미지 관련 요청을 처리하는 컨트롤러입니다.
- * <p>모든 행성 이미지 URL을 반환하는 기능을 제공합니다.</p>
- */
 @RequiredArgsConstructor
 @RestController
 public class GetDefaultPlanetImgController extends PlanetController {
