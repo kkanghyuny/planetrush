@@ -1,10 +1,11 @@
-import React from 'react';
-import '../../styles/Modal.css';
+import React from "react";
+
+import "../../styles/Modal.css";
 
 // 가입 탈퇴 시 등장하는 모달
-function ExitModal({setIsExitModalOpen, imageUrl }) {
+const ExitModal = ({ setIsExitModalOpen, imageUrl }) => {
+  // 탈퇴 모달 다시 비활성화
   const handleCloseModal = () => {
-    // 탈퇴 모달 다시 비활성화
     setIsExitModalOpen(false);
   };
 
@@ -17,6 +18,6 @@ function ExitModal({setIsExitModalOpen, imageUrl }) {
       </div>
     </div>
   );
-}
+};
 
 export default ExitModal;

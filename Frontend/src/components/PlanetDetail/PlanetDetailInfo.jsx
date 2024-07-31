@@ -1,6 +1,6 @@
 import "../../styles/PlanetDetailInfo.css";
 
-function PlanetDetailInfo({ daysLeft, progress }) {
+const PlanetDetailInfo = ({ daysLeft, progress }) => {
   const totalSegments = 10;
   const filledSegments = progress;
   const emptySegments = totalSegments - filledSegments;
@@ -28,6 +28,6 @@ function PlanetDetailInfo({ daysLeft, progress }) {
       </div>
     </div>
   );
-}
+};
 
 export default PlanetDetailInfo;

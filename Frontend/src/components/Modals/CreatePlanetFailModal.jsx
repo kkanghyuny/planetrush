@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// 생성 성공한 모달
-function CreatePlanetSuccess() {
+// 생성 오류난 모달
+const CreatePlanetSuccess = () => {
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate("/main");
   };
@@ -16,6 +17,6 @@ function CreatePlanetSuccess() {
       </div>
     </div>
   );
-}
+};
 
 export default CreatePlanetSuccess;

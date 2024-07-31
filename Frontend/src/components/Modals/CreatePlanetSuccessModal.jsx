@@ -2,8 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 // 생성 성공한 모달
-function CreatePlanetSuccess({ imageUrl, planetName, onClose }) {
+const CreatePlanetSuccess = ({ imageUrl, planetName }) => {
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate("/main");
   };
@@ -17,6 +18,6 @@ function CreatePlanetSuccess({ imageUrl, planetName, onClose }) {
       </div>
     </div>
   );
-}
+};
 
 export default CreatePlanetSuccess;

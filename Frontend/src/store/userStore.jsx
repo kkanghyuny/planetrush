@@ -1,15 +1,15 @@
 // store/userStore.js
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const useUserStore = create(
   persist(
     (set) => ({
-      nickname: '',
+      nickname: "",
       setNickname: (newNickname) => set({ nickname: newNickname }),
     }),
     {
-      name: 'userStorage',
+      name: "userStorage",
     }
   )
 );

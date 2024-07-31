@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 import { BiPlusCircle } from "react-icons/bi";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { BiWorld } from "react-icons/bi";
 import "../../styles/Nav.css";
 
-function Navigation() {
+const Navigation = () => {
   return (
     <nav>
       <div className="navbar-container">
@@ -27,6 +28,6 @@ function Navigation() {
       </div>
     </nav>
   );
-}
+};
 
 export default Navigation;

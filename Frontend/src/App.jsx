@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import "./App.css";
-import { Router, Route, Routes, useLocation } from "react-router-dom";
+import React from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import BackGround from "./components/BackGround/BackGround";
 
@@ -18,6 +17,8 @@ import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
 import PlanetResult from "./pages/PlanetCreatePage/PlanetResult";
 
 import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
+
+import "./App.css";
 
 function App() {
   const location = useLocation();

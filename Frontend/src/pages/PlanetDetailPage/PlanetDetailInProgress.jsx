@@ -1,10 +1,10 @@
+import { useState } from "react";
+
 import PlanetDetailInfo from "../../components/PlanetDetail/PlanetDetailInfo";
 import PlanetRank from "../../components/PlanetDetail/PlanetRank";
 import PlanetChat from "../../components/PlanetDetail/PlanetChat";
 
-import { useState } from "react";
-
-function PlanetDetailInProgress() {
+const PlanetDetailInProgress = () => {
   const [view, setView] = useState("rank");
 
   //채팅화면 변환
@@ -32,6 +32,6 @@ function PlanetDetailInProgress() {
       </div>
     </>
   );
-}
+};
 
 export default PlanetDetailInProgress;
