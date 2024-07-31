@@ -28,6 +28,11 @@ public class PlanetRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 행성을 검색하는 커스텀 쿼리 메서드입니다.
+	 * @param cond 검색 조건
+	 * @return 검색 결과
+	 */
 	public List<Planet> searchPlanet(SearchCond cond) {
 		return queryFactory.selectFrom(planet)
 			.where(
@@ -40,6 +45,11 @@ public class PlanetRepositoryCustom {
 			.fetch();
 	}
 
+	/**
+	 * 마이페이지를 위한 참여중이면서 진행 전, 진행 중인 행성을 반환합니다.
+	 * @param memberId 유저의 고유 id
+	 * @return 행성 목록
+	 */
 	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
 		return queryFactory.select(Projections.constructor(GetMyPlanetListDto.class,
 				planet.id,
@@ -62,6 +72,11 @@ public class PlanetRepositoryCustom {
 			.fetch();
 	}
 
+	/**
+	 * 메인페이지를 위한 참여중이면서 진행 전, 진행 중인 행성을 반환합니다.
+	 * @param memberId 유저의 고유 id
+	 * @return 행성 목록
+	 */
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
 		return queryFactory.select(Projections.constructor(GetMainPlanetListDto.class,
 				planet.id,

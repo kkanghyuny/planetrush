@@ -14,15 +14,17 @@ import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * 행성 입주, 탈퇴 신청을 하는 api입니다.
- */
 @RequiredArgsConstructor
 @RestController
 public class PlanetSubscriptionController extends PlanetController {
 
 	private final PlanetSubscriptionService planetSubscriptionService;
 
+	/**
+	 * 행성 입주 기록을 등록합니다.
+	 * @param planetId 행성의 고유 id
+	 * @return ResponseEntity
+	 */
 	@RequireJwtToken
 	@PostMapping("/{planet-id}")
 	public ResponseEntity<BaseResponse<?>> registerResident(@PathVariable("planet-id") Long planetId) {
@@ -32,6 +34,11 @@ public class PlanetSubscriptionController extends PlanetController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess());
 	}
 
+	/**
+	 * 행성 입주 기록을 삭제합니다.
+	 * @param planetId 행성의 고유 id
+	 * @return ResponseEntity
+	 */
 	@RequireJwtToken
 	@DeleteMapping("/{planet-id}")
 	public ResponseEntity<BaseResponse<?>> deleteResident(@PathVariable("planet-id") Long planetId) {

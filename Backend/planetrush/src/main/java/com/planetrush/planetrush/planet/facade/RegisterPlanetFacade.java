@@ -20,6 +20,13 @@ public class RegisterPlanetFacade {
 	private final S3ImageService s3ImageService;
 	private final RegisterPlanetService registerPlanetService;
 
+	/**
+	 * 행성을 등록합니다.
+	 *
+	 * @param dto 행성 등록에 필요한 데이터를 담은 DTO입니다.
+	 * @param customPlanetImg 사용자 정의 행성 이미지 파일입니다. 선택 사항입니다.
+	 * @param stdVerificationImg 표준 검증 이미지 파일입니다.
+	 */
 	public void registerPlanet(RegisterPlanetFacadeDto dto, MultipartFile customPlanetImg,
 		MultipartFile stdVerificationImg) {
 		String planetImgUrl = customPlanetImg == null ? dto.getPlanetImgUrl() :
@@ -39,11 +46,25 @@ public class RegisterPlanetFacade {
 			.build());
 	}
 
+	/**
+	 * 사용자 정의 행성 이미지를 업로드합니다.
+	 *
+	 * @param customPlanetImg 업로드할 사용자 정의 행성 이미지 파일입니다.
+	 * @param memberId 회원 ID입니다.
+	 * @return 업로드된 이미지의 URL을 반환합니다.
+	 */
 	private String uploadCustomPlanetImg(MultipartFile customPlanetImg, Long memberId) {
 		FileMetaInfo fileMetaInfo = s3ImageService.uploadPlanetImg(customPlanetImg, memberId);
 		return fileMetaInfo.getUrl();
 	}
 
+	/**
+	 * 표준 검증 이미지를 업로드합니다.
+	 *
+	 * @param stdVerificationImg 업로드할 표준 검증 이미지 파일입니다.
+	 * @param memberId 회원 ID입니다.
+	 * @return 업로드된 이미지의 URL을 반환합니다.
+	 */
 	private String uploadStdVerificationImg(MultipartFile stdVerificationImg, Long memberId) {
 		FileMetaInfo fileMetaInfo = s3ImageService.uploadStandardVerificationImg(stdVerificationImg, memberId);
 		return fileMetaInfo.getUrl();

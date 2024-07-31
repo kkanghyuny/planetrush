@@ -32,6 +32,14 @@ public class GetPlanetController extends PlanetController {
 	private final S3ImageService s3ImageService;
 	private final GetPlanetService getPlanetService;
 
+	/**
+	 * 행성을 검색합니다.
+	 * @param category 카테고리
+	 * @param keyword 키워드
+	 * @param lastPlanetId 마지막 행성의 id
+	 * @param size 크기
+	 * @return 검색 결과를 담은 ResponseEntity
+	 */
 	@RequireJwtToken
 	@GetMapping
 	public ResponseEntity<BaseResponse<SearchPlanetRes>> searchPlanet(
@@ -53,6 +61,12 @@ public class GetPlanetController extends PlanetController {
 					.build()));
 	}
 
+	/**
+	 * 무한 스크롤을 위해 마지막 페이지인지 확인합니다.
+	 * @param size 크기
+	 * @param planets 행성 목록
+	 * @return 마지막 페이지인지 여부
+	 */
 	private boolean isNotLastPage(int size, List<PlanetDetailDto> planets) {
 		return planets.size() == size;
 	}
@@ -64,6 +78,11 @@ public class GetPlanetController extends PlanetController {
 		return ResponseEntity.ok(BaseResponse.ofSuccess(getPlanetService.getPlanetDetail(memberId, planetId)));
 	}
 
+	/**
+	 * 현재 진행 중인 행성을 상세 조회합니다.
+	 * @param planetId 상세 조회할 행성의 고유 id
+	 * @return 행성의 정보를 담은 ResponseEntity
+	 */
 	@RequireJwtToken
 	@GetMapping("/ongoing")
 	public ResponseEntity<BaseResponse<OngoingPlanetDto>> getOngoingPlanetDto(

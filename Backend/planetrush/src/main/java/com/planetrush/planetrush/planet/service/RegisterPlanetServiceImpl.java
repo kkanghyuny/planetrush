@@ -24,6 +24,9 @@ public class RegisterPlanetServiceImpl implements RegisterPlanetService {
 	private final ResidentRepository residentRepository;
 	private final MemberRepository memberRepository;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void registerPlanet(RegisterPlanetDto dto) {
 		Planet planet = planetRepository.save(Planet.builder()

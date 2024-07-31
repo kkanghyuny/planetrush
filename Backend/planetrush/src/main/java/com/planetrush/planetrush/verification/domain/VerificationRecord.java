@@ -27,6 +27,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VerificationRecord {
 
+	/**
+	 * 인증 기록의 고유 식별자
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "verification_record_id")

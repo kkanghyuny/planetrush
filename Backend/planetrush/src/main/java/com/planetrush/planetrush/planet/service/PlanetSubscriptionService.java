@@ -2,10 +2,6 @@ package com.planetrush.planetrush.planet.service;
 
 import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
-/**
- * 이 인터페이스는 행성 입주 신청 기능을 정의합니다.
- * 사용자의 행성 입주 기능이 있습니다.
- */
 public interface PlanetSubscriptionService {
 
 	/**

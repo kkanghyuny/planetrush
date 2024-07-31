@@ -28,7 +28,6 @@ public class AuthController extends MemberController {
 	 * 카카오 로그인을 진행합니다.
 	 * @param req 카카오에서 발급 받은 accessToken
 	 * @return 새로 발급한 accessToken, refreshToken을 포함한 ResponseEntity
-	 * @see LoginDto
 	 */
 	@PostMapping("/auth/login/kakao")
 	public ResponseEntity<BaseResponse<LoginDto>> kakaoLogin(@RequestBody KakaoLoginReq req) {
@@ -43,7 +42,7 @@ public class AuthController extends MemberController {
 	 */
 	@RequireJwtToken
 	@PostMapping("/auth/logout/kakao")
-	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestBody	KakaoLogoutReq req) {
+	public ResponseEntity<BaseResponse<?>> kakaoLogout(@RequestBody KakaoLogoutReq req) {
 		Long memberId = MemberContext.getMemberId();
 		authService.kakaoLogout(memberId, req.getRefreshToken());
 		return ResponseEntity.ok(BaseResponse.ofSuccess());

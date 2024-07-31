@@ -19,13 +19,12 @@ public class ResidentRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
-	public Long countCurrentParticipants(Long planetId) {
-		return queryFactory.select(resident.count())
-			.from(resident)
-			.where(planetIdEq(planetId))
-			.fetchOne();
-	}
-
+	/**
+	 * 유저가 행성에 참여한 상태인지 확인합니다.
+	 * @param memberId 유저의 고유 id
+	 * @param planetId 행성의 고유 id
+	 * @return 참여 여부
+	 */
 	public boolean isResidentOfPlanet(Long memberId, Long planetId) {
 		return queryFactory.selectFrom(resident)
 			.where(
@@ -36,6 +35,11 @@ public class ResidentRepositoryCustom {
 			.fetchOne() != null;
 	}
 
+	/**
+	 * 현재 참여중이며 퇴출 당하지 않은 기록을 확인합니다.
+	 * @param planetId 행성의 고유 id
+	 * @return 참여 기록
+	 */
 	public List<Resident> getResidentsNotBanned(Long planetId) {
 		return queryFactory.selectFrom(resident)
 			.where(

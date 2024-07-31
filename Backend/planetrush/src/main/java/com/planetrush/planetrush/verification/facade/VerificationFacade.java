@@ -20,6 +20,13 @@ public class VerificationFacade {
 	private final S3ImageService s3ImageService;
 	private final VerificationService verificationService;
 
+	/**
+	 * 사진을 저장하고 유사도를 검사해 결과를 보여줍니다.
+	 * @param verificationImg 인증 사진
+	 * @param memberId 유저의 고유 id
+	 * @param planetId 행성의 고유 id
+	 * @return 인증 여부, 유사도
+	 */
 	public VerifyChallengeDto saveImgAndVerifyChallenge(MultipartFile verificationImg, Long memberId, Long planetId) {
 		FileMetaInfo fileMetaInfo = s3ImageService.uploadVerificationImg(verificationImg, memberId);
 		/*

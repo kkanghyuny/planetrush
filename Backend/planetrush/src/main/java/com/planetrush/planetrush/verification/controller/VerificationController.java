@@ -23,6 +23,12 @@ public class VerificationController {
 
 	private final VerificationFacade verificationFacade;
 
+	/**
+	 * 챌린지 인증
+	 * @param verificationImg 인증 사진
+	 * @param planetId 행성의 고유 id
+	 * @return 인증 여부 및 유사도를 담은 ResponseEntity
+	 */
 	@RequireJwtToken
 	@PostMapping("/verify/planets/{planet-id}")
 	public ResponseEntity<BaseResponse<VerifyChallengeDto>> verifyChallenge(
@@ -34,5 +40,5 @@ public class VerificationController {
 			BaseResponse.ofSuccess(
 				verificationFacade.saveImgAndVerifyChallenge(verificationImg, memberId, planetId)));
 	}
-	
+
 }

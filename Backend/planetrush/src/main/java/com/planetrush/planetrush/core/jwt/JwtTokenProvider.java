@@ -140,7 +140,7 @@ public class JwtTokenProvider {
 	}
 
 	/**
-	 * 주어진 리프레시 토큰을 키로 사용하여 Redis에서 저장된 회원 ID를 검색해 반환합니다.
+	 * 주어진 리프레시 토큰을 키로 사용하여 redis에서 저장된 회원 ID를 검색해 반환합니다.
 	 * @param refreshToken 유효성을 검사할 리프레시 토큰
 	 * @return 리프레시 토큰에 해당하는 회원 ID
 	 * @throws UnAuthorizedException 리프레시 토큰이 유효하지 않거나 존재하지 않는 경우

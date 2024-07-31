@@ -18,6 +18,12 @@ public class VerificationRecordRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 인증 성공한 데이터를 불러옵니다.
+	 * @param memberId 유저의 고유 id
+	 * @param planetId 행성의 고유 id
+	 * @return 인증 성공한 기록
+	 */
 	public List<VerificationRecord> findVerificationRecordsByMemberIdAndPlanetId(Long memberId, Long planetId) {
 		return queryFactory.selectFrom(verificationRecord)
 			.where(
