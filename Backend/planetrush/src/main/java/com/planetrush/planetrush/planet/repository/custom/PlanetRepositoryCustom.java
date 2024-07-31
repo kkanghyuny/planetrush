@@ -2,7 +2,7 @@ package com.planetrush.planetrush.planet.repository.custom;
 
 import static com.planetrush.planetrush.planet.domain.QPlanet.*;
 import static com.planetrush.planetrush.planet.domain.QResident.*;
-import static com.planetrush.planetrush.planet.domain.QVerificationRecord.*;
+import static com.planetrush.planetrush.verification.domain.QVerificationRecord.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
