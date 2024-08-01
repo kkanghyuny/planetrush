@@ -15,30 +15,30 @@ const ChallengeList = ({ challenges, displayedChallenges }) => {
   };
 
   return (
-    <ul className="resultsList">
+    <ul className="results-list">
       {challenges.map((challenge) => (
         <div
-          className="challengeList"
+          className="challenge-list"
           key={challenge.planetId}
           onClick={() => handleItemClick(challenge.planetId)}
         >
-          <div className="challengeImgArea">
+          <div className="challenge-img-area">
             <img
-              className="challengeImg"
+              className="challenge-img"
               src={challenge.planetImg || ""}
               alt={challenge.name}
             />
-            <div className="participantsNumber">
+            <div className="participants-number">
               {challenge.currentParticipants} / {challenge.maxParticipants}
             </div>
           </div>
-          <div className="challengeExp">
-            <div className="nameBox">
-              <div className="challengeCate">{challenge.category}</div>
-              <div className="challengeName">{challenge.name}</div>
+          <div className="challenge-exp">
+            <div className="name-box">
+              <div className="challenge-cate">{challenge.category}</div>
+              <div className="challenge-name">{challenge.name}</div>
             </div>
-            <div className="challengeContent">{challenge.content}</div>
-            <div className="challengeDate">
+            <div className="challenge-content">{challenge.content}</div>
+            <div className="challenge-date">
               {challenge.startDate} ~ {challenge.endDate}
             </div>
           </div>

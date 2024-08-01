@@ -57,8 +57,8 @@ const MyPage = () => {
       </p>
       <NicknameEditModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSave={handleSaveNickname}
+        closeModal={handleCloseModal}
+        saveNickname={handleSaveNickname}
       />
     </>
   );
