@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
-import Cookies from "js-cookie";
-
 import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
@@ -25,8 +23,6 @@ const PlanetDetailRecruiting = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [currentParticipants, setCurrentParticipants] = useState(null);
   const [planet, setPlanet] = useState(null);
-
-  const accessToken = Cookies.get("access-token");
 
   // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
   const { displayedChallenges } = location.state || {};
@@ -52,7 +48,7 @@ const PlanetDetailRecruiting = () => {
     };
 
     fetchPlanetDetail();
-  }, [id, accessToken]);
+  }, [id]);
 
   // 행성이 없는 경우
   if (!planet) {

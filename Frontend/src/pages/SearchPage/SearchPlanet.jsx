@@ -8,7 +8,7 @@ import "../../styles/SearchPlanet.css";
 import "../../App.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
-const SearchBPlanet = () => {
+const SearchPlanet = () => {
   const [filteredChallenges, setFilteredChallenges] = useState([]);
   const [displayedChallenges, setDisplayedChallenges] = useState([]);
 
@@ -36,14 +36,13 @@ const SearchBPlanet = () => {
 
   const formatDate = (dateArray) => {
     if (!dateArray || dateArray.length !== 3) return "";
-
+  
     const [year, month, day] = dateArray;
-
-    return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
-      2,
-      "0"
-    )}`;
+  
+    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    return formattedDate;
   };
+  
 
   // 카테고리 value가 영문으로 되어 있는 것을 다시 label과 매칭시켜주는 과정
   const getCategoryLabel = (value) => {
@@ -177,27 +176,27 @@ const SearchBPlanet = () => {
 
   return (
     <div>
-      <div onClick={handleClick} className="arrowCircleIcon">
+      <div onClick={handleClick} className="arrow-circle-icon">
         <BiSolidLeftArrowCircle />
       </div>
-      <div className="searchRegion">
+      <div className="search-region">
         <form className="search" onSubmit={handleSearch}>
           <input
-            className="searchInput"
+            className="search-input"
             type="text"
             placeholder="챌린지 이름으로 검색"
             value={query}
             onChange={handleInputChange}
           />
-          <button className="submitButton" type="submit"></button>
+          <button className="submit-button" type="submit"></button>
         </form>
       </div>
 
-      <div className="categoryButtons">
+      <div className="category-buttons">
         {/* db에 있는 value와 우리가 front에서 보여주고 싶은 label이 달라서 생기는 문제 */}
         {categories.map((category) => (
           <button
-            className={`cateButton ${
+            className={`category-button ${
               selectedCategory === category.value ? "selected" : ""
             }`}
             key={category.value}
@@ -208,11 +207,10 @@ const SearchBPlanet = () => {
         ))}
       </div>
 
-      <div className="resultsContainer">
+      <div className="results-container">
         {isSearchPerformed || selectedCategory !== "" ? (
           filteredChallenges.length > 0 ? (
             <>
-              <h3>검색 결과</h3>
               <ChallengeList
                 challenges={displayedChallenges}
                 displayedChallenges={displayedChallenges}
@@ -221,13 +219,11 @@ const SearchBPlanet = () => {
             </>
           ) : (
             <>
-              <h3>검색 결과</h3>
               <h4>검색한 결과가 존재하지 않습니다.</h4>
             </>
           )
         ) : (
           <>
-            <h3>전체 챌린지 목록</h3>
             <ChallengeList
               challenges={displayedChallenges}
               displayedChallenges={displayedChallenges}
@@ -240,4 +236,4 @@ const SearchBPlanet = () => {
   );
 };
 
-export default SearchBPlanet;
+export default SearchPlanet;
