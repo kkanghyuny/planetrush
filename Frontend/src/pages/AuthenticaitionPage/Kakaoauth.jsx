@@ -71,9 +71,7 @@ function Auth() {
 
       // 메인페이지로 리다이렉트
       navigate("/main");
-    } catch (error) {
-      console.error("Error sending token to backend:", error);
-    }
+    } catch (error) {}
   };
 
   // 받아온 accss_token이 존재할 경우 백엔드로 토큰을 보낸다.
@@ -84,7 +82,7 @@ function Auth() {
           sendTokenToBackend(response.access_token);
         }
       })
-      .catch((error) => console.error(error));
+      .catch();
   }, []);
 
   return <></>;

@@ -114,7 +114,6 @@ const SearchPlanet = () => {
 
       setHasNext(data.hasNext);
     } catch (error) {
-      console.error(error);
     }
   };
 
