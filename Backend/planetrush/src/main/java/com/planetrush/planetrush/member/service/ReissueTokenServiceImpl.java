@@ -2,6 +2,7 @@ package com.planetrush.planetrush.member.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.jwt.dto.JwtToken;
@@ -9,8 +10,9 @@ import com.planetrush.planetrush.member.service.dto.ReissueDto;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class ReissueTokenServiceImpl implements ReissueTokenService {
 
 	private final JwtTokenProvider jwtTokenProvider;
@@ -34,3 +36,5 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
 			.build();
 	}
 }
+
+

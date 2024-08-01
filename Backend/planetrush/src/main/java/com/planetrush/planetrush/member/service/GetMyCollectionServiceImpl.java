@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
 import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
@@ -12,6 +13,7 @@ import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 
