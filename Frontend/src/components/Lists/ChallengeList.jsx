@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // useHistory 대신 useNavigate를 사용
 
-// import PropTypes from "prop-types";
-
 import "../../styles/SearchPlanet.css";
 
 // SearchPlanet.jsx 페이지의 리스트 컴포넌트를 따로 분리시켰다.
@@ -47,23 +45,5 @@ const ChallengeList = ({ challenges, displayedChallenges }) => {
     </ul>
   );
 };
-
-// // Typescript 안 써서 propTypes로 타입 검사를 진행하였다.
-// ChallengeList.propTypes = {
-//   challenges: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       planetId: PropTypes.number.isRequired,
-//       planetImg: PropTypes.string,
-//       name: PropTypes.string.isRequired,
-//       category: PropTypes.string.isRequired,
-//       content: PropTypes.string.isRequired,
-//       startDate: PropTypes.string.isRequired,
-//       endDate: PropTypes.string.isRequired,
-//       currentParticipants: PropTypes.number.isRequired,
-//       maxParticipants: PropTypes.number.isRequired,
-//     })
-//   ).isRequired,
-//   displayedChallenges: PropTypes.arrayOf(PropTypes.object).isRequired, // 추가된 propType
-// };
 
 export default ChallengeList;

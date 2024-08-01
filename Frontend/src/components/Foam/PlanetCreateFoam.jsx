@@ -43,11 +43,11 @@ const PlanetCreateForm = () => {
   }, [savedImage]);
 
   const handleInputChange = (e) => {
-    const { key, value } = e.target;
+    const { name, value } = e.target;
 
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [key]: value,
+      [name]: value,
     }));
 
     //이름 설정시
@@ -56,7 +56,7 @@ const PlanetCreateForm = () => {
         ...prevState,
         key: "10자 이하로 적어주세요",
       }));
-    } else if (key === "name") {
+    } else if (name === "name") {
       setErrors((prevState) => ({
         ...prevState,
         key: "",
@@ -64,12 +64,12 @@ const PlanetCreateForm = () => {
     }
 
     //챌린지명 설정시
-    if (key === "content" && value.length > 20) {
+    if (name === "content" && value.length > 20) {
       setErrors((prevState) => ({
         ...prevState,
         content: "20자 이하로 적어주세요",
       }));
-    } else if (key === "content") {
+    } else if (name === "content") {
       setErrors((prevState) => ({
         ...prevState,
         content: "",
@@ -150,13 +150,13 @@ const PlanetCreateForm = () => {
 
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [key]: value,
+      [name]: value,
     }));
-
-    if (key === "startDate" || key === "endDate") {
+    name;
+    if (name === "startDate" || name === "endDate") {
       validateDate(
-        key === "startDate" ? value : planetInfo.startDate,
-        key === "endDate" ? value : planetInfo.endDate
+        name === "startDate" ? value : planetInfo.startDate,
+        name === "endDate" ? value : planetInfo.endDate
       );
     }
   };

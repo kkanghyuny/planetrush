@@ -47,7 +47,6 @@ instance.interceptors.response.use(
       error.response.status === 401 &&
       !originalRequest._retry
     ) {
-      console.log("에러 발생해서 토큰 재발급 진행");
       originalRequest._retry = true;
       const refreshToken = Cookies.get("refresh-token");
 
@@ -64,13 +63,10 @@ instance.interceptors.response.use(
             }
           );
 
-          console.log("Token refresh response:", responseAgain.data);
-
           const againData = responseAgain.data.data;
           const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
             againData;
-          console.log(newAccessToken);
-          console.log(newRefreshToken);
+
           // 새로운 토큰을 쿠키에 저장
           Cookies.set("access-token", newAccessToken, {
             secure: true,
@@ -87,8 +83,6 @@ instance.interceptors.response.use(
             "Authorization"
           ] = `${newAccessToken}`;
           originalRequest.headers["Authorization"] = `${newAccessToken}`;
-
-          console.log("New access token set in headers:", newAccessToken);
 
           return instance(originalRequest);
         } catch (refreshError) {
