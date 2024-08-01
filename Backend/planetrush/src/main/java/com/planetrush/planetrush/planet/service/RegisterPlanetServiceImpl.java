@@ -15,8 +15,8 @@ import com.planetrush.planetrush.planet.service.dto.RegisterPlanetDto;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class RegisterPlanetServiceImpl implements RegisterPlanetService {
 
