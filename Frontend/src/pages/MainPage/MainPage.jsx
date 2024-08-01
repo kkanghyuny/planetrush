@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
@@ -24,6 +24,8 @@ const gridPositions = [
 ];
 
 const MainPage = () => {
+  const navigate = useNavigate();
+
   const [planets, setPlanets] = useState([]);
 
   useEffect(() => {
@@ -112,6 +114,16 @@ const MainPage = () => {
 
   const usedPositions = [];
 
+  const handleToDetail = (planetStatus, planetId) => {
+    return () => {
+      if (planetStatus === "READY") {
+        navigate(`/planet/${planetId}`);
+      } else {
+        navigate("/planet-progress", { state: planetId });
+      }
+    };
+  };
+
   return (
     <div className="page-container">
       <div className="gradient"></div>
@@ -142,6 +154,7 @@ const MainPage = () => {
                 key={planet.planetId}
                 className="planet-wrapper"
                 style={planetStyle}
+                onClick={handleToDetail(planet.status, planet.planetId)}
               >
                 <img
                   src={planetImgUrl}
