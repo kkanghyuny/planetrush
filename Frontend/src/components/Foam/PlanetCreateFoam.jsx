@@ -54,12 +54,12 @@ const PlanetCreateForm = () => {
     if (name === "name" && value.length > 10) {
       setErrors((prevState) => ({
         ...prevState,
-        key: "10자 이하로 적어주세요",
+        name: "10자 이하로 적어주세요",
       }));
     } else if (name === "name") {
       setErrors((prevState) => ({
         ...prevState,
-        key: "",
+        name: "",
       }));
     }
 
@@ -187,7 +187,7 @@ const PlanetCreateForm = () => {
     }
 
     if (errors.date) {
-      alert("기간 설정을 확인해주세요.");
+      alert("기간을 확인해주세요.");
       return;
     }
 
