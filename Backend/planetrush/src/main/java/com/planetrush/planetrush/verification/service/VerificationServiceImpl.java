@@ -15,8 +15,8 @@ import com.planetrush.planetrush.verification.service.dto.VerificationResultDto;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class VerificationServiceImpl implements VerificationService {
 

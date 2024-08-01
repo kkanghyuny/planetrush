@@ -17,8 +17,8 @@ import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService {
 
