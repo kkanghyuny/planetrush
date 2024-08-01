@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import PlanetDetailInfo from "../../components/PlanetDetail/PlanetDetailInfo";
 import PlanetRank from "../../components/PlanetDetail/PlanetRank";
 import PlanetChat from "../../components/PlanetDetail/PlanetChat";
+import { useLocation } from "react-router-dom";
 
 const PlanetDetailInProgress = () => {
   const [view, setView] = useState("rank");
+  const location = useLocation();
+
+  const planetId = location.state;
+
+  useEffect(() => {
+    const planetInProgress = async () => {
+      try {
+        const response = await instance.get("/planets/ongoing", {
+          query: "",
+        });
+        const data = response.data;
+      } catch (error) {
+        console.error("Error fetching images:", error.code);
+      }
+    };
+  }, []);
 
   //채팅화면 변환
   const handleChatClick = () => {
