@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import { BiSearchAlt } from "react-icons/bi";
 import "../../App.css";
 import "../../styles/Main.css";
 
-
 const MainPage = () => {
-
   return (
     <div className="page-container">
       <div className="gradient"></div>

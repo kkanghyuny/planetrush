@@ -36,13 +36,14 @@ const SearchPlanet = () => {
 
   const formatDate = (dateArray) => {
     if (!dateArray || dateArray.length !== 3) return "";
-  
+
     const [year, month, day] = dateArray;
-  
-    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
     return formattedDate;
   };
-  
 
   // 카테고리 value가 영문으로 되어 있는 것을 다시 label과 매칭시켜주는 과정
   const getCategoryLabel = (value) => {
@@ -113,8 +114,7 @@ const SearchPlanet = () => {
       }
 
       setHasNext(data.hasNext);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   // 검색어 입력 시마다 상태가 query에 저장되는 형태로 작동

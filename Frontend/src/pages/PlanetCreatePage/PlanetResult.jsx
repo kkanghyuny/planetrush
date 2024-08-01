@@ -14,8 +14,6 @@ const PlanetResult = () => {
 
   const [isSuccess, setIsSuccess] = useState(null);
 
-  console.log(planetInfo);
-
   //생성하기 axios
   const handleSumbit = async () => {
     try {

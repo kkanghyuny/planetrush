@@ -1,4 +1,3 @@
-// components/Modals/NicknameEditModal.jsx
 import React, { useState } from "react";
 
 const NicknameEditModal = ({ isOpen, closeModal, saveNickname }) => {

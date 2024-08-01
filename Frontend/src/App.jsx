@@ -5,10 +5,11 @@ import BackGround from "./components/BackGround/BackGround";
 
 import StartPage from "./pages/StartPage/StartPage";
 import MainPage from "./pages/MainPage/MainPage";
-import MyPage from "./pages/MyPage/MyPage";
+import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
+
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruiting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
 
@@ -16,7 +17,7 @@ import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
 import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
 import PlanetResult from "./pages/PlanetCreatePage/PlanetResult";
 
-import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
+import MyPage from "./pages/MyPage/MyPage";
 
 import "./App.css";
 
@@ -31,18 +32,18 @@ function App() {
         <Routes>
           <Route path="/" element={<StartPage />} />
           <Route path="/main" element={<MainPage />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/auth" element={<Auth />} />
+
+          <Route path="/search" element={<SearchBar />} />
 
           <Route path="/create" element={<PlanetCreateImg />} />
           <Route path="/create-foam" element={<PlanetCreateInfo />} />
           <Route path="/result" element={<PlanetResult />} />
 
-          <Route path="/search" element={<SearchBar />} />
-
           <Route path="/planet/:id" element={<PlanetDetailRecruiting />} />
           <Route path="/planet-progress" element={<PlanetDetailInProgress />} />
 
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </div>
       {!isStartPage && <Navigation />}

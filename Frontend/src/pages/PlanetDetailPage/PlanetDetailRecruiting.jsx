@@ -41,8 +41,7 @@ const PlanetDetailRecruiting = () => {
           setIsJoined(data.isJoined); // isJoined 설정
           setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     fetchPlanetDetail();
@@ -63,7 +62,6 @@ const PlanetDetailRecruiting = () => {
         setIsJoinSuccessModalOpen(true);
         setCurrentParticipants((prevParticipants) => prevParticipants + 1);
       } else {
-
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
@@ -106,10 +104,7 @@ const PlanetDetailRecruiting = () => {
 
   const isFull = currentParticipants === planet.maxParticipants;
 
-  // displayChallenges를 기준으로 받아왔기 때문에 이미 기준에 의해 필터링된 데이터들이 객체로 묶여있을거다.
-  // 그래서 주소를 planet/:id로 해도 prev / next 실행 시 객체 내 다음 배열로 넘어가게 할 수 있었던 것
   const navigateToPlanet = (direction) => {
-    // url 매개변수 id를 정수형으로 변환하여 비교하려고 parseInt 사용
     const currentIndex = displayedChallenges.findIndex(
       (challenge) => challenge.planetId === parseInt(id)
     );

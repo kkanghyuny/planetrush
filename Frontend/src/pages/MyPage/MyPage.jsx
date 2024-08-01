@@ -4,8 +4,8 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 import Cookies from "js-cookie";
 
 import useUserStore from "../../store/userStore";
-import LogoutButton from "../../components/Button/LogoutButton"; // 로그아웃 버튼 컴포넌트 임포트
-import NicknameEditModal from "../../components/Modals/EditNicknameModal"; // 닉네임 수정 모달 임포트
+import LogoutButton from "../../components/Button/LogoutButton";
+import NicknameEditModal from "../../components/Modals/EditNicknameModal";
 
 import { BiSolidPencil } from "react-icons/bi";
 
@@ -38,9 +38,7 @@ const MyPage = () => {
       });
 
       setNickname(newNickname);
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   return (
