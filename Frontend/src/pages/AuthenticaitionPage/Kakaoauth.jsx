@@ -9,6 +9,8 @@ import useUserStore from "../../store/userStore";
 // Kakao API 받아오는 과정
 function Auth() {
   const navigate = useNavigate();
+  const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
+
 
   const { setNickname } = useUserStore(); // zustand의 setNickname 함수 사용
 
@@ -40,7 +42,7 @@ function Auth() {
   const sendTokenToBackend = async (accessToken) => {
     try {
       const response = await axios.post(
-        "http://i11a509.p.ssafy.io:8080/api/v1/members/auth/login/kakao",
+        "http://70.12.247.69:8080/api/v1/members/auth/login/kakao",
         { accessToken: accessToken },
         {
           headers: {
