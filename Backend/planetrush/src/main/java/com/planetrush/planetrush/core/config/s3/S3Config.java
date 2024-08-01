@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.core.config;
+package com.planetrush.planetrush.core.config.s3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

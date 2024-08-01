@@ -43,3 +43,12 @@ jwt:
     expiretime: ${DEV_JWT_ACCESS_TOKEN_EXPIRETIME}
   refresh-token:
     expiretime: ${DEV_JWT_REFRESH_TOKEN_EXPIRETIME}
+
+notification:
+  mattermost:
+    enabled: true # mmSender를 사용할 지 여부, false면 알림이 오지 않는다
+    webhook-url: ${MATTERMOST_WEBHOOK_URL} # 위의 Webhook URL을 기입
+    color: ${MATTERMOST_COLOR} # attachment에 왼쪽 사이드 컬러. default=red
+    author-name: ${MATTERMOST_AUTHOR_NAME} # attachment의 상단에 나오는 이름
+    author-icon: ${MATTERMOST_AUTHOR_ICON} # author-icon 왼쪽에 나올 아이콘의 url링크
+    footer: # attachment에 하단에 나올 부분. default=현재 시간
