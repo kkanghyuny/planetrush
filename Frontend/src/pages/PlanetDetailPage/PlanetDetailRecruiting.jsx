@@ -40,10 +40,8 @@ const PlanetDetailRecruiting = () => {
           setPlanet(data); // planet 데이터 설정
           setIsJoined(data.isJoined); // isJoined 설정
           setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
-          console.log(data);
         }
       } catch (error) {
-        console.error("Error fetching planet details:", error);
       }
     };
 
@@ -65,13 +63,10 @@ const PlanetDetailRecruiting = () => {
         setIsJoinSuccessModalOpen(true);
         setCurrentParticipants((prevParticipants) => prevParticipants + 1);
       } else {
-        console.error("Failed to join planet, status code:", response.status);
 
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
-      console.error(error);
-
       setIsJoinFailModalOpen(true);
     }
   };
@@ -85,12 +80,9 @@ const PlanetDetailRecruiting = () => {
         setIsExitModalOpen(true);
         setCurrentParticipants(currentParticipants - 1);
       } else {
-        console.error("Failed to join planet, status code:", response.status);
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
-      console.error(error);
-
       setIsJoinFailModalOpen(true);
     }
   };

@@ -39,7 +39,7 @@ const MyPage = () => {
 
       setNickname(newNickname);
     } catch (error) {
-      console.error("Error updating nickname:", error);
+      
     }
   };
 
