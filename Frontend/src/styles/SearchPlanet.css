@@ -1,0 +1,342 @@
+/* 기본 스타일 */
+.arrow-circle-icon {
+  width: 40px;
+  height: auto;
+  margin: 10px 0;
+}
+
+.search-title {
+  margin-left: 20px;
+}
+
+.search-region {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px; /* 내부 여백 */
+}
+
+.search {
+  display: flex;
+  background-color: white; /* 불투명 배경 */
+  justify-content: space-between;
+  border: 2px solid #31fff2; /* 테두리 색상 및 두께 */
+  border-radius: 20px;
+  position: relative; /* 포커스 시 오버레이를 위한 상대 위치 */
+}
+
+.search-input {
+  font-size: 14px;
+  margin: 0 5%;
+  border: transparent;
+  width: 70%;
+  outline: transparent;
+  padding: 0 5px; /* 내부 여백 */
+  z-index: 1; /* 오버레이보다 위에 표시 */
+  background-color: white; /* 입력 필드 배경색 */
+  color: black;
+}
+
+.search-input::placeholder {
+  color: gray; /* 원하는 색상으로 변경 */
+}
+
+.search-input:focus::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7); /* 흰색 반투명 오버레이 */
+  border-radius: 20px; /* 모서리 둥글게 */
+  z-index: -1; /* 입력 필드 뒤에 표시 */
+}
+
+.submit-button {
+  width: 30px; /* 버튼의 가로 길이 */
+  height: 30px; /* 버튼의 세로 길이 */
+  border-radius: 50%; /* 버튼을 동그랗게 만드는 속성 */
+  border: 5px solid #31fff2; /* 도넛 모양의 테두리 */
+  background-color: transparent; /* 버튼의 배경 색상 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #31fff2; /* 버튼 텍스트 색상 */
+  margin: 5px;
+  cursor: pointer; /* 마우스 포인터 */
+}
+
+.submit-button:hover {
+  background-color: rgba(49, 255, 242, 0.2); /* 호버 시 배경색 */
+}
+
+
+/* 필터 줄 */
+.category-buttons {
+  text-align: center;
+  padding: 10px 5px;
+}
+
+.category-button {
+  font-weight: 900;
+  font-size: 15px;
+  width: 65px;
+  height: 30px;
+  margin: 5px;
+  padding: 5px;
+  color: black;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none; /* 버튼 테두리 제거 */
+  border-radius: 30px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 포인터 */
+}
+
+.category-button.selected {
+  background: radial-gradient(
+    circle,
+    #31fff2 30%,
+    rgba(255, 255, 255, 0.5) 90%
+  );
+}
+
+.challenge-list {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.challenge-img-area {
+  text-align: center;
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.challenge-img {
+  display: block;
+  margin: 0 auto;
+}
+
+.participants-number {
+  margin-top: 5px;
+}
+
+.challenge-exp {
+  margin-left: 30%;
+  text-align: left;
+}
+
+.results-container {
+  max-height: 400px; /* 원하는 높이로 설정 */
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.results-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.challenge-list {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  align-items: center;
+  padding: 10px 0;
+}
+
+.challenge-img-area {
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.challenge-img {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  width: 70px;
+  height: 70px;
+}
+
+.participants-number {
+  text-align: center;
+}
+
+.name-box {
+  display: flex;
+}
+
+.challenge-cate {
+  text-align: center;
+  width: 50px;
+  background-color: #31fff2;
+  color: black;
+  font-weight: bold;
+  border-radius: 30px;
+  margin-right: 10px;
+}
+
+.challenge-exp {
+  flex-grow: 1;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.challenge-content {
+  margin: 5px 0;
+}
+
+.challenge-date {
+  text-align: center;
+  margin: 5px 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 30px;
+}
+
+/* 작은 화면용 미디어 쿼리 */
+@media (max-width: 400px) {
+  .arrow-circle-icon {
+    width: 30px;
+    margin: 20px 0;
+  }
+
+  .search-title {
+    margin-left: 20px;
+  }
+
+  .search-region {
+    padding: 10px; /* 내부 여백 */
+  }
+
+  .search {
+    border-radius: 20px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    margin: 0 5%;
+    width: 70%;
+    padding: 10px; /* 내부 여백 */
+  }
+
+  .submit-button {
+    width: 30px; /* 버튼의 가로 길이 */
+    height: 30px; /* 버튼의 세로 길이 */
+    border-radius: 50%; /* 버튼을 동그랗게 만드는 속성 */
+    border: 10px solid #31fff2; /* 도넛 모양의 테두리 */
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px 5%;
+  }
+
+  .submit-button:hover {
+    background-color: rgba(49, 255, 242, 0.2); /* 호버 시 배경색 */
+  }
+
+  .category-buttons {
+    padding: 10px 5px;
+  }
+
+  .category-button {
+    font-size: 12px;
+    width: 65px;
+    height: 30px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 30px; /* 모서리 둥글게 */
+  }
+
+  .category-button.selected {
+    background: radial-gradient(
+      circle,
+      #31fff2 30%,
+      rgba(255, 255, 255, 0.5) 90%
+    );
+  }
+
+  .challenge-list {
+    margin-bottom: 10px;
+  }
+
+  .challenge-img-area {
+    margin-right: 20px;
+  }
+
+  .participants-number {
+    margin-top: 5px;
+  }
+
+  .challenge-exp {
+    flex-grow: 1;
+    margin-left: 30%;
+    text-align: left;
+  }
+
+  .results-container {
+    max-height: 400px; /* 원하는 높이로 설정 */
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+  .results-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .challenge-list {
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  .challenge-img-area {
+    margin-right: 10px;
+    padding: 10px;
+  }
+
+  .challenge-img {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    width: 70px;
+    height: 70px;
+  }
+
+  .participants-number {
+    text-align: center;
+  }
+
+  .name-box {
+    display: flex;
+  }
+
+  .challenge-cate {
+    text-align: center;
+    width: 50px;
+    background-color: #31fff2;
+    color: black;
+    font-weight: bold;
+    border-radius: 30px;
+    margin-right: 10px;
+  }
+
+  .challenge-exp {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .challenge-content {
+    margin: 5px 0;
+  }
+
+  .challenge-date {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+  }
+}

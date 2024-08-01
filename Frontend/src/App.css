@@ -1,0 +1,72 @@
+body {
+  overflow-x: hidden;
+  background: none; /* 기본 배경 제거 */
+  color: white;
+}
+
+.App {
+  width: 100%;
+  max-width: 410px;
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  overflow-y: auto;
+}
+
+.App.blurred {
+  opacity: 0.9;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.content {
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+  .App {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  nav ul li a {
+    font-size: 18px;
+  }
+
+  .content {
+    font-size: 16px;
+  }
+}
+
+@font-face {
+  font-family: "S-CoreDream-3Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+input::placeholder {
+  font-family: "S-CoreDream-3Light", sans-serif;
+}
+
+button {
+  font-family: "S-CoreDream-3Light", sans-serif;
+}
