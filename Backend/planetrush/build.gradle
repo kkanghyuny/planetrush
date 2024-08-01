@@ -46,6 +46,10 @@ dependencies {
     /* Swagger */
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.4.0'
 
+    /* Mattermost */
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
