@@ -1,6 +1,7 @@
 package com.planetrush.planetrush.member.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.repository.custom.HistoryRepositoryCustom;
 import com.planetrush.planetrush.member.service.dto.GetMyHistoryDto;
@@ -10,6 +11,7 @@ import com.planetrush.planetrush.planet.domain.Category;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class GetMyHistoryServiceImpl implements GetMyHistoryService {
 
