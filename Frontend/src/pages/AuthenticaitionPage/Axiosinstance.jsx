@@ -1,10 +1,8 @@
 import axios from "axios";
-import Cookies from "js-cookie"; // js-cookie import
+import Cookies from "js-cookie";
 
 // Axios 인스턴스 생성
 const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
-const TEST_URL = "https://www.hanserver.site";
-// const LOCALHOST = "http://70.12.247.69:8080/api/v1";
 
 const instance = axios.create({
   baseURL: DEV_URL,
@@ -13,6 +11,13 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// 로그아웃 처리 함수
+const handleLogout = () => {
+  Cookies.remove("access-token");
+  Cookies.remove("refresh-token");
+  window.location.href = "/"; // 홈 페이지로 리디렉션
+};
 
 // 요청 인터셉터 설정
 instance.interceptors.request.use(
@@ -35,7 +40,6 @@ instance.interceptors.response.use(
   (response) => {
     return response;
   },
-
   async (error) => {
     const originalRequest = error.config;
     if (
@@ -43,12 +47,13 @@ instance.interceptors.response.use(
       error.response.status === 401 &&
       !originalRequest._retry
     ) {
+      console.log("에러 발생해서 토큰 재발급 진행");
       originalRequest._retry = true;
-      const refreshToken = Cookies.get("refresh_token");
+      const refreshToken = Cookies.get("refresh-token");
 
       if (refreshToken) {
         try {
-          //토큰 재발급 응답
+          // 토큰 재발급 요청
           const responseAgain = await axios.post(
             `${DEV_URL}/members/auth/reissue`,
             {
@@ -59,17 +64,20 @@ instance.interceptors.response.use(
             }
           );
 
+          console.log("Token refresh response:", responseAgain.data);
+
           const againData = responseAgain.data.data;
           const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
             againData;
-
+          console.log(newAccessToken);
+          console.log(newRefreshToken);
           // 새로운 토큰을 쿠키에 저장
-          Cookies.set("access_token", newAccessToken, {
+          Cookies.set("access-token", newAccessToken, {
             secure: true,
             sameSite: "strict",
           });
 
-          Cookies.set("refresh_token", newRefreshToken, {
+          Cookies.set("refresh-token", newRefreshToken, {
             secure: true,
             sameSite: "strict",
           });
@@ -78,19 +86,16 @@ instance.interceptors.response.use(
           instance.defaults.headers.common[
             "Authorization"
           ] = `${newAccessToken}`;
-
           originalRequest.headers["Authorization"] = `${newAccessToken}`;
+
+          console.log("New access token set in headers:", newAccessToken);
 
           return instance(originalRequest);
         } catch (refreshError) {
-          console.error("Error refreshing access token:", refreshError);
-
-          // 토큰 갱신 실패 시 로그아웃 처리
-          Cookies.remove("access_token");
-          Cookies.remove("refresh_token");
-
-          window.location.href = "/"; // 홈 페이지로 리디렉션
+          handleLogout();
         }
+      } else {
+        handleLogout();
       }
     }
     return Promise.reject(error); // 다른 에러 발생 시 에러 반환

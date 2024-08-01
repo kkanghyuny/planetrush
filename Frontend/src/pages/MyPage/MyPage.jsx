@@ -39,7 +39,7 @@ const MyPage = () => {
 
       setNickname(newNickname);
     } catch (error) {
-      console.error("Error updating nickname:", error);
+      
     }
   };
 
@@ -57,8 +57,8 @@ const MyPage = () => {
       </p>
       <NicknameEditModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSave={handleSaveNickname}
+        closeModal={handleCloseModal}
+        saveNickname={handleSaveNickname}
       />
     </>
   );

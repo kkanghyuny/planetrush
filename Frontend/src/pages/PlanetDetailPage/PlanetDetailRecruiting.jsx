@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
-import Cookies from "js-cookie";
-
 import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
@@ -26,8 +24,6 @@ const PlanetDetailRecruiting = () => {
   const [currentParticipants, setCurrentParticipants] = useState(null);
   const [planet, setPlanet] = useState(null);
 
-  const accessToken = Cookies.get("access-token");
-
   // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
   const { displayedChallenges } = location.state || {};
 
@@ -44,15 +40,13 @@ const PlanetDetailRecruiting = () => {
           setPlanet(data); // planet 데이터 설정
           setIsJoined(data.isJoined); // isJoined 설정
           setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
-          console.log(data);
         }
       } catch (error) {
-        console.error("Error fetching planet details:", error);
       }
     };
 
     fetchPlanetDetail();
-  }, [id, accessToken]);
+  }, [id]);
 
   // 행성이 없는 경우
   if (!planet) {
@@ -69,13 +63,10 @@ const PlanetDetailRecruiting = () => {
         setIsJoinSuccessModalOpen(true);
         setCurrentParticipants((prevParticipants) => prevParticipants + 1);
       } else {
-        console.error("Failed to join planet, status code:", response.status);
 
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
-      console.error(error);
-
       setIsJoinFailModalOpen(true);
     }
   };
@@ -89,12 +80,9 @@ const PlanetDetailRecruiting = () => {
         setIsExitModalOpen(true);
         setCurrentParticipants(currentParticipants - 1);
       } else {
-        console.error("Failed to join planet, status code:", response.status);
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
-      console.error(error);
-
       setIsJoinFailModalOpen(true);
     }
   };
