@@ -25,7 +25,7 @@ const PlanetDetailRecruiting = () => {
   const [planet, setPlanet] = useState(null);
 
   // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
-  const { displayedChallenges } = location.state || {};
+  const displayedChallenges = location.state?.displayedChallenges || [];
 
   useEffect(() => {
     const fetchPlanetDetail = async () => {
@@ -136,9 +136,13 @@ const PlanetDetailRecruiting = () => {
       <div>{planet.maxParticipants}</div>
       <img src={planet.planetImg} alt="행성사진" />
       <div>
-        <button onClick={() => navigateToPlanet("prev")}> ← </button>
-        <div>{planet.name}</div>
-        <button onClick={() => navigateToPlanet("next")}> → </button>
+        {displayedChallenges.length > 1 && (
+          <>
+            <button onClick={() => navigateToPlanet("prev")}> ← </button>
+            <div>{planet.name}</div>
+            <button onClick={() => navigateToPlanet("next")}> → </button>
+          </>
+        )}
       </div>
       <div>
         {isFull && !isJoined ? (
