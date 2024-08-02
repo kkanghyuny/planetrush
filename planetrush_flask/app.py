@@ -9,9 +9,17 @@ import numpy as np
 from mecab import MeCab
 from collections import Counter
 from datetime import datetime
+import logging
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
+
+# 데이터베이스 설정
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # URL 이미지 로드
 def load_image(url):
@@ -77,23 +85,15 @@ def get_mode_keywords(texts):
     # 명사만 남기기
     nouns = []
     mecab = MeCab()
+
     for text in texts:
-        nouns+=list(set(mecab.nouns(text)))
-
-
+        nouns += list(set(mecab.nouns(text)))
     clean_nouns = remove_stop_words(nouns)
-
     # 단어 빈도 계산
     word_counts = Counter(clean_nouns)
     # 최빈값 추출
     mode_keyword = [item[0] for item in word_counts.most_common(7)]
     return mode_keyword
-
-
-# 데이터베이스 설정
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
 # Enum 정의
 class CategoryEnum(enum.Enum):
@@ -126,50 +126,61 @@ class Planet(db.Model):
     planet_status = db.Column(db.Enum(PlanetStatusEnum), nullable=False)
     verification_cond = db.Column(db.String(255), nullable=False)
 
-
-class Keyword(db.Model):
-    __tablename__ = 'keyword'  # 테이블 이름 설정
+class PopularKeyword(db.Model):
+    __tablename__ = 'popular_keyword'  # 테이블 이름 설정
 
     # 컬럼 정의
     keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # 자동 증가 기본 키
-    keyword_name = db.Column(db.String(20), nullable=False)  # NOT NULL
+    keyword = db.Column(db.String(20), nullable=False)  # NOT NULL
     category = db.Column(db.String(20), nullable=False)  # NOT NULL
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
+
+# 테이블 데이터 삭제 함수
+def delete_all_records(model):
+    try:
+        db.session.query(model).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error deleting records: {str(e)}")
+        return False
 
 def add_keyword(mode_keywords, category):
     try:
         # `mode_keywords의 각 항목에 객체 생성
         for keyword in mode_keywords:
-            new_keyword = Keyword(keyword_name=keyword, category=category)
+            new_keyword = PopularKeyword(keyword=keyword, category=category)
             db.session.add(new_keyword)
         db.session.commit()
 
-        return jsonify({'message': 'Keywords created successfully'}), 201
+        return True
     except Exception as e:
         # 예외 발생 시 롤백
         db.session.rollback()
-        return jsonify({'message': 'There was an issue creating keywords'}), 500
+        app.logger.error(f"Error adding keyword: {str(e)}")
+        return False
 
 @app.route('/api/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
-    category = request.args.get('category')
-
-    if not category or category not in CategoryEnum.__members__:
-        return jsonify({'error': 'Invalid or missing category'}), 400
-
-    planets = Planet.query.filter_by(category=category).all()
-
-    if planets:
-        challenge_contents = [planet.challenge_content for planet in planets]
-        mode_keyword = get_mode_keywords(challenge_contents)
-        # add_keyword를 호출하고 예외를 처리
-        try:
-            result = add_keyword(mode_keyword, category)
-            return result  # add_keyword가 반환하는 응답을 직접 반환
-        except Exception as e:
-            return jsonify({'message': 'There was an issue adding the keyword'}), 500
+    if delete_all_records(PopularKeyword):
+        app.logger.info("All keyword records have been deleted successfully")
+        for category in CategoryEnum:
+            planets = Planet.query.filter_by(category=category.name).all()
+            if planets:
+                challenge_contents = [planet.challenge_content for planet in planets]
+                mode_keyword = get_mode_keywords(challenge_contents)
+                # add_keyword를 호출하고 예외를 처리
+                if add_keyword(mode_keyword, category.name):
+                    app.logger.info(f"Keywords added for category: {category.name}")
+                else:
+                    return jsonify({'message': 'There was an issue adding the keyword'}), 500
+            else:
+                app.logger.info(f"No planets found for category: {category.name}")
+        return jsonify({'message': 'Keywords for all categories have been created successfully'}), 201
     else:
-        return jsonify({'message': 'No planets found for this category'}), 404
+        return jsonify({"error": "An error occurred while deleting records"}), 500
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=3000)
