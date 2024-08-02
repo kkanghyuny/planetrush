@@ -22,28 +22,28 @@ public class ResidentRepositoryCustom {
 
 	/**
 	 * 유저가 행성에 참여한 상태인지 확인합니다.
-	 * @param memberId 유저의 고유 id
-	 * @param planetId 행성의 고유 id
+	 * @param member 유저 객체
+	 * @param planet 행성 객체
 	 * @return 참여 여부
 	 */
-	public boolean isResidentOfPlanet(Long memberId, Long planetId) {
+	public boolean isResidentOfPlanet(Member member, Planet planet) {
 		return queryFactory.selectFrom(resident)
 			.where(
-				memberIdEq(memberId),
-				planetIdEq(planetId)
+				eqMember(member),
+				resident.planet.eq(planet)
 			)
 			.fetchOne() != null;
 	}
 
 	/**
 	 * 현재 참여중이며 퇴출 당하지 않은 기록을 확인합니다.
-	 * @param planetId 행성의 고유 id
+	 * @param planet 행성 객체
 	 * @return 참여 기록
 	 */
-	public List<Resident> getResidentsNotBanned(Long planetId) {
+	public List<Resident> getResidentsNotBanned(Planet planet) {
 		return queryFactory.selectFrom(resident)
 			.where(
-				planetIdEq(planetId),
+				resident.planet.eq(planet),
 				isNotBanned()
 			)
 			.fetch();
@@ -60,16 +60,16 @@ public class ResidentRepositoryCustom {
 			.execute();
 	}
 
-	private BooleanExpression planetIdEq(Long planetId) {
-		return resident.planet.id.eq(planetId);
+	private BooleanExpression eqMember(Member member) {
+		return resident.member.eq(member);
 	}
 
-	private BooleanExpression memberIdEq(Long memberId) {
-		return memberId != null ? resident.member.id.eq(memberId) : null;
+	private BooleanExpression eqPlanet(Planet planet) {
+		return resident.planet.eq(planet);
 	}
-
+	
 	private BooleanExpression isNotBanned() {
 		return resident.banned.isFalse();
 	}
-	
+
 }

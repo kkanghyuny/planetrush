@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.PlanetStatus;
 import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
@@ -47,10 +48,10 @@ public class PlanetRepositoryCustom {
 
 	/**
 	 * 마이페이지를 위한 참여중이면서 진행 전, 진행 중인 행성을 반환합니다.
-	 * @param memberId 유저의 고유 id
+	 * @param member 유저 객체
 	 * @return 행성 목록
 	 */
-	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
+	public List<GetMyPlanetListDto> getMyPlanetList(Member member) {
 		return queryFactory.select(Projections.constructor(GetMyPlanetListDto.class,
 				planet.id,
 				planet.planetImg,
@@ -64,20 +65,19 @@ public class PlanetRepositoryCustom {
 				planet.status.stringValue()
 			))
 			.from(resident)
-			.join(resident.planet, planet)
 			.where(
-				planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
-				resident.member.id.eq(memberId)
+				resident.planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
+				resident.member.eq(member)
 			)
 			.fetch();
 	}
 
 	/**
 	 * 메인페이지를 위한 참여중이면서 진행 전, 진행 중인 행성을 반환합니다.
-	 * @param memberId 유저의 고유 id
+	 * @param member 유저 객체
 	 * @return 행성 목록
 	 */
-	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
+	public List<GetMainPlanetListDto> getMainPlanetList(Member member) {
 		return queryFactory.select(Projections.constructor(GetMainPlanetListDto.class,
 				planet.id,
 				planet.planetImg,
@@ -87,7 +87,7 @@ public class PlanetRepositoryCustom {
 					queryFactory.select(verificationRecord.uploadDate.max())
 						.from(verificationRecord)
 						.where(verificationRecord.planet.eq(planet)
-							.and(verificationRecord.member.id.eq(memberId))
+							.and(verificationRecord.member.eq(member))
 							.and(verificationRecord.verified.isTrue()))
 						.loe(LocalDateTime.now().minusDays(2).withHour(0).withMinute(0).withSecond(0).withNano(0)),
 					"isLastDay"
@@ -97,7 +97,7 @@ public class PlanetRepositoryCustom {
 			.join(resident.planet, planet)
 			.where(
 				planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
-				resident.member.id.eq(memberId)
+				resident.member.eq(member)
 			)
 			.fetch();
 	}
