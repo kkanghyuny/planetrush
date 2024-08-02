@@ -13,6 +13,8 @@ import SearchBar from "./pages/SearchPage/SearchPlanet";
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruiting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
 
+import PlanetVerification from "./pages/VerificationPage/PlanetVerification";
+
 import PlanetCreateImg from "./pages/PlanetCreatePage/PlanetCreateImg";
 import PlanetCreateInfo from "./pages/PlanetCreatePage/PlanetCreateInfo";
 import PlanetResult from "./pages/PlanetCreatePage/PlanetResult";
@@ -42,6 +44,8 @@ function App() {
 
           <Route path="/planet/:id" element={<PlanetDetailRecruiting />} />
           <Route path="/planet-progress" element={<PlanetDetailInProgress />} />
+
+          <Route path="/verificate" element={<PlanetVerification />} />
 
           <Route path="/mypage" element={<MyPage />} />
         </Routes>

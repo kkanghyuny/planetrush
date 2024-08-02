@@ -1,8 +1,40 @@
-const PlanetRank = () => {
+import "../../styles/PlanetRank.css";
+
+const PlanetRank = ({ residents }) => {
   return (
-    <>
-      <p>행성 랭킹이 뜹니다</p>
-    </>
+    <div className="planet-rank-container">
+      {residents.map((resident, index) => {
+        const total = 10;
+        const percentage = (resident.verificationCnt / total) * 100;
+
+        return (
+          <div
+            key={index}
+            className={`resident-container ${
+              resident.isQuerriedMember ? "highlight" : ""
+            }`}
+          >
+            <div>
+              <p className="nickname">{resident.nickname}</p>
+              <span className="verification-info">
+                {resident.verificationCnt} / {total}
+              </span>
+            </div>
+            <div className="progress-info">
+              <div className="progress-bar">
+                <div
+                  className="progress-bar-fill"
+                  style={{
+                    width: `${percentage}%`,
+                    backgroundColor: "cyan",
+                  }}
+                ></div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

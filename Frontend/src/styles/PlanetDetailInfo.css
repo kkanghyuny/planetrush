@@ -1,26 +1,25 @@
-/* .container {
+.progress-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #0c0846;
-  color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+}
+
+.progress-planet-info {
+  display: flex;
+  align-items: center;
 }
 
 .image {
-  width: 150px;
-  height: 150px;
+  width: 100px; /* Adjust size as needed */
+  height: 100px; /* Adjust size as needed */
 }
 
 .text-container {
-  text-align: center;
-  margin-top: 20px;
+  margin-left: 20px;
 }
 
 .days-left {
-  color: #00e6e6;
+  font-weight: bold;
 }
 
 .progress-bar {
@@ -28,25 +27,22 @@
   margin: 10px 0;
 }
 
-.segment {
-  width: 20px;
+.progress-bar-segment {
+  width: 10px;
   height: 20px;
-  margin: 0 2px;
-  border-radius: 50%;
-  background-color: #555;
-}
-
-.filled-segment {
-  background-color: #ff0000;
+  margin-right: 2px;
 }
 
 .button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  border-radius: 20px;
+  background-color: #4caf50; /* Green */
   border: none;
-  background-color: #00e6e6;
-  color: #0c0846;
-  font-weight: bold;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
   cursor: pointer;
-} */
+  border-radius: 4px;
+}
