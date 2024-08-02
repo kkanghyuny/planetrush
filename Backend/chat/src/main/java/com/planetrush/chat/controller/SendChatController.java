@@ -2,11 +2,16 @@ package com.planetrush.chat.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.planetrush.chat.controller.request.SaveChatReq;
+import com.planetrush.chat.controller.request.SendChatReq;
+import com.planetrush.chat.service.RedisPubService;
+import com.planetrush.chat.service.RedisPubServiceImpl;
 import com.planetrush.chat.service.SaveChatService;
-import com.planetrush.chat.service.dto.SaveChatDto;
+import com.planetrush.chat.service.dto.SendChatDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class SaveChatController extends ChatController{
+public class SendChatController extends ChatController {
 
+	private final RedisPubService redisPubService;
 	private final SaveChatService saveChatService;
 
 	/**
@@ -27,19 +33,22 @@ public class SaveChatController extends ChatController{
 	 *   <li>Redis의 Pub/Sub 기능을 이용하여 저장된 채팅 메시지를 구독자들에게 전파합니다.</li>
 	 * </ol>
 	 *
-	 * @param req 저장할 채팅 메시지의 정보가 포함된 {@link SaveChatReq} 객체
+	 * @param req 저장할 채팅 메시지의 정보가 포함된 {@link SendChatReq} 객체
 	 *
-	 * @see SaveChatReq
+	 * @see SendChatReq
 	 * @see SaveChatService
 	 */
-	@MessageMapping("/save")
-	public void saveChat(@Payload SaveChatReq req) {
-		saveChatService.saveChat(SaveChatDto.builder()
+	@PostMapping("/send")
+	public void saveChat(@RequestBody SendChatReq req) {
+		log.info("Redis Pub MSG = {}", req.getContent());
+		SendChatDto dto = SendChatDto.builder()
 			.memberId(req.getMemberId())
 			.planetId(req.getPlanetId())
-			.nickname(req.getNickname())
 			.content(req.getContent())
 			.createdAt(req.getCreatedAt())
-			.build());
+			.build();
+
+		saveChatService.saveChat(dto);
+		redisPubService.pubMsgChannel(dto);
 	}
 }

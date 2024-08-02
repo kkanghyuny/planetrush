@@ -1,43 +1,15 @@
 package com.planetrush.chat.service;
 
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.stereotype.Service;
+import com.planetrush.chat.service.dto.SendChatDto;
 
-import com.planetrush.chat.service.dto.MessageDto;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class RedisPubService {
-
-	private final RedisMessageListenerContainer redisMessageListenerContainer;
-	private final RedisPublisher redisPublisher;
-
-	// 각 Channel 별 Listener
-	private final RedisSubscribeListener redisSubscribeListener;
-
+/**
+ * 채팅 메시지를 발행(publish)하는 기능 인터페이스 입니다.
+ */
+public interface RedisPubService {
 
 	/**
-	 * Channel 별 Message 전송
-	 * @param
+	 * 채팅 메시지를 발행합니다.
+	 * @param dto 발행할 채팅 메시지의 정보객체
 	 */
-	public void pubMsgChannel(String channel , MessageDto message) {
-		//1. 요청한 Channel 을 구독.
-		redisMessageListenerContainer.addMessageListener(redisSubscribeListener, new ChannelTopic(channel));
-
-		//2. Message 전송
-		redisPublisher.publish(new ChannelTopic(channel), message);
-	}
-
-	/**
-	 * Channel 구독 취소
-	 * @param channel
-	 */
-	public void cancelSubChannel(String channel) {
-		redisMessageListenerContainer.removeMessageListener(redisSubscribeListener);
-	}
+	void pubMsgChannel(SendChatDto dto);
 }
