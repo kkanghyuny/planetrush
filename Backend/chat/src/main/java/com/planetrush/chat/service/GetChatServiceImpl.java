@@ -2,12 +2,17 @@ package com.planetrush.chat.service;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.planetrush.chat.domain.ChattingMessage;
 import com.planetrush.chat.repository.ChatRepository;
+import com.planetrush.chat.service.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class GetChatServiceImpl implements GetChatService {
 
 	private final ChatRepository chatRepository;
+	private final GetNicknameService getNicknameService;
 
 	/**
 	 * {@inheritDoc}
@@ -26,6 +32,15 @@ public class GetChatServiceImpl implements GetChatService {
 	 */
 	@Override
 	public List<ChattingMessage> getChattingMessageByPlanetId(Long planetId) {
-		return chatRepository.findAllByPlanetIdOrderByCreatedAtAsc(planetId);
+		List<ChattingMessage> messages = chatRepository.findAllByPlanetIdOrderByCreatedAtAsc(planetId);
+		List<MemberDto> memberIds = chatRepository.findMemberIdsByPlanetId(planetId);
+		Set<Long> memberIdSet = memberIds.stream()
+			.map(MemberDto::getMemberId)
+			.collect(Collectors.toSet());
+		Map<Long, String> nicknames = getNicknameService.getNicknameByMemberIds(memberIdSet);
+		return messages.stream().map(message -> {
+			message.setNickname(nicknames.get(message.getMemberId()));
+			return message;
+		}).collect(Collectors.toList());
 	}
 }
