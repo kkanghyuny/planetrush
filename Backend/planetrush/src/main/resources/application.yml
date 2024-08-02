@@ -69,6 +69,6 @@ notification:
     footer: # attachment에 하단에 나올 부분. default=현재 시간
 
 scheduled-task:
-  change-planet-status-cron: ${CHANGE-PLANET-STATUS-CRON}
-  ban-if-last-verification-older-than-three-days: ${BAN-IF-LAST-VERIFICATION-OLDER-THAN-THREE-DAYS}
-  planet-complete-destroy: ${PLANET-COMPLETE-DESTROY}
+  change-planet-status-cron: 0 0 0 * * ?
+  ban-if-last-verification-older-than-three-days: 0 5 0 * * ?
+  planet-complete-destroy: 0 10 0 * * ?
