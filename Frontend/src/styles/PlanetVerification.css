@@ -1,0 +1,73 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0d1b2a;
+  color: white;
+  padding: 20px;
+}
+
+.upload-container {
+  text-align: center;
+  background-color: #1a2b3c;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px dashed #3f51b5;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.image-upload:hover {
+  border-color: #ff4081;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative; /* 부모 요소를 기준으로 위치 설정 */
+}
+
+.upload-input {
+  opacity: 0; /* 완전히 투명하게 만듦 */
+  position: absolute; /* 부모 요소 안에서 절대 위치 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.uploaded-image {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.button {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #ff4081;
+}
