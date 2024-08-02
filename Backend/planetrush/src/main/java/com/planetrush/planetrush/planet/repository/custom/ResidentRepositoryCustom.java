@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.planet.domain.ChallengerStatus;
+import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -49,6 +51,18 @@ public class ResidentRepositoryCustom {
 			.fetch();
 	}
 
+	/**
+	 * 챌린지가 진행중인 행성의 참가자 중, 마지막 인증이 3일 전인 경우 해당 회원은 제거됩니다.
+	 */
+	public void banMemberFromPlanet(Member member, Planet planet) {
+		queryFactory.update(resident)
+			.set(resident.banned, true)
+			.set(resident.challengerStatus, ChallengerStatus.FAIL)
+			.where(resident.member.eq(member),
+				resident.planet.eq(planet))
+			.execute();
+	}
+
 	private BooleanExpression planetIdEq(Long planetId) {
 		return resident.planet.id.eq(planetId);
 	}
@@ -68,5 +82,4 @@ public class ResidentRepositoryCustom {
 	private BooleanExpression isNotBanned() {
 		return resident.banned.isFalse();
 	}
-
 }

@@ -59,7 +59,7 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 				"Resident not found member id: " + dto.getMemberId() + " and planet id: " + dto.getPlanetId()));
 		Planet planet = planetRepository.findById(dto.getPlanetId())
 			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
-		planet.removeParticipant();
+		planet.participantLeave();
 		residentRepository.delete(resident);
 	}
 }
