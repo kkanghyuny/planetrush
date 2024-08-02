@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 import Cookies from "js-cookie";
+import { BiSolidDoorOpen } from "react-icons/bi";
+import "../../styles/Mypage.css"
 
 const LogoutButton = () => {
   const navigate = useNavigate();
@@ -21,12 +23,6 @@ const LogoutButton = () => {
       const response = await instance.post(
         "members/auth/logout/kakao", // 백엔드 엔드포인트
         { refreshToken }, // 요청 바디에 refreshToken 포함
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // 인증 토큰을 헤더에 추가
-            "Content-Type": "application/json", // 필요한 경우 Content-Type 설정
-          },
-        }
       );
 
       if (response.status === 200) {
@@ -44,7 +40,7 @@ const LogoutButton = () => {
 
   return (
     <div>
-      <button onClick={handleLogout}>Logout</button>
+      <BiSolidDoorOpen className = "logout-button" onClick={handleLogout} />
       {logoutError && <p>{logoutError}</p>}
     </div>
   );
