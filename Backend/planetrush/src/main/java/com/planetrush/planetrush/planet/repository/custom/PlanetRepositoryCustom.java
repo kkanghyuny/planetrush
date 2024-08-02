@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.planetrush.planetrush.planet.domain.ChallengerStatus;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.PlanetStatus;
 import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
@@ -67,8 +66,8 @@ public class PlanetRepositoryCustom {
 			.from(resident)
 			.join(resident.planet, planet)
 			.where(
-				resident.member.id.eq(memberId),
-				resident.challengerStatus.in(ChallengerStatus.READY, ChallengerStatus.IN_PROGRESS)
+				planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
+				resident.member.id.eq(memberId)
 			)
 			.fetch();
 	}
@@ -97,8 +96,8 @@ public class PlanetRepositoryCustom {
 			.from(resident)
 			.join(resident.planet, planet)
 			.where(
-				resident.member.id.eq(memberId),
-				resident.challengerStatus.in(ChallengerStatus.READY, ChallengerStatus.IN_PROGRESS)
+				planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
+				resident.member.id.eq(memberId)
 			)
 			.fetch();
 	}
