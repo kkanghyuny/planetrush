@@ -88,7 +88,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 		if (memberId != null) {
 			Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-			joined = residentRepositoryCustom.isResidentOfPlanet(memberId, planetId);
+			joined = residentRepositoryCustom.isResidentOfPlanet(member, planet);
 		}
 		return PlanetDetailDto.builder()
 			.planetId(planet.getId())
@@ -126,7 +126,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 		Planet planet = planetRepository.findById(planetId)
 			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + planetId));
-		List<Resident> residents = residentRepositoryCustom.getResidentsNotBanned(planetId);
+		List<Resident> residents = residentRepositoryCustom.getResidentsNotBanned(planet);
 		return OngoingPlanetDto.builder()
 			.planetId(planet.getId())
 			.planetImg(planet.getPlanetImg())
@@ -136,26 +136,25 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.endDate(planet.getEndDate())
 			.name(planet.getName())
 			.totalVerificationCnt(planet.calcTotalVerificationCnt())
-			.residents(toResidentDto(memberId, planetId, residents, querriedMember))
+			.residents(toResidentDto(residents, querriedMember))
 			.build();
 	}
 
 	/**
 	 * Resident 리스트를 ResidentDto 리스트로 변환합니다.
 	 *
-	 * @param memberId 현재 회원의 id
-	 * @param planetId 행성의 id
 	 * @param residents 변환할 Resident 리스트
 	 * @param qurriedMember 현재 조회 중인 회원
 	 * @return 변환된 ResidentDto 리스트를 반환
 	 */
-	private List<ResidentDto> toResidentDto(Long memberId, Long planetId, List<Resident> residents,
+	private List<ResidentDto> toResidentDto(List<Resident> residents,
 		Member qurriedMember) {
 		List<ResidentDto> dtoList = residents.stream()
 			.map(resident -> {
 				Member member = resident.getMember();
+				Planet planet = resident.getPlanet();
 				List<VerificationRecord> verificationInfo = verificationRecordRepositoryCustom.findVerificationRecordsByMemberIdAndPlanetId(
-					memberId, planetId);
+					member, planet);
 				return ResidentDto.builder()
 					.memberId(member.getId())
 					.nickname(member.getNickname())
@@ -216,7 +215,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	public List<GetMyPlanetListDto> getMyPlanetList(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-		return planetRepositoryCustom.getMyPlanetList(member.getId());
+		return planetRepositoryCustom.getMyPlanetList(member);
 	}
 
 	/**
@@ -228,7 +227,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-		return planetRepositoryCustom.getMainPlanetList(member.getId());
+		return planetRepositoryCustom.getMainPlanetList(member);
 	}
 
 }
