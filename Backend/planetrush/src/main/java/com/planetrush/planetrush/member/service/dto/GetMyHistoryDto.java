@@ -9,7 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GetMyHistoryDto {
 
-	private int completionRate;
 	private long completionCnt;
 	private long challengeCnt;
 	private double myAllAvg;
