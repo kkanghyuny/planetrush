@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const NicknameEditModal = ({ isOpen, closeModal, saveNickname }) => {
+const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
   const [newNickname, setNewNickname] = useState("");
 
   const handleSave = () => {
@@ -18,7 +18,7 @@ const NicknameEditModal = ({ isOpen, closeModal, saveNickname }) => {
           type="text"
           value={newNickname}
           onChange={(e) => setNewNickname(e.target.value)}
-          placeholder="새 닉네임 입력"
+          placeholder = {nickname}
         />
         <button onClick={handleSave}>저장</button>
         <button onClick={closeModal}>취소</button>

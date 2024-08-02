@@ -1,0 +1,61 @@
+/* mypage.css */
+
+.arrow-circle-icon {
+    cursor: pointer;
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+
+.logout {
+cursor: pointer;
+}
+
+.doughnut-chart-container {
+position: relative;
+width: 200px;
+height: 200px;
+}
+
+.doughnut-chart-text {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+text-align: center;
+}
+
+.doughnut-chart-percentage {
+font-size: 20px;
+font-weight: bold;
+}
+
+.doughnut-chart-label {
+font-size: 15px;
+font-weight: bold;
+}
+
+.stats-container {
+margin-top: 20px;
+}
+
+.logout-button {
+ cursor: pointer;
+ width: 30px;
+ height: auto;
+}
+
+.top-container {
+ display: flex;
+ justify-content: space-between;
+ height: 30px;
+ align-items: center;
+}
+
+.pencil-icon {
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.nickname {
+    align-items: center;
+}

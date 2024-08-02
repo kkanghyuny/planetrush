@@ -26,7 +26,7 @@ const gridPositions = [
 const MainPage = () => {
   const navigate = useNavigate();
 
-  const [planets, setPlanets] = useState([]);
+  const [planets, setPlanets] = useState(null);
 
   useEffect(() => {
     const joinPlanetList = async () => {
@@ -42,14 +42,17 @@ const MainPage = () => {
           const data = response.data.data;
           setPlanets(data);
         } else {
+          setPlanets([])
         }
-      } catch (error) {}
+      } catch (error) {
+        setPlanets([])
+      }
     };
     joinPlanetList();
   }, []);
 
   const getPlanetSize = (totalPlanets, index) => {
-    const baseSize = 120 - (totalPlanets - 1) * 10;
+    const baseSize = 120 - (totalPlanets - 1) * 8;
     const sizeAdjustment = (9 - index) * 5;
     const size = baseSize + sizeAdjustment;
 
@@ -123,6 +126,10 @@ const MainPage = () => {
       }
     };
   };
+
+  if (planets === null) {
+    return null
+  }
 
   return (
     <div className="page-container">
