@@ -9,16 +9,16 @@ import "../../App.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 const SearchPlanet = () => {
+  const navigate = useNavigate();
+
   const [filteredChallenges, setFilteredChallenges] = useState([]);
   const [displayedChallenges, setDisplayedChallenges] = useState([]);
-
   const [isSearchPerformed, setIsSearchPerformed] = useState(false);
-
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
   const [hasNext, setHasNext] = useState(true);
   const [lastPlanetId, setLastPlanetId] = useState(null);
+  const [recommends, setRecommends] = useState([]);
 
   const categories = [
     { label: "운동", value: "EXERCISE" },
@@ -28,8 +28,6 @@ const SearchPlanet = () => {
     { label: "기타", value: "ETC" },
   ];
 
-  const navigate = useNavigate();
-
   const handleClick = () => {
     navigate("/main");
   };
@@ -38,27 +36,16 @@ const SearchPlanet = () => {
     if (!dateArray || dateArray.length !== 3) return "";
 
     const [year, month, day] = dateArray;
-
-    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
+    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     return formattedDate;
   };
 
-  // 카테고리 value가 영문으로 되어 있는 것을 다시 label과 매칭시켜주는 과정
   const getCategoryLabel = (value) => {
     const category = categories.find((cat) => cat.value === value);
-
     return category ? category.label : value;
   };
 
-  // 실제로 백엔드에서 데이터를 가져와 처리하는 과정 (비동기 작업)
-  const fetchChallenges = async (
-    query = "",
-    selectedCategory = "",
-    lastPlanetId = null,
-    isLoadMore = false
-  ) => {
+  const fetchChallenges = async (query = "", selectedCategory = "", lastPlanetId = null, isLoadMore = false) => {
     try {
       const params = {
         size: 10,
@@ -71,21 +58,12 @@ const SearchPlanet = () => {
       const data = response.data.data;
 
       const planets = data.planets || [];
-
-      // 입력한 키워드나 선태한 카테고리에 따라 결과물을 필터링한다.
       let filteredPlanets = planets.filter((challenge) => {
-        const matchesQuery = query
-          ? challenge.name.includes(query) || challenge.content.includes(query)
-          : true;
-
-        const matchesCategory = selectedCategory
-          ? challenge.category === selectedCategory
-          : true;
-
+        const matchesQuery = query ? challenge.name.includes(query) || challenge.content.includes(query) : true;
+        const matchesCategory = selectedCategory ? challenge.category === selectedCategory : true;
         return matchesQuery && matchesCategory;
       });
 
-      // 카테고리와 날짜는 앞에서 봤듯이 자료 형태의 수정이 필요하므로 수정 과정을 거친다.
       const formattedPlanets = filteredPlanets.map((challenge) => ({
         ...challenge,
         category: getCategoryLabel(challenge.category),
@@ -93,16 +71,10 @@ const SearchPlanet = () => {
         endDate: formatDate(challenge.endDate),
       }));
 
-      // 역순으로 바꾸어 가장 최신으로 만들어진 챌린지를 먼저 불러오게 만든다.
-      const sortedPlanets = formattedPlanets.sort(
-        (a, b) => b.planetId - a.planetId
-      );
+      const sortedPlanets = formattedPlanets.sort((a, b) => b.planetId - a.planetId);
 
       if (isLoadMore) {
-        setDisplayedChallenges((prevChallenges) => [
-          ...prevChallenges,
-          ...sortedPlanets,
-        ]);
+        setDisplayedChallenges((prevChallenges) => [...prevChallenges, ...sortedPlanets]);
       } else {
         setFilteredChallenges(sortedPlanets);
         setDisplayedChallenges(sortedPlanets);
@@ -114,15 +86,15 @@ const SearchPlanet = () => {
       }
 
       setHasNext(data.hasNext);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Failed to fetch challenges", error);
+    }
   };
 
-  // 검색어 입력 시마다 상태가 query에 저장되는 형태로 작동
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
 
-  // 검색 버튼을 클릭하거나 엔터 쳤을 때 실행되는 로직
   const handleSearch = (e) => {
     e.preventDefault();
     setLastPlanetId(null);
@@ -130,27 +102,39 @@ const SearchPlanet = () => {
     setIsSearchPerformed(true);
   };
 
-  // 카테고리 버튼 클릭
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = async (category) => {
     const newCategory = selectedCategory === category ? "" : category;
 
     setSelectedCategory(newCategory);
     setLastPlanetId(null);
     fetchChallenges(query, newCategory, null);
+
+    if (newCategory) {
+      try {
+        const response = await instance.get('/recommend/keyword', { params: { category: newCategory } });
+        const data = response.data.data
+        setRecommends(data);
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      setRecommends([]);
+    }
+  };
+
+  const handleRecommendClick = (keyword) => {
+    fetchChallenges(keyword, selectedCategory, null);
+    setIsSearchPerformed(true);
   };
 
   const observer = useRef();
 
-  const handleObserver = useCallback(
-    (entries) => {
-      const target = entries[0];
-
-      if (target.isIntersecting && hasNext) {
-        fetchChallenges(query, selectedCategory, lastPlanetId, true);
-      }
-    },
-    [hasNext, lastPlanetId, query, selectedCategory]
-  );
+  const handleObserver = useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasNext) {
+      fetchChallenges(query, selectedCategory, lastPlanetId, true);
+    }
+  }, [hasNext, lastPlanetId, query, selectedCategory]);
 
   useEffect(() => {
     const option = {
@@ -192,12 +176,9 @@ const SearchPlanet = () => {
       </div>
 
       <div className="category-buttons">
-        {/* db에 있는 value와 우리가 front에서 보여주고 싶은 label이 달라서 생기는 문제 */}
         {categories.map((category) => (
           <button
-            className={`category-button ${
-              selectedCategory === category.value ? "selected" : ""
-            }`}
+            className={`category-button ${selectedCategory === category.value ? "selected" : ""}`}
             key={category.value}
             onClick={() => handleCategoryClick(category.value)}
           >
@@ -206,14 +187,22 @@ const SearchPlanet = () => {
         ))}
       </div>
 
+      {recommends.length > 0 && (
+        <div className="recommend-container">
+          <h4>추천 검색어:</h4>
+          <ul className="recommend-list">
+            {recommends.map((recommend, index) => (
+              <li key={index} onClick={() => handleRecommendClick(recommend.keyword)}>{recommend.keyword}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="results-container">
         {isSearchPerformed || selectedCategory !== "" ? (
           filteredChallenges.length > 0 ? (
             <>
-              <ChallengeList
-                challenges={displayedChallenges}
-                displayedChallenges={displayedChallenges}
-              />
+              <ChallengeList challenges={displayedChallenges} displayedChallenges={displayedChallenges} />
               <div className="loadMore"></div>
             </>
           ) : (
@@ -223,10 +212,7 @@ const SearchPlanet = () => {
           )
         ) : (
           <>
-            <ChallengeList
-              challenges={displayedChallenges}
-              displayedChallenges={displayedChallenges}
-            />
+            <ChallengeList challenges={displayedChallenges} displayedChallenges={displayedChallenges} />
             <div className="loadMore"></div>
           </>
         )}
