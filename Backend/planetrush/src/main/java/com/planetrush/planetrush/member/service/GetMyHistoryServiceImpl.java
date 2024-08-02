@@ -31,7 +31,6 @@ public class GetMyHistoryServiceImpl implements GetMyHistoryService {
 		CategoryAvgVo studyAvgs = historyRepositoryCustom.getCategoryStats(memberId, Category.STUDY);
 		CategoryAvgVo etcAvgs = historyRepositoryCustom.getCategoryStats(memberId, Category.ETC);
 		return GetMyHistoryDto.builder()
-			.completionRate((int)allAvgs.getMyAvg())
 			.completionCnt(completionCnt)
 			.challengeCnt(challengeCnt)
 			.myAllAvg(allAvgs.getRoundedMyAvg())
