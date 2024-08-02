@@ -4,8 +4,6 @@ import com.planetrush.planetrush.member.domain.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -50,13 +48,6 @@ public class Resident {
 	private Planet planet;
 
 	/**
-	 * 챌린지 진행 상태를 나타냅니다.
-	 */
-	@Enumerated(EnumType.STRING)
-	@Column(name = "challenger_status", nullable = false)
-	private ChallengerStatus challengerStatus;
-
-	/**
 	 * 행성 퇴출 여부를 나타냅니다.
 	 */
 	@Column(name = "is_banned", nullable = false)
@@ -81,10 +72,9 @@ public class Resident {
 	 * @param banned 행성 퇴출 여부
 	 * @param creator 행성 창조 여부
 	 */
-	private Resident(Member member, Planet planet, ChallengerStatus challengerStatus, Boolean banned, Boolean creator) {
+	private Resident(Member member, Planet planet, Boolean banned, Boolean creator) {
 		addMember(member);
 		addPlanet(planet);
-		this.challengerStatus = challengerStatus;
 		this.banned = banned;
 		this.creator = creator;
 	}
@@ -96,7 +86,7 @@ public class Resident {
 	 * @return 행성 거주 정보 객체를 반환
 	 */
 	public static Resident isNotCreator(Member member, Planet planet) {
-		return new Resident(member, planet, ChallengerStatus.READY, false, false);
+		return new Resident(member, planet, false, false);
 	}
 
 	/**
@@ -106,7 +96,7 @@ public class Resident {
 	 * @return 행성 거주 정보 객체를 반환
 	 */
 	public static Resident isCreator(Member member, Planet planet) {
-		return new Resident(member, planet, ChallengerStatus.READY, false, true);
+		return new Resident(member, planet, false, true);
 	}
 
 	/**

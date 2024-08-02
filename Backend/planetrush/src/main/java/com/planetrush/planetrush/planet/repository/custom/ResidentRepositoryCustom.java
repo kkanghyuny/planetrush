@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.planetrush.planetrush.member.domain.Member;
-import com.planetrush.planetrush.planet.domain.ChallengerStatus;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -31,8 +30,7 @@ public class ResidentRepositoryCustom {
 		return queryFactory.selectFrom(resident)
 			.where(
 				memberIdEq(memberId),
-				planetIdEq(planetId),
-				isReadyStatus()
+				planetIdEq(planetId)
 			)
 			.fetchOne() != null;
 	}
@@ -46,8 +44,8 @@ public class ResidentRepositoryCustom {
 		return queryFactory.selectFrom(resident)
 			.where(
 				planetIdEq(planetId),
-				isNotBanned(),
-				isInProgressStatus())
+				isNotBanned()
+			)
 			.fetch();
 	}
 
@@ -57,7 +55,6 @@ public class ResidentRepositoryCustom {
 	public void banMemberFromPlanet(Member member, Planet planet) {
 		queryFactory.update(resident)
 			.set(resident.banned, true)
-			.set(resident.challengerStatus, ChallengerStatus.FAIL)
 			.where(resident.member.eq(member),
 				resident.planet.eq(planet))
 			.execute();
@@ -71,15 +68,8 @@ public class ResidentRepositoryCustom {
 		return memberId != null ? resident.member.id.eq(memberId) : null;
 	}
 
-	private BooleanExpression isReadyStatus() {
-		return resident.challengerStatus.eq(ChallengerStatus.READY);
-	}
-
-	private BooleanExpression isInProgressStatus() {
-		return resident.challengerStatus.eq(ChallengerStatus.IN_PROGRESS);
-	}
-
 	private BooleanExpression isNotBanned() {
 		return resident.banned.isFalse();
 	}
+	
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.planetrush.planetrush.member.service.vo.CategoryAvgVo;
 import com.planetrush.planetrush.planet.domain.Category;
-import com.planetrush.planetrush.planet.domain.ChallengerStatus;
+import com.planetrush.planetrush.planet.domain.PlanetStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,7 +33,8 @@ public class HistoryRepositoryCustom {
 					.select(challengeHistory.progress.avg().as("myAvg"))
 					.from(challengeHistory)
 					.where(
-						challengeHistory.member.id.eq(memberId).and((category != null) ? challengeHistory.category.eq(category) : null)),
+						challengeHistory.member.id.eq(memberId)
+							.and((category != null) ? challengeHistory.category.eq(category) : null)),
 				challengeHistory.progress.avg().as("allAvg")
 			))
 			.from(challengeHistory)
@@ -64,8 +65,9 @@ public class HistoryRepositoryCustom {
 		Long challengeCount = queryFactory
 			.select(resident.count())
 			.from(resident)
-			.where(resident.member.id.eq(memberId)
-				.and(resident.challengerStatus.in(ChallengerStatus.COMPLETED, ChallengerStatus.FAIL)))
+			.where(resident.member.id.eq(memberId),
+				resident.planet.status.in(PlanetStatus.COMPLETED, PlanetStatus.DESTROYED)
+			)
 			.fetchOne();
 		return (challengeCount != null) ? challengeCount : 0L;
 	}
