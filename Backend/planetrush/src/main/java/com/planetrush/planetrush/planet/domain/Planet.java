@@ -206,6 +206,8 @@ public class Planet {
 
 	/**
 	 * 현재 행성의 참가자 수를 1 감소시킵니다.
+	 * 챌린지 시작 전 행성을 떠날 수 있습니다.
+	 *
 	 * <p>
 	 * 참가자 수가 0이 되면 행성의 상태를 {@code PlanetStatus.DESTROYED}로 변경합니다.
 	 * 참가자 수가 음수가 되면 {@code NegativeParticipantCountException}이 발생합니다.
@@ -214,17 +216,38 @@ public class Planet {
 	 * @throws ResidentExitTimeoutException 챌린지가 시작하여 행성 탈퇴가 불가능한 경우
 	 * @throws NegativeParticipantCountException 참가자 수가 음수가 될 경우
 	 */
-	public void removeParticipant() {
+	public void participantLeave() {
 		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(this.startDate)) {
 			throw new ResidentExitTimeoutException();
-		}
-		if (currentParticipants == 0) {
-			this.status = PlanetStatus.DESTROYED;
 		}
 		if (currentParticipants < 0) {
 			throw new NegativeParticipantCountException();
 		}
 		this.currentParticipants--;
+		if (currentParticipants == 0) {
+			this.status = PlanetStatus.DESTROYED;
+		}
+	}
+
+	/**
+	 * 현재 행성의 참가자 수를 1 감소시킵니다.
+	 * 인증을 하지 않는 참가자를 퇴출시킵니다.
+	 *
+	 * <p>
+	 * 참가자 수가 0이 되면 행성의 상태를 {@code PlanetStatus.DESTROYED}로 변경합니다.
+	 * 참가자 수가 음수가 되면 {@code NegativeParticipantCountException}이 발생합니다.
+	 * </p>
+	 *
+	 * @throws NegativeParticipantCountException 참가자 수가 음수가 될 경우
+	 */
+	public void participantExpulsion() {
+		if (currentParticipants < 0) {
+			throw new NegativeParticipantCountException();
+		}
+		this.currentParticipants--;
+		if (currentParticipants == 0) {
+			this.status = PlanetStatus.DESTROYED;
+		}
 	}
 
 	/**
@@ -234,6 +257,20 @@ public class Planet {
 	 */
 	public long calcTotalVerificationCnt() {
 		return ChronoUnit.DAYS.between(this.startDate, this.endDate);
+	}
+
+	/**
+	 * 완료 상태로 변경합니다.
+	 */
+	public void complete() {
+		this.status = PlanetStatus.COMPLETED;
+	}
+
+	/**
+	 * 파괴 상태로 변경합니다.
+	 */
+	public void destroy() {
+		this.status = PlanetStatus.DESTROYED;
 	}
 
 }

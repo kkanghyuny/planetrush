@@ -52,3 +52,8 @@ notification:
     author-name: ${MATTERMOST_AUTHOR_NAME} # attachment의 상단에 나오는 이름
     author-icon: ${MATTERMOST_AUTHOR_ICON} # author-icon 왼쪽에 나올 아이콘의 url링크
     footer: # attachment에 하단에 나올 부분. default=현재 시간
+
+scheduled-task:
+  change-planet-status-cron: ${DEV_CHANGE-PLANET-STATUS-CRON}
+  ban-if-last-verification-older-than-three-days: ${DEV_BAN-IF-LAST-VERIFICATION-OLDER-THAN-THREE-DAYS}
+  planet-complete-destroy: ${DEV_PLANET-COMPLETE-DESTROY}

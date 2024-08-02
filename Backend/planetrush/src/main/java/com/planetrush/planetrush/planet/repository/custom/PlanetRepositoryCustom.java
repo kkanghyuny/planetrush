@@ -4,6 +4,7 @@ import static com.planetrush.planetrush.planet.domain.QPlanet.*;
 import static com.planetrush.planetrush.planet.domain.QResident.*;
 import static com.planetrush.planetrush.verification.domain.QVerificationRecord.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -102,8 +103,78 @@ public class PlanetRepositoryCustom {
 			.fetch();
 	}
 
+	/**
+	 * planet의 상태를 READY에서 IN_PROGRESS로 업데이트합니다.
+	 *
+	 * planet의 상태가 READY이고 시작일자가 오늘인 경우에 해당합니다.
+	 */
+	public void updateStatusReadyToInProgress() {
+		queryFactory.update(planet)
+			.set(planet.status, PlanetStatus.IN_PROGRESS)
+			.where(
+				isReadyStatus(),
+				eqStartDateAndToday()
+			)
+			.execute();
+	}
+
+	/**
+	 * planet의 상태를 IN_PROGRESS에서 UNDER_REVIEW로 업데이트합니다.
+	 *
+	 * planet의 상태가 IN_PROGRESS이고 종료일자가 오늘인 경우에 해당합니다.
+	 */
+	public void updateStatusInProgressToUnderReview() {
+		queryFactory.update(planet)
+			.set(planet.status, PlanetStatus.UNDER_REVIEW)
+			.where(
+				isInProgressStatus(),
+				eqEndDateAndToday()
+			)
+			.execute();
+	}
+
+	/**
+	 * 상태가 IN_PROGRESS 또는 UNDER_REVIEW인 모든 planet을 조회합니다.
+	 *
+	 * @return 상태가 IN_PROGRESS 또는 UNDER_REVIEW인 planet의 리스트
+	 */
+	public List<Planet> findAllStatusIsInProgressAndUnderReview() {
+		return queryFactory.selectFrom(planet)
+			.where(isInProgressStatus().or(isUnderReviewStatus()))
+			.fetch();
+	}
+
+	/**
+	 * 상태가 UNDER_REVIEW인 모든 planet을 조회합니다.
+	 *
+	 * @return 상태가 UNDER_REVIEW인 planet의 리스트
+	 */
+	public List<Planet> findAllStatusIsUnderReview() {
+		return queryFactory.selectFrom(planet)
+			.where(
+				isUnderReviewStatus()
+			)
+			.fetch();
+	}
+
 	private BooleanExpression isReadyStatus() {
 		return planet.status.eq(PlanetStatus.READY);
+	}
+
+	private BooleanExpression isInProgressStatus() {
+		return planet.status.eq(PlanetStatus.IN_PROGRESS);
+	}
+
+	private BooleanExpression isUnderReviewStatus() {
+		return planet.status.eq(PlanetStatus.UNDER_REVIEW);
+	}
+
+	private BooleanExpression eqStartDateAndToday() {
+		return planet.startDate.eq(LocalDate.now());
+	}
+
+	private BooleanExpression eqEndDateAndToday() {
+		return planet.endDate.eq(LocalDate.now());
 	}
 
 	private BooleanExpression isKeywordContained(String keyword) {
@@ -117,5 +188,4 @@ public class PlanetRepositoryCustom {
 	private BooleanExpression isInCategory(String category) {
 		return category != null ? planet.category.stringValue().eq(category) : null;
 	}
-
 }

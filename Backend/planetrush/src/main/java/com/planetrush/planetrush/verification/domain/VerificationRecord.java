@@ -1,6 +1,8 @@
 package com.planetrush.planetrush.verification.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -91,6 +93,13 @@ public class VerificationRecord {
 		this.verified = verified;
 		this.similarityScore = similarityScore;
 		this.imgUrl = imgUrl;
+	}
+
+	public boolean isDifferenceGreaterThanFourDays() {
+		LocalDate currentDate = LocalDate.now();
+		LocalDate uploadDateOnly = this.uploadDate.toLocalDate();
+		long daysDifference = ChronoUnit.DAYS.between(uploadDateOnly, currentDate);
+		return daysDifference >= 4;
 	}
 
 }
