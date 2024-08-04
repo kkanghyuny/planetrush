@@ -3,9 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <!-- 아이콘 link 설정 -->
-    <link rel="icon" href="icons/android-chrome-192x192.png" type="image/png" />
-    <link rel="alternate icon" href="/favicon.ico" type="ico" sizes="16x16" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="icon" href="icons/PlanetRush_512x512.png" type="image/png" />
+    <link
+      rel="alternate icon"
+      href="icons/favicon.ico"
+      type="ico"
+      sizes="16x16"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
     <script src="https://unpkg.com/boxicons@2.1.3/dist/boxicons.js"></script>
     <link
       rel="apple-touch-icon"
@@ -15,26 +23,23 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
-    <title>pwa test</title>
+    <title>Planet Rush</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- pwa sw.js 정보 줄러오는 스크립트 추가 -->
     <script>
       if ("serviceWorker" in navigator) {
-        // Register a service worker hosted at the root of the
-        // site using the default scope.
         navigator.serviceWorker
           .register("./src/service-worker.js")
           .then((registration) => {
-            console.log("Service worker registration succeeded:", registration);
+            // console.log("Service worker registration succeeded:", registration);
           })
           .catch((err) => {
-            console.log("Service worker registration failed:", err);
+            // console.log("Service worker registration failed:", err);
           });
       } else {
-        console.log("Service workers are not supported.");
+        // console.log("Service workers are not supported.");
       }
     </script>
   </body>

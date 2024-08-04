@@ -83,18 +83,19 @@ const PlanetCreateImg = () => {
   }, [showAlert]);
 
   return (
-    <div className="container">
+    <div className="img-container">
       <BiSolidLeftArrowCircle
         onClick={() => navigate(-1)}
         className="back-button"
       />
       <h3>행성을 생성해주세요</h3>
-      <button onClick={getNewPlanetInfo} className="create-button">
-        생성하기
-      </button>
+      <div className="outer-button">
+        <span>생성하기</span>
+        <button onClick={getNewPlanetInfo} className="create-button"></button>
+      </div>
       {showAlert && <div className="alert">그림을 그려주세요!</div>}{" "}
       {view === "default" ? (
-        <div>
+        <div className="choose-img-container">
           {selectedImage && (
             <div className="image-container">
               <img
@@ -104,15 +105,17 @@ const PlanetCreateImg = () => {
               />
             </div>
           )}
-          <div className="button-container">
-            <button onClick={handleDefaultClick} className="tab-button">
-              고르기
-            </button>
-            <button onClick={handleCustomClick} className="tab-button">
-              커스텀
-            </button>
+          <div className="img-button-container">
+            <div className="button-container">
+              <p onClick={handleDefaultClick} className="tab-button">
+                고르기
+              </p>
+              <p onClick={handleCustomClick} className="tab-button">
+                커스텀
+              </p>
+            </div>
+            <ChoosePlanet selectImage={handleImageSelect} />
           </div>
-          <ChoosePlanet selectImage={handleImageSelect} />
         </div>
       ) : (
         <div>
