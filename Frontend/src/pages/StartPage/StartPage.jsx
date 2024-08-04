@@ -16,13 +16,20 @@ const SocialKakao = () => {
   };
 
   return (
-    <div className="kakaologin">
+    <div className="start-page">
       <img
-        src={kakaoLogin}
-        alt="Kakao Talk"
-        className="kakao_login"
-        onClick={handleLogin}
+        src="/public/logo/로고-배경없음.png"
+        alt="로고"
+        className="my-logo"
       />
+      <div className="kakaologin">
+        <img
+          src={kakaoLogin}
+          alt="Kakao Talk"
+          className="kakao_login"
+          onClick={handleLogin}
+        />
+      </div>
     </div>
   );
 };

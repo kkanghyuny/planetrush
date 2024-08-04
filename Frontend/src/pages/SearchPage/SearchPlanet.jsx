@@ -36,7 +36,9 @@ const SearchPlanet = () => {
     if (!dateArray || dateArray.length !== 3) return "";
 
     const [year, month, day] = dateArray;
-    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const formattedDate = `${year}-${String(month).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
     return formattedDate;
   };
 
@@ -45,7 +47,12 @@ const SearchPlanet = () => {
     return category ? category.label : value;
   };
 
-  const fetchChallenges = async (query = "", selectedCategory = "", lastPlanetId = null, isLoadMore = false) => {
+  const fetchChallenges = async (
+    query = "",
+    selectedCategory = "",
+    lastPlanetId = null,
+    isLoadMore = false
+  ) => {
     try {
       const params = {
         size: 10,
@@ -59,8 +66,12 @@ const SearchPlanet = () => {
 
       const planets = data.planets || [];
       let filteredPlanets = planets.filter((challenge) => {
-        const matchesQuery = query ? challenge.name.includes(query) || challenge.content.includes(query) : true;
-        const matchesCategory = selectedCategory ? challenge.category === selectedCategory : true;
+        const matchesQuery = query
+          ? challenge.name.includes(query) || challenge.content.includes(query)
+          : true;
+        const matchesCategory = selectedCategory
+          ? challenge.category === selectedCategory
+          : true;
         return matchesQuery && matchesCategory;
       });
 
@@ -71,10 +82,15 @@ const SearchPlanet = () => {
         endDate: formatDate(challenge.endDate),
       }));
 
-      const sortedPlanets = formattedPlanets.sort((a, b) => b.planetId - a.planetId);
+      const sortedPlanets = formattedPlanets.sort(
+        (a, b) => b.planetId - a.planetId
+      );
 
       if (isLoadMore) {
-        setDisplayedChallenges((prevChallenges) => [...prevChallenges, ...sortedPlanets]);
+        setDisplayedChallenges((prevChallenges) => [
+          ...prevChallenges,
+          ...sortedPlanets,
+        ]);
       } else {
         setFilteredChallenges(sortedPlanets);
         setDisplayedChallenges(sortedPlanets);
@@ -111,8 +127,10 @@ const SearchPlanet = () => {
 
     if (newCategory) {
       try {
-        const response = await instance.get('/recommend/keyword', { params: { category: newCategory } });
-        const data = response.data.data
+        const response = await instance.get("/recommend/keyword", {
+          params: { category: newCategory },
+        });
+        const data = response.data.data;
         setRecommends(data);
       } catch (error) {
         throw error;
@@ -129,12 +147,15 @@ const SearchPlanet = () => {
 
   const observer = useRef();
 
-  const handleObserver = useCallback((entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && hasNext) {
-      fetchChallenges(query, selectedCategory, lastPlanetId, true);
-    }
-  }, [hasNext, lastPlanetId, query, selectedCategory]);
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasNext) {
+        fetchChallenges(query, selectedCategory, lastPlanetId, true);
+      }
+    },
+    [hasNext, lastPlanetId, query, selectedCategory]
+  );
 
   useEffect(() => {
     const option = {
@@ -178,7 +199,9 @@ const SearchPlanet = () => {
       <div className="category-buttons">
         {categories.map((category) => (
           <button
-            className={`category-button ${selectedCategory === category.value ? "selected" : ""}`}
+            className={`category-button ${
+              selectedCategory === category.value ? "selected" : ""
+            }`}
             key={category.value}
             onClick={() => handleCategoryClick(category.value)}
           >
@@ -192,7 +215,12 @@ const SearchPlanet = () => {
           <h4>추천 검색어:</h4>
           <ul className="recommend-list">
             {recommends.map((recommend, index) => (
-              <li key={index} onClick={() => handleRecommendClick(recommend.keyword)}>{recommend.keyword}</li>
+              <li
+                key={index}
+                onClick={() => handleRecommendClick(recommend.keyword)}
+              >
+                {recommend.keyword}
+              </li>
             ))}
           </ul>
         </div>
@@ -202,7 +230,10 @@ const SearchPlanet = () => {
         {isSearchPerformed || selectedCategory !== "" ? (
           filteredChallenges.length > 0 ? (
             <>
-              <ChallengeList challenges={displayedChallenges} displayedChallenges={displayedChallenges} />
+              <ChallengeList
+                challenges={displayedChallenges}
+                displayedChallenges={displayedChallenges}
+              />
               <div className="loadMore"></div>
             </>
           ) : (
@@ -212,7 +243,10 @@ const SearchPlanet = () => {
           )
         ) : (
           <>
-            <ChallengeList challenges={displayedChallenges} displayedChallenges={displayedChallenges} />
+            <ChallengeList
+              challenges={displayedChallenges}
+              displayedChallenges={displayedChallenges}
+            />
             <div className="loadMore"></div>
           </>
         )}

@@ -9,23 +9,23 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "My PWA App",
-        short_name: "PWA App",
-        description: "My awesome Progressive Web App!",
+        name: "Planet Rush",
+        short_name: "Planet Rush",
+        description: "Let's start Challenge!",
         theme_color: "#ffffff",
         icons: [
           {
-            src: "/icons/pwa-192x192.png",
+            src: "/icons/PlanetRush_192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/icons/pwa-512x512.png",
+            src: "/icons/PlanetRush_512x512.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "/icons/pwa-512x512.png",
+            src: "/icons/PlanetRush_512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",

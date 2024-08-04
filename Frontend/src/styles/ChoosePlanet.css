@@ -10,4 +10,12 @@
   height: 80px;
   object-fit: cover;
   cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.grid-item:hover,
+.grid-item.selected {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px 2px cyan;
 }

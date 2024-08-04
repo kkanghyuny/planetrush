@@ -34,8 +34,6 @@ const PlanetDetailInProgress = () => {
         });
         const data = response.data;
 
-        console.log(data.data);
-
         setPlanetInfo({
           name: data.data.name,
           category: data.data.category,
