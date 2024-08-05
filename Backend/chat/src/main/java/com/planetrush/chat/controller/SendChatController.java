@@ -1,12 +1,12 @@
 package com.planetrush.chat.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import java.time.LocalDateTime;
+
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
 
 import com.planetrush.chat.controller.request.SendChatReq;
 import com.planetrush.chat.service.RedisPubService;
-import com.planetrush.chat.service.RedisPubServiceImpl;
 import com.planetrush.chat.service.SaveChatService;
 import com.planetrush.chat.service.dto.SendChatDto;
 
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class SendChatController extends ChatController {
 
 	private final RedisPubService redisPubService;
@@ -35,14 +35,17 @@ public class SendChatController extends ChatController {
 	 * @see SendChatReq
 	 * @see SaveChatService
 	 */
-	@PostMapping("/send")
-	public void saveChat(@RequestBody SendChatReq req) {
+	@MessageMapping("/send")
+	public void saveChat(SendChatReq req) {
+		System.out.println("요청 왔다");
+		// System.out.println("roomId = " + roomId);
+		System.out.println(req.getMemberId() + " " + req.getPlanetId() + " " + req.getContent());
 		log.info("Redis Pub MSG = {}", req.getContent());
 		SendChatDto dto = SendChatDto.builder()
 			.memberId(req.getMemberId())
 			.planetId(req.getPlanetId())
 			.content(req.getContent())
-			.createdAt(req.getCreatedAt())
+			.createdAt(LocalDateTime.now())
 			.build();
 
 		saveChatService.saveChat(dto);

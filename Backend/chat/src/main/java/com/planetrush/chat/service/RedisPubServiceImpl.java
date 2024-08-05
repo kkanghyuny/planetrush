@@ -23,7 +23,7 @@ public class RedisPubServiceImpl implements RedisPubService {
 	 * @param dto 발행할 채팅 메시지의 정보객체
 	 */
 	public void pubMsgChannel(SendChatDto dto) {
-		String chatRoom = "planet:" + dto.getPlanetId();
+		String chatRoom = "planet" + dto.getPlanetId();
 		log.info("pubMsgChannel: " + chatRoom);
 		redisMessageListenerContainer.addMessageListener(redisSubscribeListener, new ChannelTopic(chatRoom));
 		redisPublisher.publish(new ChannelTopic(chatRoom), dto);
