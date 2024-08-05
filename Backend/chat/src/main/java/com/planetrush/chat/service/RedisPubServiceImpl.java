@@ -1,7 +1,6 @@
 package com.planetrush.chat.service;
 
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import com.planetrush.chat.service.dto.SendChatDto;
@@ -14,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisPubServiceImpl implements RedisPubService {
 
-	private final RedisMessageListenerContainer redisMessageListenerContainer;
 	private final RedisPublisher redisPublisher;
-	private final RedisSubscribeListener redisSubscribeListener;
 
 	/**
 	 * 채널 별 메시지 전송
@@ -25,7 +22,6 @@ public class RedisPubServiceImpl implements RedisPubService {
 	public void pubMsgChannel(SendChatDto dto) {
 		String chatRoom = "planet" + dto.getPlanetId();
 		log.info("pubMsgChannel: " + chatRoom);
-		redisMessageListenerContainer.addMessageListener(redisSubscribeListener, new ChannelTopic(chatRoom));
 		redisPublisher.publish(new ChannelTopic(chatRoom), dto);
 	}
 }
