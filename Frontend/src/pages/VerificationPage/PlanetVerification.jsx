@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 
 import { BiSolidImageAlt } from "react-icons/bi";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 import "../../styles/PlanetVerification.css";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const PlanetVerification = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const PlanetVerification = () => {
       setSelectedImage(imageUrl);
     }
   };
+
+  const handleVerification = (selectedImage) => {};
 
   return (
     <div>
@@ -53,7 +56,9 @@ const PlanetVerification = () => {
         </div>
         {selectedImage && (
           <div className="buttons">
-            <button className="button">업로드하기</button>
+            <button className="button" onClick={handleVerification}>
+              업로드하기
+            </button>
             <button className="button" onClick={() => setSelectedImage(null)}>
               다시 찍기
             </button>

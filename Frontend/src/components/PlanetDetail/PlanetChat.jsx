@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import { Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 import "../../styles/PlanetChat.css";
 
-const CHAT_URL = "http://i11a509.p.ssafy.io/api/v2/chat";
+const CHAT_URL = "https://i11a509.p.ssafy.io:8080/chat/v2";
+const LOCAL = "http://70.12.247.69:8002/chat/v2";
 
-const PlanetChat = ({ planetInfo, resident }) => {
+const PlanetChat = ({ planetId, planetInfo, residents }) => {
   const stompClient = useRef(null);
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -17,36 +19,57 @@ const PlanetChat = ({ planetInfo, resident }) => {
     setInputValue(e.target.value);
   };
 
-  const planetId = planetInfo.planetId;
+  // console.log(residents);
+
+  //접속 유저의 id
+  const memberId = residents
+    .filter((resident) => resident.isQuerriedMember)
+    .map((resident) => resident.memberId)[0];
 
   // 기존 채팅 메시지를 서버로부터 가져오는 함수
   const fetchMessages = async () => {
-    const response = await axios.get(`${CHAT_URL}`, {
+    const response = await axios.get(LOCAL, {
       params: { "planet-id": planetId },
     });
 
     const data = response.data;
     setMessages(data);
+
+    console.log(data);
   };
 
   useEffect(() => {
     connect();
     fetchMessages();
 
-    return () => disconnect();
+    return () => {
+      disconnect();
+    };
   }, []);
 
   // 웹소켓 연결 설정
   const connect = () => {
-    const socket = new WebSocket("ws://i11a509.p.ssafy.io:8080");
+    const socket = new SockJS("http://70.12.247.69:8002/ws");
     stompClient.current = Stomp.over(socket);
 
+    console.log(stompClient);
+
     stompClient.current.connect({}, () => {
-      stompClient.current.subscribe(`/sub/chatroom/1`, (message) => {
-        const newMessage = JSON.parse(message.body);
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-        scrollToBottom();
-      });
+      stompClient.current.subscribe(
+        `/sub/planet${planetId}`,
+        (message) => {
+          const newMessage = JSON.parse(message.body);
+
+          console.log(newMessage);
+
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+          scrollToBottom();
+        },
+        (error) => {
+          console.error("STOMP connection error:", error);
+        }
+      );
     });
   };
 
@@ -58,14 +81,16 @@ const PlanetChat = ({ planetInfo, resident }) => {
   };
 
   //메세지 전송
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (stompClient.current && inputValue) {
       const body = {
-        id: resident.id,
-        name: resident.name,
-        message: inputValue,
+        memberId: memberId,
+        content: inputValue,
+        planetId: planetId,
       };
-      stompClient.current.send(`/pub/message`, {}, JSON.stringify(body));
+
+      // 웹소켓을 통해 메시지 전송
+      stompClient.current.send(`/app/send`, {}, JSON.stringify(body));
       setInputValue("");
     }
   };
@@ -79,9 +104,9 @@ const PlanetChat = ({ planetInfo, resident }) => {
     scrollToBottom();
   }, [messages]);
 
-  const getAvatarUrl = (name) => {
-    return `https://www.dicebear.com/styles/bottts-neutral/${name}.svg`;
-  };
+  // const getAvatarUrl = (name) => {
+  //   return `https://www.dicebear.com/styles/bottts-neutral/${name}.svg`;
+  // };
 
   return (
     <div className="chat-container">
@@ -90,20 +115,24 @@ const PlanetChat = ({ planetInfo, resident }) => {
           <div
             key={index}
             className={`list-item ${
-              item.name === resident.name ? "my-message" : "other-message"
+              item.memberId === memberId ? "my-message" : "other-message"
             }`}
           >
-            <img
+            {/* <img
               src={getAvatarUrl(item.name)}
               alt={item.name}
               className="avatar"
-            />
+            /> */}
             <div className="message-content">
               <div className="message-header">
-                <span className="message-name">{item.name}</span>
-                <span className="message-time">07:00</span>{" "}
+                <span className="message-name">
+                  {item.nickname || "Unknown"}
+                </span>
+                <span className="message-time">
+                  {new Date(item.createdAt).toLocaleTimeString()}
+                </span>
               </div>
-              <div className="message-text">{item.message}</div>
+              <div className="message-text">{item.content}</div>
             </div>
           </div>
         ))}
@@ -114,6 +143,7 @@ const PlanetChat = ({ planetInfo, resident }) => {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
+          onKeyUp={handleInputChange}
           className="chat-input"
           placeholder="채팅을 입력해주세요"
         />

@@ -12,6 +12,9 @@ export default defineConfig({
         name: "Planet Rush",
         short_name: "Planet Rush",
         description: "Let's start Challenge!",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#ffffff",
         theme_color: "#ffffff",
         icons: [
           {
@@ -39,5 +42,8 @@ export default defineConfig({
       "@components": "/src/components",
       "@styles": "/src/styles",
     },
+  },
+  define: {
+    global: "window", // global 변수를 window로 설정
   },
 });
