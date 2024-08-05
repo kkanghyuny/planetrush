@@ -46,4 +46,5 @@ public class GetChatServiceImpl implements GetChatService {
 			return message;
 		}).collect(Collectors.toList());
 	}
+
 }

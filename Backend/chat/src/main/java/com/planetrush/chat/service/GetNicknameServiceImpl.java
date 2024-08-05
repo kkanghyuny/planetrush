@@ -1,9 +1,10 @@
 package com.planetrush.chat.service;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +20,10 @@ public class GetNicknameServiceImpl implements GetNicknameService {
 
 	@Override
 	public Map<Long, String> getNicknameByMemberIds(Set<Long> memberIds) {
+		if (memberIds.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
 		String sql = "SELECT member_id, nickname FROM member WHERE member_id IN (?)";
 
 		String inClause = memberIds.stream()
@@ -32,7 +37,6 @@ public class GetNicknameServiceImpl implements GetNicknameService {
 			String nickname = (String)row.get("nickname");
 			nicknameMap.put(memberId, nickname);
 		}
-
 		return nicknameMap;
 	}
 }

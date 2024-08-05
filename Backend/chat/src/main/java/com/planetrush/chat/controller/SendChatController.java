@@ -2,6 +2,7 @@ package com.planetrush.chat.controller;
 
 import java.time.LocalDateTime;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class SendChatController extends ChatController {
 	private final RedisPubService redisPubService;
 	private final SaveChatService saveChatService;
 	private final SimpMessagingTemplate messagingTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
 	/**
 	 * 채팅 메시지를 저장하고, Redis Pub/Sub을 통해 해당 메시지를 전파합니다.
@@ -40,13 +42,14 @@ public class SendChatController extends ChatController {
 	@MessageMapping("/send")
 	public void saveChat(SendChatReq req) {
 		log.info("Redis Pub MSG = {}", req.getContent());
+		String sql = "SELECT nickname FROM member WHERE member_id = ?";
 		SendChatDto dto = SendChatDto.builder()
 			.memberId(req.getMemberId())
 			.planetId(req.getPlanetId())
 			.content(req.getContent())
+			.nickname(jdbcTemplate.queryForObject(sql, new Object[] {req.getMemberId()}, String.class))
 			.createdAt(LocalDateTime.now())
 			.build();
-
 		saveChatService.saveChat(dto);
 		redisPubService.pubMsgChannel(dto);
 		String destination = "/sub/planet" + req.getPlanetId();

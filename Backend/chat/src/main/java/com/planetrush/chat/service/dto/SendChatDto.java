@@ -20,5 +20,6 @@ public class SendChatDto implements Serializable {
 	private Long memberId;
 	private Long planetId;
 	private String content;
+	private String nickname;
 	private LocalDateTime createdAt;
 }
