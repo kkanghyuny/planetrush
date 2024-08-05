@@ -2,7 +2,7 @@ package com.planetrush.chat.service;
 
 import java.util.List;
 
-import com.planetrush.chat.domain.ChattingMessage;
+import com.planetrush.chat.service.dto.GetChatDto;
 
 public interface GetChatService {
 
@@ -12,6 +12,6 @@ public interface GetChatService {
 	 * @param planetId 채팅 메시지를 조회할 대상 행성의 ID
 	 * @return 주어진 행성 ID에 해당하는 채팅 메시지 목록
 	 */
-	List<ChattingMessage> getChattingMessageByPlanetId(Long planetId);
+	List<GetChatDto> getChattingMessageByPlanetId(Long planetId);
 
 }

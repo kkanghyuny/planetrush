@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.planetrush.chat.domain.ChattingMessage;
 import com.planetrush.chat.service.GetChatService;
+import com.planetrush.chat.service.RedisSubscribeListener;
+import com.planetrush.chat.service.dto.GetChatDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GetChatController extends ChatController {
 
 	private final GetChatService getChatService;
+	private final RedisSubscribeListener redisSubscribeListener;
 
 	/**
 	 * 주어진 행성 ID에 해당하는 채팅 메시지 목록을 가져옵니다.
@@ -30,8 +31,8 @@ public class GetChatController extends ChatController {
 	 * @return 요청에 대한 응답으로, 해당 행성과 관련된 채팅 메시지 목록을 포함한 {@link ResponseEntity} 객체
 	 */
 	@GetMapping
-	public ResponseEntity<List<ChattingMessage>> getChattingMessages(@RequestParam(value = "planet-id") Long planetId) {
-		List<ChattingMessage> res = getChatService.getChattingMessageByPlanetId(planetId);
+	public ResponseEntity<List<GetChatDto>> getChattingMessages(@RequestParam(value = "planet-id") Long planetId) {
+		List<GetChatDto> res = getChatService.getChattingMessageByPlanetId(planetId);
 		return ResponseEntity.ok(res);
 	}
 }

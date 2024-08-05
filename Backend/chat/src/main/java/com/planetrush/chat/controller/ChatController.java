@@ -2,6 +2,6 @@ package com.planetrush.chat.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/api/v2/chat")
+@RequestMapping("/chat/v2")
 public abstract class ChatController {
 }
