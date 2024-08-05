@@ -16,6 +16,7 @@ const SearchPlanet = () => {
   const [isSearchPerformed, setIsSearchPerformed] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedRecommend, setSelectedRecommend] = useState(null);
   const [hasNext, setHasNext] = useState(true);
   const [lastPlanetId, setLastPlanetId] = useState(null);
   const [recommends, setRecommends] = useState([]);
@@ -141,7 +142,13 @@ const SearchPlanet = () => {
   };
 
   const handleRecommendClick = (keyword) => {
-    fetchChallenges(keyword, selectedCategory, null);
+    if (selectedRecommend === keyword) {
+      setSelectedRecommend(null);
+      fetchChallenges(query, selectedCategory, null);
+    } else {
+      setSelectedRecommend(keyword);
+      fetchChallenges(keyword, selectedCategory, null);
+    }
     setIsSearchPerformed(true);
   };
 
@@ -192,7 +199,7 @@ const SearchPlanet = () => {
             value={query}
             onChange={handleInputChange}
           />
-          <button className="submit-button" type="submit"></button>
+          <button className="search-submit-button" type="submit"></button>
         </form>
       </div>
 
@@ -210,25 +217,45 @@ const SearchPlanet = () => {
         ))}
       </div>
 
-      {recommends.length > 0 && (
-        <div className="recommend-container">
-          <h4>추천 검색어:</h4>
-          <ul className="recommend-list">
-            {recommends.map((recommend, index) => (
-              <li
-                key={index}
-                onClick={() => handleRecommendClick(recommend.keyword)}
-              >
-                {recommend.keyword}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="scrollable-container">
+        {recommends.length > 0 && (
+          <div className="recommend-container">
+            <h3>
+              지난 주, <span className="category-recommend">{getCategoryLabel(selectedCategory)} 카테고리</span> 에서
+            </h3>
+            <h3>가장 핫한 챌린지예요</h3>
+            <div className="recommend-list">
+              {recommends.map((recommend, index) => (
+                <button
+                  className={`recommend-button ${
+                    selectedRecommend === recommend.keyword ? "selected" : ""
+                  }`}
+                  key={index}
+                  onClick={() => handleRecommendClick(recommend.keyword)}
+                >
+                  {recommend.keyword}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <div className="results-container">
-        {isSearchPerformed || selectedCategory !== "" ? (
-          filteredChallenges.length > 0 ? (
+        <div className="results-container">
+          {isSearchPerformed || selectedCategory !== "" ? (
+            filteredChallenges.length > 0 ? (
+              <>
+                <ChallengeList
+                  challenges={displayedChallenges}
+                  displayedChallenges={displayedChallenges}
+                />
+                <div className="loadMore"></div>
+              </>
+            ) : (
+              <>
+                <h4>검색한 결과가 존재하지 않습니다.</h4>
+              </>
+            )
+          ) : (
             <>
               <ChallengeList
                 challenges={displayedChallenges}
@@ -236,20 +263,8 @@ const SearchPlanet = () => {
               />
               <div className="loadMore"></div>
             </>
-          ) : (
-            <>
-              <h4>검색한 결과가 존재하지 않습니다.</h4>
-            </>
-          )
-        ) : (
-          <>
-            <ChallengeList
-              challenges={displayedChallenges}
-              displayedChallenges={displayedChallenges}
-            />
-            <div className="loadMore"></div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

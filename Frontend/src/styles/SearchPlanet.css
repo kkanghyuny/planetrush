@@ -1,8 +1,9 @@
 /* 기본 스타일 */
 .arrow-circle-icon {
+  font-size: 30px;
   width: 40px;
   height: auto;
-  margin: 10px 0;
+  padding: 10px;
 }
 
 .search-title {
@@ -11,7 +12,6 @@
 
 .search-region {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.5);
   padding: 10px; /* 내부 여백 */
 }
 
@@ -37,6 +37,8 @@
 }
 
 .search-input::placeholder {
+  font-size: 14px;
+  align-items: center;
   color: gray; /* 원하는 색상으로 변경 */
 }
 
@@ -52,46 +54,30 @@
   z-index: -1; /* 입력 필드 뒤에 표시 */
 }
 
-.submit-button {
-  width: 30px; /* 버튼의 가로 길이 */
-  height: 30px; /* 버튼의 세로 길이 */
-  border-radius: 50%; /* 버튼을 동그랗게 만드는 속성 */
-  border: 5px solid #31fff2; /* 도넛 모양의 테두리 */
-  background-color: transparent; /* 버튼의 배경 색상 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: #31fff2; /* 버튼 텍스트 색상 */
-  margin: 5px;
-  cursor: pointer; /* 마우스 포인터 */
-}
-
-.submit-button:hover {
-  background-color: rgba(49, 255, 242, 0.2); /* 호버 시 배경색 */
-}
-
-/* 필터 줄 */
 .category-buttons {
   text-align: center;
   padding: 10px 5px;
+  display: flex;
+  flex-wrap: wrap; /* 버튼이 여러 줄로 나열될 수 있도록 */
+  justify-content: center; /* 버튼들을 가운데 정렬 */
 }
 
 .category-button {
   font-weight: 900;
   font-size: 15px;
-  width: 65px;
   height: 30px;
   margin: 5px;
-  padding: 5px;
+  padding: 5px 15px; /* 여백을 조금 넉넉하게 조절 */
   color: black;
   background-color: rgba(255, 255, 255, 0.5);
   border: none; /* 버튼 테두리 제거 */
   border-radius: 30px; /* 모서리 둥글게 */
   cursor: pointer; /* 마우스 포인터 */
+  flex-grow: 1; /* 버튼이 가능한 넓게 확장되도록 */
+  flex-basis: calc(20% - 10px); /* 5개씩 채우고 각 버튼 간의 여백을 고려 */
+  text-align: center; /* 버튼 내부 텍스트 가운데 정렬 */
 }
+
 
 .category-button.selected {
   background: radial-gradient(
@@ -105,7 +91,6 @@
   display: flex;
   position: relative;
   align-items: flex-start;
-  margin-bottom: 10px;
 }
 
 .challenge-img-area {
@@ -128,11 +113,7 @@
   text-align: left;
 }
 
-.results-container {
-  max-height: 400px; /* 원하는 높이로 설정 */
-  overflow-y: auto;
-  padding: 10px;
-}
+
 
 .results-list {
   list-style-type: none;
@@ -194,148 +175,69 @@
   border-radius: 30px;
 }
 
-/* 작은 화면용 미디어 쿼리 */
-@media (max-width: 400px) {
-  .arrow-circle-icon {
-    width: 30px;
-    margin: 20px 0;
-  }
+.search-submit-button {
+  margin: 5px;
+  background-color: #31fff2; /* 버튼의 배경색 */
+  border: 3px solid #31fff2; /* 도넛 모양을 위한 테두리 색상과 두께 */
+  border-radius: 50%; /* 원형 모양으로 만듦 */
+  width: 30px; /* 버튼의 너비 */
+  height: 30px; /* 버튼의 높이 */
+  position: relative; /* 내부 원의 위치를 조정하기 위해 필요 */
+  cursor: pointer; /* 마우스 커서가 손가락 모양으로 변경 */
+}
 
-  .search-title {
-    margin-left: 20px;
-  }
+.search-submit-button::before {
+  content: ''; /* 내용 없음 */
+  background-color: white; /* 내부 원의 색상 */
+  border-radius: 50%; /* 원형 모양으로 만듦 */
+  width: 10px; /* 내부 원의 너비 */
+  height: 10px; /* 내부 원의 높이 */
+  position: absolute; /* 부모 요소를 기준으로 위치 설정 */
+  top: 50%; /* 부모 요소의 중앙에 위치 */
+  left: 50%; /* 부모 요소의 중앙에 위치 */
+  transform: translate(-50%, -50%); /* 정확한 중앙 위치를 위해 변환 */
+}
 
-  .search-region {
-    padding: 10px; /* 내부 여백 */
-  }
+h3 {
+  margin: 5px;
+  padding-left: 10px;
+}
 
-  .search {
-    border-radius: 20px;
-  }
+.category-recommend {
+  color: #31fff2;
+}
 
-  .search-input {
-    font-size: 14px;
-    margin: 0 5%;
-    width: 70%;
-    padding: 10px; /* 내부 여백 */
-  }
+.recommend-list {
 
-  .submit-button {
-    width: 30px; /* 버튼의 가로 길이 */
-    height: 30px; /* 버튼의 세로 길이 */
-    border-radius: 50%; /* 버튼을 동그랗게 만드는 속성 */
-    border: 10px solid #31fff2; /* 도넛 모양의 테두리 */
-    font-size: 16px;
-    font-weight: bold;
-    margin: 5px 5%;
-  }
+}
 
-  .submit-button:hover {
-    background-color: rgba(49, 255, 242, 0.2); /* 호버 시 배경색 */
-  }
+.recommend-button {
+  padding: 5px 20px; /* 세로 10px, 가로 20px으로 설정 */
+  font-weight: 900;
+  font-size: 15px;
+  margin: 10px;
+  color: black;
+  background-color: rgba(255, 255, 255, 0.5);
+  align-items: center;
+  justify-content: center;
+  border: none; /* 버튼 테두리 제거 */
+  border-radius: 30px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 포인터 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  line-height: 1.5; /* 줄 높이를 1.5배로 설정 */
+}
 
-  .category-buttons {
-    padding: 10px 5px;
-  }
 
-  .category-button {
-    font-size: 12px;
-    width: 65px;
-    height: 30px;
-    margin: 5px;
-    padding: 5px;
-    border-radius: 30px; /* 모서리 둥글게 */
-  }
+.recommend-button.selected {
+  background: radial-gradient(
+    circle,
+    #31fff2 30%,
+    rgba(255, 255, 255, 0.5) 90%
+  );
+}
 
-  .category-button.selected {
-    background: radial-gradient(
-      circle,
-      #31fff2 30%,
-      rgba(255, 255, 255, 0.5) 90%
-    );
-  }
-
-  .challenge-list {
-    margin-bottom: 10px;
-  }
-
-  .challenge-img-area {
-    margin-right: 20px;
-  }
-
-  .participants-number {
-    margin-top: 5px;
-  }
-
-  .challenge-exp {
-    flex-grow: 1;
-    margin-left: 30%;
-    text-align: left;
-  }
-
-  .results-container {
-    max-height: 400px; /* 원하는 높이로 설정 */
-    overflow-y: auto;
-    padding: 10px;
-  }
-
-  .results-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .challenge-list {
-    display: flex;
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    align-items: center;
-    padding: 10px 0;
-  }
-
-  .challenge-img-area {
-    margin-right: 10px;
-    padding: 10px;
-  }
-
-  .challenge-img {
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    width: 70px;
-    height: 70px;
-  }
-
-  .participants-number {
-    text-align: center;
-  }
-
-  .name-box {
-    display: flex;
-  }
-
-  .challenge-cate {
-    text-align: center;
-    width: 50px;
-    background-color: #31fff2;
-    color: black;
-    font-weight: bold;
-    border-radius: 30px;
-    margin-right: 10px;
-  }
-
-  .challenge-exp {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .challenge-content {
-    margin: 5px 0;
-  }
-
-  .challenge-date {
-    width: 100%;
-    text-align: center;
-    margin: 5px 0;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 30px;
-  }
+.scrollable-container {
+  max-height: 430px; /* 원하는 높이로 설정 */
+  overflow-y: auto;
+  padding: 10px;
 }

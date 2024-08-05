@@ -46,8 +46,6 @@ const MyPage = () => {
 
   return (
     <>
-      <h1>마이 페이지</h1>
-
       <div className="top-container">
         <div onClick={handleClick} className="arrow-circle-icon">
           <BiSolidLeftArrowCircle />

@@ -7,12 +7,14 @@ import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
 
 import "../../styles/Modal.css";
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 // 모집 중인 행성의 세부 정보를 표시하고 관리하는 메인 컴포넌트
 const PlanetDetailRecruiting = () => {
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const [isJoined, setIsJoined] = useState(false);
 
   // 모달 3세트: 가입 성공, 가입 탈퇴, 가입 불가
@@ -26,6 +28,11 @@ const PlanetDetailRecruiting = () => {
 
   // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
   const displayedChallenges = location.state?.displayedChallenges || [];
+
+  const handleClick = () => {
+    const previousPath = location.state?.from || '/main';
+    navigate(previousPath)
+  }
 
   useEffect(() => {
     const fetchPlanetDetail = async () => {
@@ -125,6 +132,9 @@ const PlanetDetailRecruiting = () => {
 
   return (
     <>
+      <div onClick={handleClick} className="arrow-circle-icon">
+        <BiSolidLeftArrowCircle />
+      </div>
       <div>
         <div>{planet.category}</div>
         <div>{`${planet.startDate.join("-")} ~ ${planet.endDate.join(
