@@ -32,15 +32,11 @@ public class RedisSubscribeListener implements MessageListener {
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 		try {
-			// Redis 메시지를 문자열로 변환
-			String publishMessage = (String) template.getValueSerializer().deserialize(message.getBody());
+			String publishMessage = (String)template.getValueSerializer().deserialize(message.getBody());
 
-			// JSON 문자열을 MessageDto 객체로 변환
 			SendChatDto messageDto = objectMapper.readValue(publishMessage, SendChatDto.class);
 
-			// 수신한 메시지 로깅
 			log.info("Redis Subscribe Channel : " + messageDto.getPlanetId());
-			log.info("Redis SUB Message : {}", publishMessage);
 		} catch (JsonProcessingException e) {
 			log.error("Error parsing JSON: {}", e.getMessage());
 		} catch (ClassCastException e) {

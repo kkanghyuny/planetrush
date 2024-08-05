@@ -21,7 +21,6 @@ public class RedisPubServiceImpl implements RedisPubService {
 	 */
 	public void pubMsgChannel(SendChatDto dto) {
 		String chatRoom = "planet" + dto.getPlanetId();
-		log.info("pubMsgChannel: " + chatRoom);
 		redisPublisher.publish(new ChannelTopic(chatRoom), dto);
 	}
 }

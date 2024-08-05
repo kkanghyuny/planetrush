@@ -13,5 +13,5 @@ public class SendChatReq {
 	private Long memberId;
 	private Long planetId;
 	private String content;
-	
+
 }

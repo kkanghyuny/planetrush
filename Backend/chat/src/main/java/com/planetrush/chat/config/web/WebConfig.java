@@ -23,6 +23,5 @@ public class WebConfig implements WebMvcConfigurer {
 				HttpMethod.PATCH.name())
 			.allowedHeaders("*")
 			.allowCredentials(false);
-		// .maxAge(1800);
 	}
 }

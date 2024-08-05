@@ -26,10 +26,8 @@ public class RedisPublisher {
 	public void publish(ChannelTopic topic, Object message) {
 		try {
 			String jsonMessage = objectMapper.writeValueAsString(message);
-			log.info("jsonMessage: {}", jsonMessage);
 			redisTemplate.convertAndSend("/sub/" + topic.getTopic(), jsonMessage);
 		} catch (JsonProcessingException e) {
-			// 예외 처리 로깅
 			log.error("Error serializing message: {}", e.getMessage());
 		}
 	}

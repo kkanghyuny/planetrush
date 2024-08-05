@@ -34,6 +34,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
 	@Override
 	protected String getDatabaseName() {
-		return "testdb"; // 여기에 실제 데이터베이스 이름을 입력하세요
+		return "testdb";
 	}
 }
