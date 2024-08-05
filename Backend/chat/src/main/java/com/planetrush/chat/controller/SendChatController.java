@@ -41,7 +41,6 @@ public class SendChatController extends ChatController {
 	 */
 	@MessageMapping("/send")
 	public void saveChat(SendChatReq req) {
-		log.info("Redis Pub MSG = {}", req.getContent());
 		String sql = "SELECT nickname FROM member WHERE member_id = ?";
 		SendChatDto dto = SendChatDto.builder()
 			.memberId(req.getMemberId())
