@@ -3,9 +3,9 @@ nav {
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  width: 182px; /* 네비게이션 바의 너비 */
-  height: 85px; /* 네비게이션 바의 높이 */
-  background: url("../assets/Navbar.png") no-repeat center center; /* 배경 이미지 */
+  width: 182px;
+  height: 85px;
+  background: url("../assets/Navbar.png") no-repeat center center;
   object-fit: cover;
   display: flex;
   justify-content: center;
@@ -14,9 +14,9 @@ nav {
 }
 
 nav svg {
-  width: 28px; /* 아이콘 크기 */
+  width: 28px;
   height: 28px;
-  color: #000000; /* 아이콘 색상 */
+  color: #000000;
 }
 
 .navbar-container {
@@ -30,19 +30,19 @@ nav svg {
 
 .navbar-item-main {
   position: absolute;
-  top: 20px; /* 위로 살짝 올라가게 조정 */
+  top: 12.5px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .navbar-item-create {
   position: absolute;
-  bottom: 15px; /* 아래로 살짝 내려가게 조정 */
-  left: 17px; /* 좌우로 조정 */
+  bottom: 5px;
+  left: 7.5px;
 }
 
 .navbar-item-mypage {
   position: absolute;
-  bottom: 15px; /* 아래로 살짝 내려가게 조정 */
-  right: 18.5px; /* 좌우로 조정 */
+  bottom: 5px;
+  right: 7.5px;
 }

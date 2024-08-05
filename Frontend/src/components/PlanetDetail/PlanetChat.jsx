@@ -17,6 +17,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+    console.log("인풋");
   };
 
   // console.log(residents);
@@ -34,16 +35,19 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
     const data = response.data;
     setMessages(data);
+    console.log("data 셋");
 
     console.log(data);
   };
 
   useEffect(() => {
     connect();
+    console.log("웹소켓연결");
     fetchMessages();
 
     return () => {
       disconnect();
+      console.log("끊음");
     };
   }, []);
 
@@ -54,20 +58,23 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
     console.log(stompClient);
 
-    stompClient.current.connect({}, () => {
+    stompClient.current.connect({}, (frame) => {
       stompClient.current.subscribe(
         `/sub/planet${planetId}`,
         (message) => {
+          console.log(frame + "프레임");
+
           const newMessage = JSON.parse(message.body);
 
           console.log(newMessage);
 
           setMessages((prevMessages) => [...prevMessages, newMessage]);
-
+          console.log("connect 후 셋 메세지");
           scrollToBottom();
         },
         (error) => {
           console.error("STOMP connection error:", error);
+          setIsConnected(false);
         }
       );
     });
@@ -82,6 +89,8 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
   //메세지 전송
   const sendMessage = async () => {
+    console.log(stompClient.current);
+
     if (stompClient.current && inputValue) {
       const body = {
         memberId: memberId,
@@ -89,8 +98,14 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
         planetId: planetId,
       };
 
+      console.log(body);
+      console.log("body 만듬");
+
       // 웹소켓을 통해 메시지 전송
       stompClient.current.send(`/app/send`, {}, JSON.stringify(body));
+
+      console.log(stompClient.current);
+
       setInputValue("");
     }
   };
@@ -111,7 +126,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
   return (
     <div className="chat-container">
       <div className="messages-container">
-        {messages.map((item, index) => (
+        {/* {messages.map((item, index) => (
           <div
             key={index}
             className={`list-item ${
@@ -135,7 +150,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
               <div className="message-text">{item.content}</div>
             </div>
           </div>
-        ))}
+        ))} */}
         <div ref={messagesEndRef} />
       </div>
       <div className="input-container">

@@ -9,7 +9,7 @@ const ChallengeList = ({ challenges, displayedChallenges }) => {
 
   // 현재 행성 그림이 안 나와서 그냥 리스트 클릭만 해도 상세 페이지로 넘어가게 설정함
   const handleItemClick = (id) => {
-    navigate(`/planet/${id}`, { state: { displayedChallenges } }); // 상태 전달
+    navigate(`/planet/${id}`, { state: { displayedChallenges,  from: '/search' } }); // 상태 전달
   };
 
   return (

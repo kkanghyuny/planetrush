@@ -4,13 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import { BiSearchAlt } from "react-icons/bi";
-import "../../App.css";
 import "../../styles/Main.css";
 
 import rocket from "../../assets/Rocket.png";
 import present from "../../assets/present.png";
 
-// 전체 화면을 3 by 3으로 나누었다.
 const gridPositions = [
   { top: "0%", left: "0%" },
   { top: "0%", left: "33.33%" },
@@ -42,10 +40,10 @@ const MainPage = () => {
           const data = response.data.data;
           setPlanets(data);
         } else {
-          setPlanets([])
+          setPlanets([]);
         }
       } catch (error) {
-        setPlanets([])
+        setPlanets([]);
       }
     };
     joinPlanetList();
@@ -120,7 +118,7 @@ const MainPage = () => {
   const handleToDetail = (planetStatus, planetId) => {
     return () => {
       if (planetStatus === "READY") {
-        navigate(`/planet/${planetId}`);
+        navigate(`/planet/${planetId}`, { state: { from: '/main' } });
       } else {
         navigate("/planet-progress", { state: planetId });
       }
@@ -128,17 +126,13 @@ const MainPage = () => {
   };
 
   if (planets === null) {
-    return null
+    return null;
   }
 
   return (
     <div className="page-container">
-      <div className="gradient"></div>
-      <div className="stars"></div>
-      <h1>메인페이지</h1>
       <div className="search-container">
         <Link to="/search" className="link-icon">
-          검색
           <BiSearchAlt />
         </Link>
       </div>
@@ -155,20 +149,25 @@ const MainPage = () => {
             const planetStyle = getPlanetStyle(planet, index, usedPositions);
             const planetImgUrl =
               planet.status === "READY" ? present : planet.planetImgUrl;
+            const imgClass = planet.isLastDay ? "planet-img burning" : "planet-img";
 
             return (
               <div
                 key={planet.planetId}
-                className="planet-wrapper"
+                className={`planet-wrapper ${planet.isLastDay ? "burning" : ""}`}
                 style={planetStyle}
                 onClick={handleToDetail(planet.status, planet.planetId)}
               >
                 <img
                   src={planetImgUrl}
                   alt={planet.name}
-                  className="planet-img"
+                  className={imgClass}
                 />
-                <div className="planet-name">{planet.name}</div>
+                <div className="planet-name-container">
+                  <div className="planet-name" data-text={planet.name}>
+                    {planet.name}
+                  </div>
+                </div>
               </div>
             );
           })}
