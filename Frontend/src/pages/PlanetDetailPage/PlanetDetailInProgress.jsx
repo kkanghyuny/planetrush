@@ -12,6 +12,8 @@ const PlanetDetailInProgress = () => {
   const [view, setView] = useState("rank");
   const planetId = location.state;
 
+  console.log(planetId);
+
   const [planetInfo, setPlanetInfo] = useState({
     name: "",
     category: "",
@@ -78,7 +80,11 @@ const PlanetDetailInProgress = () => {
         {view === "rank" ? (
           <PlanetRank residents={residents} />
         ) : (
-          <PlanetChat planetInfo={planetInfo} residents={residents} />
+          <PlanetChat
+            planetId={planetId}
+            planetInfo={planetInfo}
+            residents={residents}
+          />
         )}
       </div>
     </>
