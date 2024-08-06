@@ -1,5 +1,5 @@
 # Stage 1: Build the React application
-FROM node:20.15.0 AS build
+FROM node:20-alpine AS build
 
 # Set working directory
 WORKDIR /app
@@ -15,12 +15,6 @@ RUN npm cache clean --force && \
 
 # Copy the rest of the application code
 COPY . . 
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
 
 # Build the Vite application
 RUN npm run build
