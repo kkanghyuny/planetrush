@@ -26,7 +26,7 @@ body {
   opacity: 0.9;
 }
 
-.arrow-circle-icon {
+.back-button {
   font-size: 30px;
   width: 40px;
   height: auto;
@@ -34,11 +34,12 @@ body {
 }
 
 .route-wrapper {
+  position: relative;
   overflow-y: auto;
   padding: 20px 20px 140px 20px;
   box-sizing: border-box;
   flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
-  overflow: auto; /* 내용이 넘칠 경우 스크롤 가능하도록 설정 */
+  overflow: hidden;
 }
 
 .content {
