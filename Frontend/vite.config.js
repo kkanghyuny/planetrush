@@ -37,6 +37,12 @@ export default defineConfig({
       },
     }),
   ],
+  // server: {
+  //   https: {
+  //     cert: fs.readFileSync(path.resolve(__dirname, "server.pem")),
+  //     key: fs.readFileSync(path.resolve(__dirname, "server-key.pem")),
+  //   },
+  // },
   resolve: {
     alias: {
       "@components": "/src/components",
