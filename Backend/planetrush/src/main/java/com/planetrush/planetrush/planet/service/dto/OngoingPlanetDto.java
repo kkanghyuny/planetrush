@@ -21,5 +21,6 @@ public class OngoingPlanetDto {
 	private LocalDate endDate;
 	private long totalVerificationCnt;
 	private List<ResidentDto> residents;
+	private boolean isVerifiedToday;
 
 }
