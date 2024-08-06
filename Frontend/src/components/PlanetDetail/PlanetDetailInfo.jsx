@@ -2,10 +2,8 @@ import { useNavigate } from "react-router-dom";
 
 import "../../styles/PlanetDetailInfo.css";
 
-const PlanetDetailInfo = ({ planetInfo, residents }) => {
+const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
   const navigate = useNavigate();
-
-  console.log(planetInfo);
 
   //날짜 차이 계산
   const calculateDaysLeft = (endDateArr) => {
@@ -23,6 +21,7 @@ const PlanetDetailInfo = ({ planetInfo, residents }) => {
   //행성 유지율 판단
   const calculateRetentionRate = () => {
     const nowDate = new Date();
+
     const startDate = new Date(
       planetInfo.startDate[0],
       planetInfo.startDate[1] - 1,
@@ -61,7 +60,9 @@ const PlanetDetailInfo = ({ planetInfo, residents }) => {
   };
 
   const handleVerification = () => {
-    navigate("/verificate", { state: planetInfo.content });
+    navigate("/verificate", {
+      state: { content: planetInfo.content, id: planetId },
+    });
   };
 
   return (

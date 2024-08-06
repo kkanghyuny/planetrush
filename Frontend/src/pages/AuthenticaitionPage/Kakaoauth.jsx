@@ -42,7 +42,7 @@ function Auth() {
   const sendTokenToBackend = async (accessToken) => {
     try {
       const response = await axios.post(
-        `${DEV_URL}/members/auth/login/kakao`,
+        `${LOCAL_URL}/members/auth/login/kakao`,
         { accessToken: accessToken },
         {
           headers: {

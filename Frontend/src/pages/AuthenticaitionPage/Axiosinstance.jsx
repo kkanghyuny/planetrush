@@ -2,11 +2,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Axios 인스턴스 생성
-const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
-// const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
+// const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
+const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
 
 const instance = axios.create({
-  baseURL: DEV_URL,
+  baseURL: LOCAL_URL,
   timeout: 1000,
   headers: {
     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ instance.interceptors.response.use(
         try {
           // 토큰 재발급 요청
           const responseAgain = await axios.post(
-            `${DEV_URL}/members/auth/reissue`,
+            `${LOCAL_URL}/members/auth/reissue`,
             {
               refreshToken: refreshToken,
             },

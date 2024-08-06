@@ -4,9 +4,9 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import ChallengeList from "../../components/Lists/ChallengeList";
 
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
 import "../../styles/SearchPlanet.css";
 import "../../App.css";
-import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 const SearchPlanet = () => {
   const navigate = useNavigate();
@@ -221,7 +221,11 @@ const SearchPlanet = () => {
         {recommends.length > 0 && (
           <div className="recommend-container">
             <h3>
-              지난 주, <span className="category-recommend">{getCategoryLabel(selectedCategory)} 카테고리</span> 에서
+              지난 주,{" "}
+              <span className="category-recommend">
+                {getCategoryLabel(selectedCategory)} 카테고리
+              </span>{" "}
+              에서
             </h3>
             <h3>가장 핫한 챌린지예요</h3>
             <div className="recommend-list">
@@ -252,11 +256,11 @@ const SearchPlanet = () => {
               </>
             ) : (
               <>
-              <div className="search-fail">
-                <h4>선택하신 내용에 해당하는</h4>
-                <br />
-                <h4>챌린지가 존재하지 않습니다.</h4>
-              </div>
+                <div className="search-fail">
+                  <h4>선택하신 내용에 해당하는</h4>
+                  <br />
+                  <h4>챌린지가 존재하지 않습니다.</h4>
+                </div>
               </>
             )
           ) : (
