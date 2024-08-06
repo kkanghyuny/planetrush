@@ -70,15 +70,23 @@ public class ChallengeHistory {
 	@Column(name = "progress", nullable = false)
 	private Double progress;
 
+	/**
+	 * 챌린지의 성공, 실패 여부를 나타냅니다.
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column(name= "challenge_result", nullable = false)
+	private ChallengeResult result;
+
 	@Builder
 	public ChallengeHistory(Member member, String planetName, String planetImgUrl, String challengeContent,
-		Category category, Double progress) {
+		Category category, Double progress, ChallengeResult result) {
 		this.member = member;
 		this.planetName = planetName;
 		this.planetImgUrl = planetImgUrl;
 		this.challengeContent = challengeContent;
 		this.category = category;
 		this.progress = progress;
+		this.result = result;
 	}
 
 }

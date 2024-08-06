@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
+import com.planetrush.planetrush.member.domain.ChallengeResult;
 import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
 import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
 
@@ -27,6 +28,7 @@ public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 		List<ChallengeHistory> historyList = challengeHistoryRepository.findByMemberId(memberId)
 			.orElseGet(List::of);
 		return historyList.stream()
+			.filter(history -> history.getResult() == ChallengeResult.SUCCESS)
 			.map(history -> PlanetCollectionDto.builder()
 				.planetId(history.getId())
 				.name(history.getPlanetName())
