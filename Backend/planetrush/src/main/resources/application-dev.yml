@@ -4,10 +4,10 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: ${DEV_RDS_URL}
+    url: ${MYSQL_MASTER_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DEV_USER}
-    password: ${DEV_PASSWORD}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
 
   jpa:
     hibernate:
@@ -43,6 +43,27 @@ jwt:
     expiretime: ${DEV_JWT_ACCESS_TOKEN_EXPIRETIME}
   refresh-token:
     expiretime: ${DEV_JWT_REFRESH_TOKEN_EXPIRETIME}
+
+kakao:
+  secret:
+    key: ${KAKAO_SECRET_KEY}
+  loginurl: ${KAKAO_LOGIN_URL}
+  logouturl: ${KAKAO_LOGOUT_URL}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+    region:
+      static: ${AWS_S3_BUCKET_REGION}
+    stack:
+      auto: false
+    s3:
+      bucket: ${AWS_S3_BUCKET_NAME}
+
+flask:
+  verifyurl: ${FLASK_VERIFY_URL}
 
 notification:
   mattermost:
