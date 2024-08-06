@@ -12,8 +12,6 @@ const PlanetDetailInProgress = () => {
   const [view, setView] = useState("rank");
   const planetId = location.state;
 
-  console.log(planetId);
-
   const [planetInfo, setPlanetInfo] = useState({
     name: "",
     category: "",
