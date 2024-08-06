@@ -127,6 +127,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 		Planet planet = planetRepository.findById(planetId)
 			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + planetId));
 		List<Resident> residents = residentRepositoryCustom.getResidentsNotBanned(planet);
+		VerificationRecord todayRecord = verificationRecordRepositoryCustom.findTodayRecord(querriedMember, planet);
 		return OngoingPlanetDto.builder()
 			.planetId(planet.getId())
 			.planetImg(planet.getPlanetImg())
@@ -137,6 +138,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.name(planet.getName())
 			.totalVerificationCnt(planet.calcTotalVerificationCnt())
 			.residents(toResidentDto(residents, querriedMember))
+			.isVerifiedToday(todayRecord != null)
 			.build();
 	}
 
