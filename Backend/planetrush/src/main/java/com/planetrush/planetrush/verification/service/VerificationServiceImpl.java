@@ -28,6 +28,16 @@ public class VerificationServiceImpl implements VerificationService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public String getStandardImgUrlByPlanetId(Long planetId) {
+		Planet planet = planetRepository.findById(planetId)
+			.orElseThrow(() -> new PlanetNotFoundException(("Planet not found with ID: " + planetId)));
+		return planet.getStandardVerificationImg();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void saveVerificationResult(VerificationResultDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId())
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
