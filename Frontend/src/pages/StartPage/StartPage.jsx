@@ -17,7 +17,9 @@ const SocialKakao = () => {
 
   return (
     <div className="start-page">
-      <img src="/logo/로고-배경없음.png" alt="로고" className="my-logo" />
+      <div className="start-image">
+        <img src="/logo/로고-배경없음.png" alt="로고" className="my-logo" />
+      </div>
       <div className="kakaologin">
         <img
           src={kakaoLogin}
@@ -27,6 +29,7 @@ const SocialKakao = () => {
         />
       </div>
     </div>
+
   );
 };
 

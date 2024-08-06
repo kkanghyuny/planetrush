@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Axios 인스턴스 생성
-// const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
+const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
 const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
 
 const instance = axios.create({

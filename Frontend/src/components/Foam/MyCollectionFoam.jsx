@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import instance from '../../pages/AuthenticaitionPage/Axiosinstance';
+import "../../styles/MyCollection.css";
+import useCategoryStore from "../../store/categoryLabelStore";
 
 const MyCollection = () => {
     const [collections, setCollections] = useState([]);
+    const getCategoryLabel = useCategoryStore((state) => state.getCategoryLabel);
 
     const handleShowCollection = async () => {
         try {
             const response = await instance.get("/members/collections");
-            const data = response.data.data
+            const data = response.data.data;
             return data;
         } catch (error) {
-            throw error
+            throw error;
         }
-    }
+    };
 
     useEffect(() => {
         const fetchCollections = async () => {
@@ -20,7 +23,7 @@ const MyCollection = () => {
                 const collectionsData = await handleShowCollection();
                 setCollections(collectionsData);
             } catch (error) {
-                throw error
+                console.error(error);
             }
         };
 
@@ -28,27 +31,33 @@ const MyCollection = () => {
     }, []);
 
     return (
-        <>
-            <div>
-                {collections.length > 0 ? (
-                    collections.map((collection, index) => (
-                        <div key={index}>
-                            <h2>{collection.name}</h2>
-                            <p>{collection.category}</p>
-                            <p>{collection.content}</p>
-                            <div>
-                                {/* 개인 완주율 70% 미만이면 색을 바꿀까 고민중 (민트에서 빨강으로)*/}
-                                {collection.progress}
-                            </div>
-                            <img src={collection.imageUrl} alt={collection.name} />
+        <div className="my-collection">
+            {collections.length > 0 ? (
+                collections.map((collection, index) => (
+                    <div key={index} className="collection-item">
+                        <div>
+                            <img className="collection-img" src={collection.imageUrl} alt={collection.name} />
                         </div>
-                    ))
-                ) : (
-                    <p>콜렉션이 없습니다.</p>
-                )}
-            </div>    
-        </>
-    )   
+                        <div className="collection-info">
+                            <div className="name-box">
+                                <p className="collection-cate">{getCategoryLabel(collection.category)}</p>
+                                <p>{collection.name}</p>
+                            </div>
+                            <h4 className="collection-content">{collection.content}</h4>
+                            <div className="progress-bar-container">
+                                <div
+                                    className={`progress-bar ${collection.progress < 70 ? 'low-progress' : 'normal-progress'}`}
+                                    style={{ width: `${collection.progress}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <p>콜렉션이 없습니다.</p>
+            )}
+        </div>
+    );
 };
 
 export default MyCollection;

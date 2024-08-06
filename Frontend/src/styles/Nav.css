@@ -30,7 +30,7 @@ nav svg {
 
 .navbar-item-main {
   position: absolute;
-  top: 12.5px;
+  top: 11.5px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -38,11 +38,11 @@ nav svg {
 .navbar-item-create {
   position: absolute;
   bottom: 5px;
-  left: 7.5px;
+  left: 8px;
 }
 
 .navbar-item-mypage {
   position: absolute;
   bottom: 5px;
-  right: 7.5px;
+  right: 8px;
 }
