@@ -20,6 +20,7 @@ const PlanetDetailInProgress = () => {
     endDate: "",
     totalVerificationCnt: "",
     imgUrl: "",
+    verifiedToday: false,
   });
 
   const [residents, setResidents] = useState([]);
@@ -32,19 +33,20 @@ const PlanetDetailInProgress = () => {
             "planet-id": planetId,
           },
         });
-        const data = response.data;
+        const data = response.data.data;
 
         setPlanetInfo({
-          name: data.data.name,
-          category: data.data.category,
-          content: data.data.content,
-          startDate: data.data.startDate,
-          endDate: data.data.endDate,
-          totalVerificationCnt: data.data.totalVerificationCnt,
-          imgUrl: data.data.imgUrl,
+          name: data.name,
+          category: data.category,
+          content: data.content,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          totalVerificationCnt: data.totalVerificationCnt,
+          imgUrl: data.imgUrl,
+          verifiedToday: data.verifiedToday,
         });
 
-        setResidents(data.data.residents);
+        setResidents(data.residents);
       } catch (error) {
         console.error("Error fetching images:", error.code);
       }
