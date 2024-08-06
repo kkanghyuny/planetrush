@@ -30,9 +30,9 @@ const PlanetDetailRecruiting = () => {
   const displayedChallenges = location.state?.displayedChallenges || [];
 
   const handleClick = () => {
-    const previousPath = location.state?.from || '/main';
-    navigate(previousPath)
-  }
+    const previousPath = location.state?.from || "/main";
+    navigate(previousPath);
+  };
 
   useEffect(() => {
     const fetchPlanetDetail = async () => {

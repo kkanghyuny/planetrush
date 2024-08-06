@@ -54,9 +54,13 @@ const MyPage = () => {
       </div>
       <div className="my-info">
         {view === "statistics" ? (
-          <button className="info-button" onClick={() => setView("collection")}>내 콜렉션 보기</button>
+          <button className="info-button" onClick={() => setView("collection")}>
+            내 콜렉션 보기
+          </button>
         ) : (
-          <button className="info-button" onClick={() => setView("statistics")}>내 통계 보기</button>
+          <button className="info-button" onClick={() => setView("statistics")}>
+            내 통계 보기
+          </button>
         )}
       </div>
       <NicknameEditModal

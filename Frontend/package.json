@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.2.1",
+    "@dicebear/core": "^9.2.1",
     "@stomp/stompjs": "^7.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.11",

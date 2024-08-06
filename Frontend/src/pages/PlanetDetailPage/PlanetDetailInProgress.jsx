@@ -69,7 +69,11 @@ const PlanetDetailInProgress = () => {
     <>
       <div>
         {planetInfo && (
-          <PlanetDetailInfo planetInfo={planetInfo} residents={residents} />
+          <PlanetDetailInfo
+            planetId={planetId}
+            planetInfo={planetInfo}
+            residents={residents}
+          />
         )}
       </div>
       <div>

@@ -17,11 +17,7 @@ const SocialKakao = () => {
 
   return (
     <div className="start-page">
-      <img
-        src="/public/logo/로고-배경없음.png"
-        alt="로고"
-        className="my-logo"
-      />
+      <img src="/logo/로고-배경없음.png" alt="로고" className="my-logo" />
       <div className="kakaologin">
         <img
           src={kakaoLogin}
