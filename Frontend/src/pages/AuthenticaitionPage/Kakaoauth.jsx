@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 import useUserStore from "../../store/userStore";
 
-const DEV_URL = "http://i11a509.p.ssafy.io:8080/api/v1";
+const DEV_URL = "http://i11a509.p.ssafy.io:8002/api/v1";
 const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
 const SERVER_URL = "http://planetrush:8080/api/v1";
 
@@ -44,7 +44,7 @@ function Auth() {
   const sendTokenToBackend = async (accessToken) => {
     try {
       const response = await axios.post(
-        `${DEV_URL}/members/auth/login/kakao`,
+        `${SERVER_URL}/members/auth/login/kakao`,
         { accessToken: accessToken },
         {
           headers: {
