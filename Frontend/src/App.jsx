@@ -30,9 +30,12 @@ function App() {
   return (
     <div className="App">
       <BackGround />
+
       <div className="route-wrapper">
         <Routes>
+
           <Route path="/" element={<StartPage />} />
+
           <Route path="/main" element={<MainPage />} />
           <Route path="/auth" element={<Auth />} />
 
@@ -50,6 +53,7 @@ function App() {
           <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </div>
+
       {!isStartPage && <Navigation />}
     </div>
   );

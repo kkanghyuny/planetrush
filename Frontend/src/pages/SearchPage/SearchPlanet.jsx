@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
+import useCategoryStore from "../../store/categoryLabelStore";
 import ChallengeList from "../../components/Lists/ChallengeList";
 
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 import "../../styles/SearchPlanet.css";
-import "../../App.css";
 
 const SearchPlanet = () => {
   const navigate = useNavigate();
+  const categories = useCategoryStore((state) => state.categories);
+  const getCategoryLabel = useCategoryStore((state) => state.getCategoryLabel);
 
   const [filteredChallenges, setFilteredChallenges] = useState([]);
   const [displayedChallenges, setDisplayedChallenges] = useState([]);
@@ -20,14 +22,6 @@ const SearchPlanet = () => {
   const [hasNext, setHasNext] = useState(true);
   const [lastPlanetId, setLastPlanetId] = useState(null);
   const [recommends, setRecommends] = useState([]);
-
-  const categories = [
-    { label: "운동", value: "EXERCISE" },
-    { label: "생활", value: "LIFE" },
-    { label: "미용", value: "BEAUTY" },
-    { label: "학습", value: "STUDY" },
-    { label: "기타", value: "ETC" },
-  ];
 
   const handleClick = () => {
     navigate("/main");
@@ -41,11 +35,6 @@ const SearchPlanet = () => {
       day
     ).padStart(2, "0")}`;
     return formattedDate;
-  };
-
-  const getCategoryLabel = (value) => {
-    const category = categories.find((cat) => cat.value === value);
-    return category ? category.label : value;
   };
 
   const fetchChallenges = async (
@@ -257,9 +246,14 @@ const SearchPlanet = () => {
             ) : (
               <>
                 <div className="search-fail">
-                  <h4>선택하신 내용에 해당하는</h4>
+                  <h4>
+                    <span className="fail-query">
+                      {selectedRecommend || query}
+                    </span>
+                    에 해당하는 챌린지가
+                  </h4>
                   <br />
-                  <h4>챌린지가 존재하지 않습니다.</h4>
+                  <h4>존재하지 않습니다.</h4>
                 </div>
               </>
             )

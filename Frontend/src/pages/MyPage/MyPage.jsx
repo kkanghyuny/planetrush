@@ -75,7 +75,7 @@ const MyPage = () => {
         <BiSolidPencil className="pencil-icon" onClick={handleOpenModal} />
       </h3>
 
-      <div>
+      <div className="my-page">
         {view === "statistics" && <MyStatistics />}
         {view === "collection" && <MyCollection />}
       </div>
