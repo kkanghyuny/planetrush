@@ -52,11 +52,11 @@ const MyPage = () => {
         </div>
         <LogoutButton />
       </div>
-      <div>
+      <div className="my-info">
         {view === "statistics" ? (
-          <button onClick={() => setView("collection")}>Show Collection</button>
+          <button className="info-button" onClick={() => setView("collection")}>내 콜렉션 보기</button>
         ) : (
-          <button onClick={() => setView("statistics")}>Show Statistics</button>
+          <button className="info-button" onClick={() => setView("statistics")}>내 통계 보기</button>
         )}
       </div>
       <NicknameEditModal
@@ -66,10 +66,10 @@ const MyPage = () => {
         closeModal={handleCloseModal}
         saveNickname={handleSaveNickname}
       />
-      <p className="nickname">
-        닉네임: {nickname}
+      <h3 className="nickname">
+        {nickname}
         <BiSolidPencil className="pencil-icon" onClick={handleOpenModal} />
-      </p>
+      </h3>
 
       <div>
         {view === "statistics" && <MyStatistics />}

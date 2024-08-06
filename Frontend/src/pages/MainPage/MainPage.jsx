@@ -21,6 +21,8 @@ const gridPositions = [
   { top: "66.66%", left: "66.66%" },
 ];
 
+const PADDING = 30; // 패딩 값을 정의합니다. (px 단위)
+
 const MainPage = () => {
   const navigate = useNavigate();
 
@@ -60,50 +62,31 @@ const MainPage = () => {
     };
   };
 
-  const getRandomOffset = (size) => {
-    const maxOffset = 33.33 - (size / 600) * 100;
-    const topOffset = Math.random() * maxOffset;
-    const leftOffset = Math.random() * maxOffset;
-
-    return { topOffset, leftOffset };
-  };
-
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-
-  const getRandomPosition = (usedPositions) => {
-    let index;
-    do {
-      index = Math.floor(Math.random() * gridPositions.length);
-    } while (usedPositions.includes(index));
-    usedPositions.push(index);
-
-    return gridPositions[index];
-  };
-
-  const getRandomAnimationTiming = () => {
-    const duration = (Math.random() * 3 + 3).toFixed(2);
-    const delay = (Math.random() * 2).toFixed(2);
-
-    return { duration, delay };
-  };
 
   const getPlanetStyle = (planet, index, usedPositions) => {
     const sizeStyle = getPlanetSize(planets.length, index);
-    const { topOffset, leftOffset } = getRandomOffset(
-      parseInt(sizeStyle.width)
-    );
-    const position = getRandomPosition(usedPositions);
+    const position = gridPositions[index % gridPositions.length];
+    const randomTopOffset = Math.random() * (33.33 - parseFloat(sizeStyle.height) / 6);
+    const randomLeftOffset = Math.random() * (33.33 - parseFloat(sizeStyle.width) / 6);
+
+    // 패딩을 고려하여 위치를 조정합니다.
+    const gridWidth = 100 - (2 * PADDING / 600) * 100;
+    const gridHeight = 100 - (2 * PADDING / 600) * 100;
+
     const topValue = clamp(
-      parseFloat(position.top) + topOffset,
+      parseFloat(position.top) + randomTopOffset,
       0,
-      100 - parseFloat(sizeStyle.height) / 6
+      gridHeight - parseFloat(sizeStyle.height) / 6
     );
     const leftValue = clamp(
-      parseFloat(position.left) + leftOffset,
+      parseFloat(position.left) + randomLeftOffset,
       0,
-      100 - parseFloat(sizeStyle.width) / 6
+      gridWidth - parseFloat(sizeStyle.width) / 6
     );
-    const { duration, delay } = getRandomAnimationTiming();
+
+    const duration = (Math.random() * 3 + 3).toFixed(2);
+    const delay = (Math.random() * 2).toFixed(2);
 
     return {
       ...sizeStyle,
@@ -112,8 +95,6 @@ const MainPage = () => {
       animation: `floating ${duration}s ease-in-out ${delay}s infinite`,
     };
   };
-
-  const usedPositions = [];
 
   const handleToDetail = (planetStatus, planetId) => {
     return () => {
@@ -144,9 +125,9 @@ const MainPage = () => {
           <div className="rocket-text">행성을 찾으러 가봐요!</div>
         </div>
       ) : (
-        <div className="grid-container">
+        <div className="main-grid-container">
           {planets.map((planet, index) => {
-            const planetStyle = getPlanetStyle(planet, index, usedPositions);
+            const planetStyle = getPlanetStyle(planet, index, []);
             const planetImgUrl =
               planet.status === "READY" ? present : planet.planetImgUrl;
             const imgClass = planet.isLastDay ? "planet-img burning" : "planet-img";

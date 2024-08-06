@@ -15,18 +15,19 @@
   margin-bottom: 20px;
 }
 
-.grid-container {
+.main-grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 10px;
   width: 100%;
-  max-width: 600px;
+  max-width: 370px;
   position: relative;
   height: 600px;
   overflow: hidden;
-  padding: 0;
+  gap: 10px;
+  padding: 10px;
 }
+
 
 .planet {
   display: flex;
@@ -122,8 +123,8 @@ a {
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
-  width: 120px;
   height: auto;
+  min-height: 90px;
 }
 
 .planet-img {
@@ -134,7 +135,7 @@ a {
 }
 
 .planet-name-container {
-  width: 100%;
+  width: 80%;
   height: 25px; /* 고정 높이 설정 */
   overflow: hidden;
   position: relative;

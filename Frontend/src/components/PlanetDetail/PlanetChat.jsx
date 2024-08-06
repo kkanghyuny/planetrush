@@ -126,31 +126,6 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
   return (
     <div className="chat-container">
       <div className="messages-container">
-        {/* {messages.map((item, index) => (
-          <div
-            key={index}
-            className={`list-item ${
-              item.memberId === memberId ? "my-message" : "other-message"
-            }`}
-          >
-            {/* <img
-              src={getAvatarUrl(item.name)}
-              alt={item.name}
-              className="avatar"
-            /> */}
-            <div className="message-content">
-              <div className="message-header">
-                <span className="message-name">
-                  {item.nickname || "Unknown"}
-                </span>
-                <span className="message-time">
-                  {new Date(item.createdAt).toLocaleTimeString()}
-                </span>
-              </div>
-              <div className="message-text">{item.content}</div>
-            </div>
-          </div>
-        ))} */}
         <div ref={messagesEndRef} />
       </div>
       <div className="input-container">
@@ -158,7 +133,6 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          onKeyUp={handleInputChange}
           className="chat-input"
           placeholder="채팅을 입력해주세요"
         />
