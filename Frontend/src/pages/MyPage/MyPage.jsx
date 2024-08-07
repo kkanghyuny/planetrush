@@ -70,10 +70,10 @@ const MyPage = () => {
         closeModal={handleCloseModal}
         saveNickname={handleSaveNickname}
       />
-      <h3 className="nickname">
+      <h2 className="nickname">
         {nickname}
         <BiSolidPencil className="pencil-icon" onClick={handleOpenModal} />
-      </h3>
+      </h2>
 
       <div className="my-page">
         {view === "statistics" && <MyStatistics />}

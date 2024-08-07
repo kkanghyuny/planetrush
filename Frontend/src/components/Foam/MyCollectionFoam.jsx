@@ -44,11 +44,16 @@ const MyCollection = () => {
                                 <p>{collection.name}</p>
                             </div>
                             <h4 className="collection-content">{collection.content}</h4>
-                            <div className="progress-bar-container">
-                                <div
-                                    className={`progress-bar ${collection.progress < 70 ? 'low-progress' : 'normal-progress'}`}
-                                    style={{ width: `${collection.progress}%` }}
-                                ></div>
+                            <div className="progress-info">
+                                <div className="progress-bar-container">
+                                    <div
+                                        className={`progress-bar ${collection.progress < 70 ? 'low-progress' : 'normal-progress'}`}
+                                        style={{ width: `${collection.progress}%` }}
+                                    ></div>
+                                </div>
+                                <div className='collection-number'>
+                                    {collection.progress} %
+                                </div>
                             </div>
                         </div>
                     </div>

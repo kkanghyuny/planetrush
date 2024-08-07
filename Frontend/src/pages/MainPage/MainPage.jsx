@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import instance from "../AuthenticaitionPage/Axiosinstance";
-
 import { BiSearchAlt } from "react-icons/bi";
 import "../../styles/Main.css";
-
 import rocket from "../../assets/Rocket.png";
 import present from "../../assets/present.png";
 
@@ -23,10 +20,23 @@ const gridPositions = [
 
 const PADDING = 30; // 패딩 값을 정의합니다. (px 단위)
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 const MainPage = () => {
   const navigate = useNavigate();
 
   const [planets, setPlanets] = useState(null);
+  const [shuffledPositions, setShuffledPositions] = useState([]);
+
+  useEffect(() => {
+    setShuffledPositions(shuffleArray([...gridPositions]));
+  }, []);
 
   useEffect(() => {
     const joinPlanetList = async () => {
@@ -60,7 +70,7 @@ const MainPage = () => {
 
   const getPlanetStyle = (planet, index, usedPositions) => {
     const sizeStyle = getPlanetSize(planets.length, index);
-    const position = gridPositions[index % gridPositions.length];
+    const position = shuffledPositions[index % shuffledPositions.length];
     const randomTopOffset =
       Math.random() * (33.33 - parseFloat(sizeStyle.height) / 6);
     const randomLeftOffset =
