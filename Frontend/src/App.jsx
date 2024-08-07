@@ -31,9 +31,10 @@ function App() {
     <div className="App">
       <BackGround />
 
-      <div className="route-wrapper">
+      <div
+        className={`route-wrapper ${isStartPage ? "start-page-wrapper" : ""}`}
+      >
         <Routes>
-
           <Route path="/" element={<StartPage />} />
 
           <Route path="/main" element={<MainPage />} />
