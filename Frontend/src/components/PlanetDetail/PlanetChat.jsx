@@ -8,8 +8,8 @@ import { botttsNeutral } from "@dicebear/collection";
 
 import "../../styles/PlanetChat.css";
 
-// const CHAT_URL = "https://i11a509.p.ssafy.io:8080/chat/v2";
-const LOCAL = "http://70.12.247.69:8002/chat/v2";
+const CHAT_URL = "i11a509.p.ssafy.io:8003";
+// const LOCAL = "http://70.12.247.69:8002/chat/v2";
 
 const PlanetChat = ({ planetId, planetInfo, residents }) => {
   const stompClient = useRef(null);
@@ -29,7 +29,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
   // 기존 채팅 메시지를 서버로부터 가져오는 함수
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(LOCAL, {
+      const response = await axios.get(`http://${CHAT_URL}/chat/v2`, {
         params: { "planet-id": planetId },
       });
 
@@ -51,7 +51,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
   // 웹소켓 연결 설정
   const connect = () => {
-    const socket = new SockJS("http://70.12.247.69:8002/ws");
+    const socket = new SockJS(`http://${CHAT_URL}/ws`);
     stompClient.current = Stomp.over(socket);
 
     console.log(stompClient);

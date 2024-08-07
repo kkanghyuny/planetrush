@@ -31,7 +31,7 @@ body {
   padding: 20px; /* 내용물에 패딩 추가 */
   box-sizing: border-box;
   margin-bottom: 150px;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 120px);
 }
 
 .start-page-wrapper {
@@ -47,7 +47,7 @@ body {
 
   .route-wrapper {
     padding: 10px; /* 작은 화면에서는 패딩을 줄여서 공간 확보 */
-    margin-bottom: 100px; /* 네비게이션 높이를 뺀 나머지 공간 */
+    margin-bottom: 140px; /* 네비게이션 높이를 뺀 나머지 공간 */
   }
 
   .start-page-wrapper {

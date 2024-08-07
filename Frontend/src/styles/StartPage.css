@@ -3,21 +3,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 100vh; /* 전체 화면 높이 */
-  overflow-y: auto; /* Allows vertical scrolling */
-  padding: 20px; /* Adds some padding */
+  height: 80vh; /* 전체 화면 높이 */
+  overflow: hidden; /* 스크롤 방지 */
+  padding: 20px; /* 패딩 */
   box-sizing: border-box;
+  margin-top: 80px;
 }
-
-/* .start-image {
-  margin-bottom: 70px;
-} */
 
 .kakao_login {
   margin-top: 20px;
   cursor: pointer;
-  width: 50%; /* Responsive width */
-  max-width: 300px; /* Maximum width */
+  width: 50%; /* 반응형 너비 */
+  max-width: 300px; /* 최대 너비 */
+}
+
+.kakao-login img {
+  width: 125px;
 }
 
 .my-logo {
@@ -29,4 +30,5 @@
 
 .start-image {
   text-align: center;
+  margin-bottom: 100px; /* 하단 여백 추가 */
 }
