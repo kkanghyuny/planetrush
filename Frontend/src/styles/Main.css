@@ -138,13 +138,11 @@ a {
   height: 25px; /* 고정 높이 설정 */
   overflow: hidden;
   position: relative;
-  white-space: nowrap;
 }
 
 .planet-name {
-  display: inline-block;
-  padding-left: 100%; /* 텍스트가 처음에 보이지 않게 함 */
-  animation: marquee 10s linear infinite;
+  position: absolute;
+  animation: marquee 4s linear infinite;
   white-space: nowrap;
   color: white;
   font-size: clamp(10px, 2vw, 15px);
@@ -154,8 +152,8 @@ a {
   0% {
     transform: translateX(100%);
   }
-  90% {
-    transform: translateX(-100%);
+  50% {
+    transform: translateX(0%);
   }
   100% {
     transform: translateX(-100%);

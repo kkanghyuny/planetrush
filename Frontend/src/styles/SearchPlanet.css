@@ -56,7 +56,7 @@
 
 .category-buttons {
   text-align: center;
-  padding: 10px 5px;
+  padding: 10px 8px;
   display: flex;
   flex-wrap: wrap; /* 버튼이 여러 줄로 나열될 수 있도록 */
   justify-content: center; /* 버튼들을 가운데 정렬 */

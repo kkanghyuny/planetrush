@@ -5,6 +5,7 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
+import useCategoryStore from "../../store/categoryLabelStore";
 
 import "../../styles/Modal.css";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
@@ -26,12 +27,13 @@ const PlanetDetailRecruiting = () => {
   const [currentParticipants, setCurrentParticipants] = useState(null);
   const [planet, setPlanet] = useState(null);
 
+  const getCategoryLabel = useCategoryStore((state) => state.getCategoryLabel);
+
   // useLocation을 사용해 넘어온 상태에서 displayedChallenges를 받아옴
   const displayedChallenges = location.state?.displayedChallenges || [];
 
   const handleClick = () => {
-    const previousPath = location.state?.from || "/main";
-    navigate(previousPath);
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -135,14 +137,14 @@ const PlanetDetailRecruiting = () => {
       <div onClick={handleClick} className="arrow-circle-icon">
         <BiSolidLeftArrowCircle />
       </div>
-      <div>
-        <div>{planet.category}</div>
+      <div className="detail-info-container">
+        <div className=" ">{getCategoryLabel(planet.category)}</div>
         <div>{`${planet.startDate.join("-")} ~ ${planet.endDate.join(
           "-"
         )}`}</div>
       </div>
       <div>{planet.content}</div>
-      <div>{currentParticipants}</div>
+      <div>{planet.currentParticipants}</div>
       <div>{planet.maxParticipants}</div>
       <img src={planet.planetImg} alt="행성사진" />
       <div>
