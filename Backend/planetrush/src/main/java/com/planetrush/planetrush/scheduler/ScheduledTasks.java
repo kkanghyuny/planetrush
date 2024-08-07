@@ -2,13 +2,21 @@ package com.planetrush.planetrush.scheduler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
+import com.planetrush.planetrush.member.domain.Member;
+import com.planetrush.planetrush.member.domain.ProgressAvg;
+import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
+import com.planetrush.planetrush.member.repository.MemberRepository;
+import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
+import com.planetrush.planetrush.planet.domain.Category;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
@@ -16,6 +24,10 @@ import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +42,9 @@ public class ScheduledTasks {
 	private final PlanetRepositoryCustom planetRepositoryCustom;
 	private final ResidentRepositoryCustom residentRepositoryCustom;
 	private final VerificationRecordRepositoryCustom verificationRecordRepositoryCustom;
+	private final JPAQueryFactory queryFactory;
+	private final ProgressAvgRepository progressAvgRepository;
+	private final MemberRepository memberRepository;
 
 	/**
 	 * <p매일 자정마다 챌린지가 시작되어야 하는 행성의 상태를 READY에서 IN_PROGRESS로 변경합니다.></p>
@@ -102,6 +117,71 @@ public class ScheduledTasks {
 				planet.destroy();
 			}
 		});
+	}
+
+	/**
+	 * <p>개인의 카테고리별 완주율 평균을 저장합니다.</p>
+	 * <p>완주 기록이 없는 카테고리일 경우 null이 저장됩니다.</p>
+	 */
+	@Scheduled(cron = "${scheduled-task.member-progress-calc}")
+	@Transactional
+	void progressCalculation() {
+		progressAvgRepository.deleteAll();
+		List<Tuple> memberCategoryAvgResults = queryFactory
+			.select(
+				challengeHistory.member.id,
+				challengeHistory.category,
+				challengeHistory.progress.avg()
+			)
+			.from(challengeHistory)
+			.groupBy(challengeHistory.member.id, challengeHistory.category)
+			.fetch();
+		List<Tuple> memeberAvgResults = queryFactory
+			.select(
+				challengeHistory.member.id,
+				challengeHistory.progress.avg()
+			)
+			.from(challengeHistory)
+			.groupBy(challengeHistory.member.id)
+			.fetch();
+		Map<Long, Map<Category, Double>> memberCategoryAvgMap = memberCategoryAvgResults.stream()
+			.collect(Collectors.groupingBy(
+				tuple -> tuple.get(0, Long.class),
+				Collectors.toMap(
+					tuple -> tuple.get(1, Category.class),
+					tuple -> tuple.get(2, Double.class)
+				)
+			));
+		Map<Long, Double> memeberAvgMap = memeberAvgResults.stream()
+			.collect(Collectors.toMap(
+				tuple -> tuple.get(0, Long.class),
+				tuple -> tuple.get(1, Double.class)
+			));
+		Double d= null;
+		List<ProgressAvg> progressAvgList = memberCategoryAvgMap.entrySet().stream()
+			.map(entry -> {
+				Long memberId = entry.getKey();
+				Map<Category, Double> categoryMap = entry.getValue();
+				Double beautyAvg = categoryMap.getOrDefault(Category.BEAUTY, d);
+				Double exerciseAvg = categoryMap.getOrDefault(Category.EXERCISE, d);
+				Double lifeAvg = categoryMap.getOrDefault(Category.LIFE, d);
+				Double studyAvg = categoryMap.getOrDefault(Category.STUDY, d);
+				Double etcAvg = categoryMap.getOrDefault(Category.ETC, d);
+				Double totalAvg = memeberAvgMap.getOrDefault(memberId, d);
+				Member member = memberRepository.findById(memberId)
+					.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
+				return ProgressAvg.builder()
+					.member(member)
+					.totalAvg(totalAvg)
+					.beautyAvg(beautyAvg)
+					.exerciseAvg(exerciseAvg)
+					.lifeAvg(lifeAvg)
+					.studyAvg(studyAvg)
+					.etcAvg(etcAvg)
+					.build();
+			})
+			.toList();
+		progressAvgRepository.saveAll(progressAvgList);
 	}
 
 }
