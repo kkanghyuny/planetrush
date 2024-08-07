@@ -1,10 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import useURLStore from "./store/userStore";
+import useURLStore from "../../store/urlStore";
 
 // Axios 인스턴스 생성
-const { SERVER_URL } = useURLStore();
+const { SERVER_URL } = useURLStore.getState();
 
 const instance = axios.create({
   baseURL: SERVER_URL,
