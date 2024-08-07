@@ -42,7 +42,7 @@ const PlanetDetailInProgress = () => {
           startDate: data.startDate,
           endDate: data.endDate,
           totalVerificationCnt: data.totalVerificationCnt,
-          imgUrl: data.imgUrl,
+          imgUrl: data.planetImg,
           verifiedToday: data.verifiedToday,
         });
 
