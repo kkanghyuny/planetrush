@@ -2,12 +2,12 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Axios 인스턴스 생성
-const DEV_URL = "http://i11a509.p.ssafy.io:8002/api/v1";
+const DEV_URL = "http://i11a509.p.ssafy.io/api/v1";
 const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
 const SERVER_URL = "http://planetrush_api:8080/api/v1";
 
 const instance = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: DEV_URL,
   timeout: 1000,
   headers: {
     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ instance.interceptors.response.use(
         try {
           // 토큰 재발급 요청
           const responseAgain = await axios.post(
-            `${SERVER_URL}/members/auth/reissue`,
+            `${DEV_URL}/members/auth/reissue`,
             {
               refreshToken: refreshToken,
             },
