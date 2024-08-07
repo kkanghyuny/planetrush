@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 import useUserStore from "../../store/userStore";
 
-const DEV_URL = "http://i11a509.p.ssafy.io:8002/api/v1";
+const DEV_URL = "http://i11a509.p.ssafy.io/api/v1";
 const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
 const SERVER_URL = "http://planetrush:8080/api/v1";
 
@@ -21,7 +21,10 @@ function Auth() {
 
   // Kakao에 axios 요청을 날려서 API_KEY와 REDIRECT_URI를 활용해 access_token을 받아온다.
   const getToken = async () => {
-    const token = new URL(window.location.href).searchParams.get("code");
+    const code = new URL(window.location.href).searchParams.get("code");
+
+    console.log(code);
+    console.log("getToken 함수야");
 
     const response = await axios.post(
       "https://kauth.kakao.com/oauth/token",
@@ -43,8 +46,11 @@ function Auth() {
   // 백엔드로 받아온 access_token을 넘긴다.
   const sendTokenToBackend = async (accessToken) => {
     try {
+      console.log("sendTokenToBackend 함수야");
+      console.log(accessToken);
+      console.log("accessToekn 다음이야");
       const response = await axios.post(
-        `${SERVER_URL}/members/auth/login/kakao`,
+        `${DEV_URL}/members/auth/login/kakao`,
         { accessToken: accessToken },
         {
           headers: {
@@ -75,7 +81,9 @@ function Auth() {
 
       // 메인페이지로 리다이렉트
       navigate("/main");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // 받아온 accss_token이 존재할 경우 백엔드로 토큰을 보낸다.
