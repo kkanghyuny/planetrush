@@ -1,4 +1,3 @@
-// store/userStore.js
 import { create } from "zustand";
 
 const DEV_URL = "http://i11a509.p.ssafy.io/api/v1";
