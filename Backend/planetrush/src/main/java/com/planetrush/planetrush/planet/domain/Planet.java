@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
 import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
+import com.planetrush.planetrush.planet.exception.PlanetDestroyedException;
 import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentExitTimeoutException;
 
@@ -195,6 +196,7 @@ public class Planet {
 	 * @throws ParticipantsOverflowException 최대 참가자 수를 초과할 경우
 	 */
 	public void addParticipant() {
+		checkDestroyed();
 		if (LocalDate.now().isAfter(this.startDate) || LocalDate.now().equals(this.startDate)) {
 			throw new RegisterResidentTimeoutException();
 		}
@@ -247,6 +249,18 @@ public class Planet {
 		this.currentParticipants--;
 		if (currentParticipants == 0) {
 			this.status = PlanetStatus.DESTROYED;
+		}
+	}
+
+	/**
+	 * 현재 행성의 상태가 {@code DESTROYED}인지 확인합니다.
+	 * 행성이 파괴된 경우 {@link PlanetDestroyedException}을 던집니다.
+	 *
+	 * @throws PlanetDestroyedException 행성의 상태가 {@code DESTROYED}인 경우
+	 */
+	private void checkDestroyed() {
+		if(this.status == PlanetStatus.DESTROYED) {
+			throw new PlanetDestroyedException("Planet is already destroyed : " + this.id);
 		}
 	}
 
