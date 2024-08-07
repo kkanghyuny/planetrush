@@ -58,7 +58,7 @@ public class PlanetExceptionHandler {
 		log.info(e.getMessage());
 		nm.sendNotification(e, req.getRequestURI(), getParams(req));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(BaseResponse.ofFail(ResponseCode.PARTICIPANTS_OVERFLOW));
+			.body(BaseResponse.ofFail(ResponseCode.PLANET_IS_DESTROYED));
 	}
 
 }
