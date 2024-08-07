@@ -31,13 +31,7 @@ const MainPage = () => {
   useEffect(() => {
     const joinPlanetList = async () => {
       try {
-        const response = await instance.get(
-          `/planets/main/list`,
-          {},
-          {
-            headers: { "Content-type": "application/json" },
-          }
-        );
+        const response = await instance.get(`/planets/main/list`);
         if (response.data.isSuccess) {
           const data = response.data.data;
           setPlanets(data);
@@ -67,12 +61,14 @@ const MainPage = () => {
   const getPlanetStyle = (planet, index, usedPositions) => {
     const sizeStyle = getPlanetSize(planets.length, index);
     const position = gridPositions[index % gridPositions.length];
-    const randomTopOffset = Math.random() * (33.33 - parseFloat(sizeStyle.height) / 6);
-    const randomLeftOffset = Math.random() * (33.33 - parseFloat(sizeStyle.width) / 6);
+    const randomTopOffset =
+      Math.random() * (33.33 - parseFloat(sizeStyle.height) / 6);
+    const randomLeftOffset =
+      Math.random() * (33.33 - parseFloat(sizeStyle.width) / 6);
 
     // 패딩을 고려하여 위치를 조정합니다.
-    const gridWidth = 100 - (2 * PADDING / 600) * 100;
-    const gridHeight = 100 - (2 * PADDING / 600) * 100;
+    const gridWidth = 100 - ((2 * PADDING) / 600) * 100;
+    const gridHeight = 100 - ((2 * PADDING) / 600) * 100;
 
     const topValue = clamp(
       parseFloat(position.top) + randomTopOffset,
@@ -99,7 +95,7 @@ const MainPage = () => {
   const handleToDetail = (planetStatus, planetId) => {
     return () => {
       if (planetStatus === "READY") {
-        navigate(`/planet/${planetId}`, { state: { from: '/main' } });
+        navigate(`/planet/${planetId}`, { state: { from: "/main" } });
       } else {
         navigate("/planet-progress", { state: planetId });
       }
@@ -130,12 +126,16 @@ const MainPage = () => {
             const planetStyle = getPlanetStyle(planet, index, []);
             const planetImgUrl =
               planet.status === "READY" ? present : planet.planetImgUrl;
-            const imgClass = planet.isLastDay ? "planet-img burning" : "planet-img";
+            const imgClass = planet.isLastDay
+              ? "planet-img burning"
+              : "planet-img";
 
             return (
               <div
                 key={planet.planetId}
-                className={`planet-wrapper ${planet.isLastDay ? "burning" : ""}`}
+                className={`planet-wrapper ${
+                  planet.isLastDay ? "burning" : ""
+                }`}
                 style={planetStyle}
                 onClick={handleToDetail(planet.status, planet.planetId)}
               >

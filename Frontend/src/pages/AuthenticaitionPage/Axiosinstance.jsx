@@ -1,13 +1,13 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+import useURLStore from "./store/userStore";
+
 // Axios 인스턴스 생성
-const DEV_URL = "http://i11a509.p.ssafy.io/api/v1";
-const LOCAL_URL = "http://70.12.247.69:8080/api/v1";
-const SERVER_URL = "http://planetrush_api:8080/api/v1";
+const { SERVER_URL } = useURLStore();
 
 const instance = axios.create({
-  baseURL: DEV_URL,
+  baseURL: SERVER_URL,
   timeout: 1000,
   headers: {
     "Content-Type": "application/json",
@@ -16,8 +16,6 @@ const instance = axios.create({
 
 // 로그아웃 처리 함수
 const handleLogout = () => {
-  Cookies.remove("access-token");
-  Cookies.remove("refresh-token");
   window.location.href = "/"; // 홈 페이지로 리디렉션
 };
 
@@ -56,7 +54,7 @@ instance.interceptors.response.use(
         try {
           // 토큰 재발급 요청
           const responseAgain = await axios.post(
-            `${DEV_URL}/members/auth/reissue`,
+            `${SERVER_URL}/members/auth/reissue`,
             {
               refreshToken: refreshToken,
             },
@@ -70,15 +68,9 @@ instance.interceptors.response.use(
             againData;
 
           // 새로운 토큰을 쿠키에 저장
-          Cookies.set("access-token", newAccessToken, {
-            secure: true,
-            sameSite: "strict",
-          });
+          Cookies.set("access-token", newAccessToken);
 
-          Cookies.set("refresh-token", newRefreshToken, {
-            secure: true,
-            sameSite: "strict",
-          });
+          Cookies.set("refresh-token", newRefreshToken);
 
           // Axios 기본 헤더와 원래 요청 헤더에 새로운 토큰 설정
           instance.defaults.headers.common[

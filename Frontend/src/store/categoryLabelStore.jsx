@@ -1,6 +1,4 @@
-// src/store/categoryLabelStore.js
-
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useCategoryStore = create((set, get) => ({
   categories: [
