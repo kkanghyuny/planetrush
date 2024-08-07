@@ -19,3 +19,7 @@
     border-radius: 10px;
   }
   
+  .detail-info-container {
+    display: flex;
+    padding: 10px;
+  }

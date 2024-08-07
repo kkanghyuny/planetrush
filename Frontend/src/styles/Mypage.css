@@ -48,7 +48,7 @@
   align-items: center; /* 수직 중앙 정렬 */
   justify-content: center; /* 수평 중앙 정렬 */
   gap: 10px; /* 텍스트와 아이콘 사이의 간격 설정 */
-  margin: 0; /* 불필요한 여백 제거 (필요에 따라 조정) */
+  margin: 0 0 10px 0; /* 불필요한 여백 제거 (필요에 따라 조정) */
   padding: 0; /* 불필요한 패딩 제거 (필요에 따라 조정) */
 }
 
