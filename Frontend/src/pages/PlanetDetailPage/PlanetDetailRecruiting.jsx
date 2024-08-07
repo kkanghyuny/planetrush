@@ -36,23 +36,25 @@ const PlanetDetailRecruiting = () => {
     navigate(-1);
   };
 
+  const fetchPlanetDetail = async () => {
+    try {
+      const response = await instance.get(`/planets/detail`, {
+        params: { "planet-id": id },
+      });
+
+      if (response.data.isSuccess) {
+        const data = response.data.data;
+
+        setPlanet(data); // planet 데이터 설정
+        setIsJoined(data.isJoined); // isJoined 설정
+        setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchPlanetDetail = async () => {
-      try {
-        const response = await instance.get(`/planets/detail`, {
-          params: { "planet-id": id },
-        });
-
-        if (response.data.isSuccess) {
-          const data = response.data.data;
-
-          setPlanet(data); // planet 데이터 설정
-          setIsJoined(data.isJoined); // isJoined 설정
-          setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
-        }
-      } catch (error) {}
-    };
-
     fetchPlanetDetail();
   }, [id]);
 
@@ -67,9 +69,8 @@ const PlanetDetailRecruiting = () => {
       const response = await instance.post(`/planets/${planet.planetId}`, {});
 
       if (response.status === 200) {
-        setIsJoined(true);
         setIsJoinSuccessModalOpen(true);
-        setCurrentParticipants((prevParticipants) => prevParticipants + 1);
+        await fetchPlanetDetail(); // Fetch updated planet details
       } else {
         setIsJoinFailModalOpen(true);
       }
@@ -83,9 +84,8 @@ const PlanetDetailRecruiting = () => {
       const response = await instance.delete(`/planets/${planet.planetId}`, {});
 
       if (response.status === 200) {
-        setIsJoined(false);
         setIsExitModalOpen(true);
-        setCurrentParticipants(currentParticipants - 1);
+        await fetchPlanetDetail(); // Fetch updated planet details
       } else {
         setIsJoinFailModalOpen(true);
       }
