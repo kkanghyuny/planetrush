@@ -83,8 +83,12 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
             ))}
           </div>
           <p>{getStatusMessage()}</p>
-          <button className="button" onClick={handleVerification}>
-            인증하기
+          <button
+            className="button"
+            onClick={handleVerification}
+            disabled={planetInfo.verifiedToday}
+          >
+            {planetInfo.verifiedToday ? "인증완료" : "인증하기"}
           </button>
         </div>
       </div>

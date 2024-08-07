@@ -15,8 +15,6 @@ const PlanetVerification = () => {
 
   const { content, id: planetId } = location.state;
 
-  console.log(planetId);
-
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
