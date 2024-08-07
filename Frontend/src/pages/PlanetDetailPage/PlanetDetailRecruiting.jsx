@@ -144,7 +144,7 @@ const PlanetDetailRecruiting = () => {
         )}`}</div>
       </div>
       <div>{planet.content}</div>
-      <div>{currentParticipants}</div>
+      <div>{planet.currentParticipants}</div>
       <div>{planet.maxParticipants}</div>
       <img src={planet.planetImg} alt="행성사진" />
       <div>
