@@ -37,7 +37,7 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 		Member member = memberRepository.findById(dto.getMemberId())
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
 		Planet planet = planetRepository.findById(dto.getPlanetId())
-			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));;
 		residentRepository.findByMemberIdAndPlanetId(member.getId(), planet.getId())
 			.ifPresent(resident -> {
 				throw new ResidentAlreadyExistsException("resident already exists: " + resident.getId());

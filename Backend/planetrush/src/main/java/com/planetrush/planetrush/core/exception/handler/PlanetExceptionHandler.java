@@ -11,6 +11,7 @@ import com.planetrush.planetrush.core.mattermost.NotificationManager;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
+import com.planetrush.planetrush.planet.exception.PlanetDestroyedException;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,15 @@ public class PlanetExceptionHandler {
 			params.append("- ").append(key).append(" : ").append(req.getParameter(key)).append("/n");
 		}
 		return params.toString();
+	}
+
+	@ExceptionHandler(PlanetDestroyedException.class)
+	public ResponseEntity<BaseResponse<Object>> handlePlanetDestroyedException(
+		NegativeParticipantCountException e, HttpServletRequest req) {
+		log.info(e.getMessage());
+		nm.sendNotification(e, req.getRequestURI(), getParams(req));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.PARTICIPANTS_OVERFLOW));
 	}
 
 }
