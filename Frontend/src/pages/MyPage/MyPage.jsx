@@ -47,7 +47,7 @@ const MyPage = () => {
   return (
     <>
       <div className="top-container">
-        <div onClick={handleClick} className="arrow-circle-icon">
+        <div onClick={handleClick} className="back-button">
           <BiSolidLeftArrowCircle />
         </div>
         <LogoutButton />

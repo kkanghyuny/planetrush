@@ -56,8 +56,8 @@ const MainPage = () => {
   }, []);
 
   const getPlanetSize = (totalPlanets, index) => {
-    const baseSize = 120 - (totalPlanets - 1) * 8;
-    const sizeAdjustment = (9 - index) * 5;
+    const baseSize = 83 - (totalPlanets - 1) * 5;
+    const sizeAdjustment = (9 - index) * 3;
     const size = baseSize + sizeAdjustment;
 
     return {
@@ -68,7 +68,7 @@ const MainPage = () => {
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-  const getPlanetStyle = (planet, index) => {
+  const getPlanetStyle = (planet, index, usedPositions) => {
     const sizeStyle = getPlanetSize(planets.length, index);
     const position = shuffledPositions[index % shuffledPositions.length];
     const randomTopOffset =
@@ -133,7 +133,7 @@ const MainPage = () => {
       ) : (
         <div className="main-grid-container">
           {planets.map((planet, index) => {
-            const planetStyle = getPlanetStyle(planet, index);
+            const planetStyle = getPlanetStyle(planet, index, []);
             const planetImgUrl =
               planet.status === "READY" ? present : planet.planetImgUrl;
             const imgClass = planet.isLastDay

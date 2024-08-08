@@ -1,16 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 import "../../styles/Modal.css";
 
 // 사람이 꽉 차서 가입할 수 없는 경우
 
 const JoinFailModal = ({ setIsJoinFailModalOpen, imageUrl }) => {
-  const navigate = useNavigate()
 
   const handleCloseModal = () => {
     setIsJoinFailModalOpen(false);
-    navigate('/main')
   };
 
   return (
