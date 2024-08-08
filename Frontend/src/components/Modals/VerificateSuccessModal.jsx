@@ -6,7 +6,7 @@ const VerificateSuccessModal = () => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h4>인증되었습니다! 내일도 화이팅!</h4>
+        <h4>인증되었습니다! 화이팅!</h4>
         <button onClick={() => navigate("/main")}>다른 행성 가기</button>
       </div>
     </div>

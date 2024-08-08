@@ -1,25 +1,37 @@
 .modal {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.7);
-  }
-  
-  .modal-content {
-    background-color: #120F3A;
-    margin: 30% 35%;
-    padding: 20px;
-    border: 1px solid #31FFF2;
-    width: 20%;
-    color: #ffffff;
-    border-radius: 10px;
-  }
-  
-  .detail-info-container {
-    display: flex;
-    padding: 10px;
-  }
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center; /* 가로 정렬 */
+  align-items: center; /* 세로 정렬 */
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  background-color: #120f3a;
+  padding: 30px;
+  gap: 20px;
+  border: 1px solid #31fff2;
+  width: 70%;
+  color: #ffffff;
+  border-radius: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.detail-info-container {
+  display: flex;
+  padding: 10px;
+}
+
+.nickname-input {
+  width: 100%;
+}

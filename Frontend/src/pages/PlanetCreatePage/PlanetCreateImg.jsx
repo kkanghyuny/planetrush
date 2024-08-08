@@ -22,31 +22,28 @@ const PlanetCreateImg = () => {
   const [canvasData, setCanvasData] = useState(null);
   const [canvasFile, setCanvasFile] = useState(null);
 
+  //캔버스 유효성 검사
+  const [isCanvasEmpty, setIsCanvasEmpty] = useState(true);
+
   const getNewPlanetInfo = () => {
     const planetImg = {
       custumImg: null,
       planetImgUrl: selectedImage ? selectedImage.imgUrl : null,
     };
 
-    if (view === "custom" && !canvasData) {
+    if (view === "custom" && isCanvasEmpty) {
       setShowAlert(true);
       return;
     }
 
     if (view === "custom") {
-      if (!canvasData) {
-        setShowAlert(true);
-        return;
-      }
-
-      planetImg.custumImg = canvasData; // canvas에서 만든 이미지 URL 사용
+      planetImg.custumImg = canvasData;
     } else {
       if (!selectedImage) {
         setShowAlert(true);
         return;
       }
-
-      planetImg.planetImgUrl = selectedImage.imgUrl; // 선택된 이미지의 URL 사용
+      planetImg.planetImgUrl = selectedImage.imgUrl;
     }
 
     navigate("/create-foam", { state: { savedImage: planetImg } });
@@ -73,11 +70,13 @@ const PlanetCreateImg = () => {
     setCanvasFile(file);
   };
 
-  //빈칸일때 알림
+  const handleCanvasStateChange = (isEmpty) => {
+    setIsCanvasEmpty(isEmpty);
+  };
+
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => setShowAlert(false), 3000);
-
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
@@ -120,7 +119,11 @@ const PlanetCreateImg = () => {
         </div>
       ) : (
         <div>
-          <Canvas onSaveImage={handleSaveImage} setCanvasRef={setCanvasRef} />
+          <Canvas
+            onCanvasStateChange={handleCanvasStateChange}
+            onSaveImage={handleSaveImage}
+            setCanvasRef={setCanvasRef}
+          />
         </div>
       )}
       {showAlert && <div className="alert">그림을 그려주세요!</div>}{" "}

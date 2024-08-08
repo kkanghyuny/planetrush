@@ -5,7 +5,7 @@ import * as fabric from "fabric";
 import "../../styles/Canvas.css";
 
 //createImg에서 saveImage를 props 받아옴
-const Canvas = ({ onSaveImage }) => {
+const Canvas = ({ onSaveImage, onCanvasStateChange }) => {
   //캔버스 컴포넌트 호출
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
@@ -159,7 +159,7 @@ const Canvas = ({ onSaveImage }) => {
         });
 
         const file = dataURLtoFile(dataURL, "custom-planet.png");
-        onSaveImage(file);
+        onSaveImage(dataURL, file);
       }
     }
   };
@@ -189,17 +189,22 @@ const Canvas = ({ onSaveImage }) => {
   //updateCanvasImage 확인하는 메서드
   useEffect(() => {
     if (canvas) {
-      canvas.on("object:added", updateCanvasImage);
-      canvas.on("object:removed", updateCanvasImage);
-      canvas.on("object:modified", updateCanvasImage);
+      const handleCanvasChange = () => {
+        const isEmpty = canvas.getObjects().length === 0;
+        onCanvasStateChange(isEmpty);
+      };
+
+      canvas.on("object:added", handleCanvasChange);
+      canvas.on("object:removed", handleCanvasChange);
+      canvas.on("object:modified", handleCanvasChange);
 
       return () => {
-        canvas.off("object:added", updateCanvasImage);
-        canvas.off("object:removed", updateCanvasImage);
-        canvas.off("object:modified", updateCanvasImage);
+        canvas.off("object:added", handleCanvasChange);
+        canvas.off("object:removed", handleCanvasChange);
+        canvas.off("object:modified", handleCanvasChange);
       };
     }
-  }, [canvas]);
+  }, [canvas, onCanvasStateChange]);
 
   //다시그리기
   const clearCanvas = () => {
@@ -249,8 +254,8 @@ const Canvas = ({ onSaveImage }) => {
             사이즈:
             <input
               type="range"
-              min="1"
-              max="50"
+              min="5"
+              max="20"
               value={pixelSize}
               onChange={(e) => setPixelSize(parseInt(e.target.value, 10))}
             />
