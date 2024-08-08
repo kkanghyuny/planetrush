@@ -23,6 +23,8 @@ const SearchPlanet = () => {
   const [lastPlanetId, setLastPlanetId] = useState(null);
   const [recommends, setRecommends] = useState([]);
 
+  const scrollableContainerRef = useRef(null);
+
   const handleClick = () => {
     navigate("/main");
   };
@@ -174,6 +176,15 @@ const SearchPlanet = () => {
     };
   }, [handleObserver]);
 
+  const scrollToTop = () => {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div>
       <div onClick={handleClick} className="back-button">
@@ -206,17 +217,17 @@ const SearchPlanet = () => {
         ))}
       </div>
 
-      <div className="scrollable-container">
+      <div className="scrollable-container" ref={scrollableContainerRef}>
         {recommends.length > 0 && (
           <div className="recommend-container">
-            <h3>
-              지난 주,{" "}
+            <h3 className="search-h3">
+              지난 주,  
               <span className="category-recommend">
                 {getCategoryLabel(selectedCategory)} 카테고리
-              </span>{" "}
+              </span>
               에서
             </h3>
-            <h3>가장 핫한 챌린지예요</h3>
+            <h3 className="search-h3">가장 핫한 챌린지예요</h3>
             <div className="recommend-list">
               {recommends.map((recommend, index) => (
                 <button
@@ -247,9 +258,9 @@ const SearchPlanet = () => {
               <>
                 <div className="search-fail">
                   <h4>
-                    <span className="fail-query">
+                    <div className="fail-query">
                       {selectedRecommend || query}
-                    </span>
+                    </div>
                     에 해당하는 챌린지가
                   </h4>
                   <br />
@@ -268,6 +279,7 @@ const SearchPlanet = () => {
           )}
         </div>
       </div>
+      <button className="top-button" onClick={scrollToTop}></button>
     </div>
   );
 };

@@ -1,12 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import "../../styles/Modal.css";
 
 // 가입 탈퇴 시 등장하는 모달
 const ExitModal = ({ setIsExitModalOpen, imageUrl }) => {
   // 탈퇴 모달 다시 비활성화
+  const navigate = useNavigate()
   const handleCloseModal = () => {
     setIsExitModalOpen(false);
+    navigate('/main')
   };
 
   return (
