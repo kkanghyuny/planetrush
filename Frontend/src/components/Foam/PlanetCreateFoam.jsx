@@ -171,6 +171,11 @@ const PlanetCreateForm = () => {
       return;
     }
 
+    if (planetInfo.category === "") {
+      alert("카테고리를 설정해주세요");
+      return;
+    }
+
     if (planetInfo.content.trim() === "") {
       alert("챌린지명을 입력해주세요.");
       return;
@@ -220,7 +225,7 @@ const PlanetCreateForm = () => {
 
   return (
     <div className="planet-create-container">
-      <h1>행성을 창조해주세요</h1>
+      <h3>행성 정보를 입력해주세요</h3>
       <form onSubmit={handleSubmit} className="planet-form">
         <div className="form-group">
           <label>행성 이름</label>
@@ -257,7 +262,7 @@ const PlanetCreateForm = () => {
                 checked={planetInfo.category === "EXERCISE"}
                 onChange={handleInputChange}
               />
-              운동
+              <span>운동</span>
             </label>
             <label>
               <input
@@ -267,7 +272,7 @@ const PlanetCreateForm = () => {
                 checked={planetInfo.category === "LIFE"}
                 onChange={handleInputChange}
               />
-              생활
+              <span>생활</span>
             </label>
             <label>
               <input
@@ -277,7 +282,7 @@ const PlanetCreateForm = () => {
                 checked={planetInfo.category === "BEAUTY"}
                 onChange={handleInputChange}
               />
-              미용
+              <span>미용</span>
             </label>
             <label>
               <input
@@ -287,7 +292,7 @@ const PlanetCreateForm = () => {
                 checked={planetInfo.category === "STUDY"}
                 onChange={handleInputChange}
               />
-              학습
+              <span>학습</span>
             </label>
             <label>
               <input
@@ -297,7 +302,7 @@ const PlanetCreateForm = () => {
                 checked={planetInfo.category === "ETC"}
                 onChange={handleInputChange}
               />
-              기타
+              <span>기타</span>
             </label>
           </div>
         </div>
@@ -311,7 +316,7 @@ const PlanetCreateForm = () => {
               onChange={handleDateChange}
               min={getTodayDate()}
             />
-            부터
+            <span>부터</span>
             <input
               type="date"
               name="endDate"
@@ -319,11 +324,11 @@ const PlanetCreateForm = () => {
               onChange={handleDateChange}
               min={getTodayDate()}
             />
-            까지
+            <span>까지</span>
           </div>
           {errors.date && <p className="error">{errors.date}</p>}
         </div>
-        <div className="form-group people-count">
+        <div className="form-group-people-count">
           <label>인원 수</label>
           <div className="count-control">
             <button type="button" onClick={() => handlePeopleCountChange(-1)}>
