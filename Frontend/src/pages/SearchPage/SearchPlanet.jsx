@@ -176,7 +176,7 @@ const SearchPlanet = () => {
 
   return (
     <div>
-      <div onClick={handleClick} className="arrow-circle-icon">
+      <div onClick={handleClick} className="back-button">
         <BiSolidLeftArrowCircle />
       </div>
       <div className="search-region">

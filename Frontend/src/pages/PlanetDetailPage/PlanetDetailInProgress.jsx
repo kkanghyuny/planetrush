@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import PlanetDetailInfo from "../../components/PlanetDetail/PlanetDetailInfo";
 import PlanetRank from "../../components/PlanetDetail/PlanetRank";
 import PlanetChat from "../../components/PlanetDetail/PlanetChat";
 
+import { BiSolidLeftArrowCircle } from "react-icons/bi";
+
 const PlanetDetailInProgress = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [view, setView] = useState("rank");
   const planetId = location.state;
@@ -42,7 +45,7 @@ const PlanetDetailInProgress = () => {
           startDate: data.startDate,
           endDate: data.endDate,
           totalVerificationCnt: data.totalVerificationCnt,
-          imgUrl: data.imgUrl,
+          imgUrl: data.planetImg,
           verifiedToday: data.verifiedToday,
         });
 
@@ -67,6 +70,9 @@ const PlanetDetailInProgress = () => {
 
   return (
     <>
+      <div onClick={() => navigate(-1)} className="back-button">
+        <BiSolidLeftArrowCircle />
+      </div>
       <div>
         {planetInfo && (
           <PlanetDetailInfo

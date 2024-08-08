@@ -11,6 +11,7 @@ body {
   overflow-x: hidden;
   background: none; /* 기본 배경 제거 */
   color: white;
+  font-family: "S-CoreDream-3Light", Arial, sans-serif; /* 폰트 적용 */
 }
 
 .App {
@@ -26,11 +27,49 @@ body {
 
 .route-wrapper {
   position: relative;
-  overflow-y: hidden; /* 내부 스크롤 허용 */
+  overflow-y: auto; /* 내부 스크롤 허용 */
   flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
   padding: 20px; /* 내용물에 패딩 추가 */
   box-sizing: border-box;
-  height: calc(100vh - 125px); /* 네비게이션 높이를 뺀 나머지 공간 */
   margin-bottom: 150px;
-} 
+  height: calc(100vh - 120px);
+}
 
+.route-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.start-page-wrapper {
+  margin-bottom: 0; /* 네비게이션 높이를 고려하지 않음 */
+  height: 100%; /* 전체 화면 높이 */
+}
+
+/* 반응형을 위해 추가된 미디어 쿼리 */
+@media (max-width: 480px) {
+  .App {
+    max-width: 100%; /* 작은 화면에서는 최대 너비를 100%로 설정 */
+  }
+
+  .route-wrapper {
+    padding: 10px; /* 작은 화면에서는 패딩을 줄여서 공간 확보 */
+    margin-bottom: 140px; /* 네비게이션 높이를 뺀 나머지 공간 */
+  }
+
+  .route-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .start-page-wrapper {
+    padding: 10px;
+    margin-bottom: 0;
+    height: 100%;
+  }
+}
+
+@font-face {
+  font-family: "S-CoreDream-3Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}

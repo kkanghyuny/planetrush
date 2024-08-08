@@ -10,7 +10,7 @@ const JoinFailModal = ({ setIsJoinFailModalOpen, imageUrl }) => {
 
   const handleCloseModal = () => {
     setIsJoinFailModalOpen(false);
-    navigate(-1)
+    navigate('/main')
   };
 
   return (

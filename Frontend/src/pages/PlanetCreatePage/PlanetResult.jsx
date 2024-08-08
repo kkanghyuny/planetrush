@@ -74,38 +74,40 @@ const PlanetResult = () => {
         onClick={() => navigate(-1)}
         className="back-button"
       />
-      <h1>행성 결과</h1>
+      <h3>행성을 확인해주세요</h3>
       <div className="planet-details">
         {(planetInfo.planetImg || planetInfo.planetImgUrl) && (
-          <div className="image-container">
-            <img
-              src={
-                planetInfo.planetImg
-                  ? URL.createObjectURL(planetInfo.planetImg)
-                  : planetInfo.planetImgUrl
-              }
-              alt="행성 이미지"
-              className="planet-image"
-            />
-          </div>
+          <img
+            src={
+              planetInfo.planetImg
+                ? URL.createObjectURL(planetInfo.planetImg)
+                : planetInfo.planetImgUrl
+            }
+            alt="행성 이미지"
+            className="planet-image"
+          />
         )}
-        <p>행성 이름: {planetInfo.name}</p>
-        <p>챌린지명: {planetInfo.content}</p>
-        <p>카테고리: {planetInfo.category}</p>
-        <p>
-          기간: {planetInfo.startDate}부터 {planetInfo.endDate}까지
+        <p className="planet-info-title">{planetInfo.name}</p>
+        <p className="planet-info-title">"{planetInfo.content}"를 도전합니다</p>
+        <p className="planet-info">{planetInfo.category}</p>
+        <p className="planet-info">
+          {planetInfo.startDate}부터 {planetInfo.endDate}까지
         </p>
-        <p>인원 수: {planetInfo.maxParticipants}명</p>
-        <p>미션 조건: {planetInfo.authCond}</p>
-        <img
-          src={planetInfo.missionUrl}
-          alt="미션인증사진"
-          className="planet-mission"
-        />
+        <p className="planet-info">최대 {planetInfo.maxParticipants}명</p>
+        <div className="mission-container">
+          <p className="planet-info">{planetInfo.authCond}</p>
+          <img
+            src={planetInfo.missionUrl}
+            alt="미션인증사진"
+            className="planet-mission"
+          />
+        </div>
       </div>
-      <p>생성 후 수정이 불가능합니다</p>
-      <p>정말 새로운 행성의 개척자가 맞으신가요?</p>
-      <button onClick={() => handleSumbit()}>맞습니다</button>
+      <p className="warning-cyan">생성 후 수정이 불가능합니다</p>
+      <p className="warning-white">정말 새로운 행성의 개척자가 맞으신가요?</p>
+      <button className="create-planet-yes" onClick={() => handleSumbit()}>
+        맞습니다
+      </button>
       {isSuccess === true && (
         <CreatePlanetSuccess imageUrl={planetInfo.planetImgUrl} />
       )}

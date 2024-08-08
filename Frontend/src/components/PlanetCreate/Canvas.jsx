@@ -101,8 +101,8 @@ const Canvas = ({ onSaveImage }) => {
         const fabricCanvas = new fabric.Canvas(canvasRef.current, {
           isDrawingMode: drawingMode,
           backgroundColor: "transparent",
-          width: 380,
-          height: 380,
+          width: 250,
+          height: 250,
           stopContextMenu: true,
           fireRightClick: true,
           enablePointerEvents: true,
@@ -232,9 +232,10 @@ const Canvas = ({ onSaveImage }) => {
         <canvas ref={canvasRef} />
       </div>
       <div className="controls">
-        <button onClick={() => clearCanvas()}>다시 그리기</button>
-        <button onClick={() => saveCanvasAsImage()}>다운받기</button>
-        <button onClick={() => handleUndoClick()}>실행 취소</button>
+        <div className="button-box">
+          <p onClick={() => clearCanvas()}>다시 그리기</p>
+          <p onClick={() => handleUndoClick()}>실행 취소</p>
+        </div>
         <div className="color-size-controls" style={{ marginTop: "10px" }}>
           <label style={{ marginRight: "10px" }}>
             색:
@@ -256,6 +257,9 @@ const Canvas = ({ onSaveImage }) => {
           </label>
         </div>
       </div>
+      <p className="download" onClick={() => saveCanvasAsImage()}>
+        다운받기
+      </p>
     </div>
   );
 };
