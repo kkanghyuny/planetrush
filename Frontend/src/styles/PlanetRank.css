@@ -25,6 +25,11 @@
   margin-bottom: 5px;
 }
 
+.user-verificate {
+  display: flex;
+  flex-direction: column;
+}
+
 .progress-info {
   display: flex;
   align-items: center;
@@ -32,7 +37,7 @@
 }
 
 .progress-bar {
-  background-color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 5px;
   width: 70%;
   height: 20px;

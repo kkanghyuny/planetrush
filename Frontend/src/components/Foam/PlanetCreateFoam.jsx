@@ -75,6 +75,19 @@ const PlanetCreateForm = () => {
         content: "",
       }));
     }
+
+    // 미션 조건 설정시
+    if (name === "authCond" && value.length > 30) {
+      setErrors((prevState) => ({
+        ...prevState,
+        authCond: "30자 이하로 적어주세요",
+      }));
+    } else if (name === "authCond") {
+      setErrors((prevState) => ({
+        ...prevState,
+        authCond: "",
+      }));
+    }
   };
 
   //인원수 체크
@@ -114,14 +127,33 @@ const PlanetCreateForm = () => {
     const end = new Date(endDate);
     const today = new Date();
 
-    if (start <= today || end <= today) {
+    const weekFromToday = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    if (start < today || start > weekFromToday) {
       setErrors((prevState) => ({
         ...prevState,
-        date: "시작일과 종료일은 현재 날짜 이후여야 합니다.",
+        date: "시작일은 오늘부터 일주일 이내여야 합니다.",
+      }));
+
+      setPlanetInfo((prevState) => ({
+        ...prevState,
+        startDate: "",
       }));
 
       return false;
-    } else if (end - start < 5 * 24 * 60 * 60 * 1000) {
+    } else if (end <= start) {
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "종료일은 시작일 이후여야 합니다.",
+      }));
+
+      setPlanetInfo((prevState) => ({
+        ...prevState,
+        endDate: "",
+      }));
+
+      return false;
+    } else if (end - start < 4 * 24 * 60 * 60 * 1000) {
       setErrors((prevState) => ({
         ...prevState,
         date: "기간은 최소 5일 이상이어야 합니다.",
@@ -354,6 +386,7 @@ const PlanetCreateForm = () => {
             onChange={handleInputChange}
           />
         </div>
+        {errors.content && <p className="error">{errors.content}</p>}
         <div className="form-group">
           <label>인증 사진 업로드</label>
           <input

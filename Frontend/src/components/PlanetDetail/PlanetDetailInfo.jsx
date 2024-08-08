@@ -5,11 +5,14 @@ import "../../styles/PlanetDetailInfo.css";
 const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
   const navigate = useNavigate();
 
+  const nowDate = new Date();
+  const endDate = new Date(
+    planetInfo.endDate[0],
+    planetInfo.endDate[1] - 1,
+    planetInfo.endDate[2]
+  );
   //날짜 차이 계산
-  const calculateDaysLeft = (endDateArr) => {
-    const nowDate = new Date();
-    const endDate = new Date(endDateArr[0], endDateArr[1] - 1, endDateArr[2]);
-
+  const calculateDaysLeft = () => {
     const timeDiff = endDate - nowDate;
     const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
@@ -67,13 +70,13 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
 
   return (
     <div className="progress-container">
-      <h3>{planetInfo.content}</h3>
+      <p className="planet-content">{planetInfo.content}</p>
       <div className="progress-planet-info">
         <img src={planetInfo.imgUrl} alt="Burning Planet" className="image" />
         <div className="text-container">
-          <p>{planetInfo.name}</p>
+          <p className="planet-title">{planetInfo.name}</p>
           <p className="days-left">{daysLeft}일 남았습니다!</p>
-          <div className="progress-bar">
+          <div className="progress-verificate-bar">
             {[...Array(10)].map((_, index) => (
               <div
                 key={index}
@@ -82,9 +85,9 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
               />
             ))}
           </div>
-          <p>{getStatusMessage()}</p>
+          <p className="planet-message">{getStatusMessage()}</p>
           <button
-            className="button"
+            className="verificate-button"
             onClick={handleVerification}
             disabled={planetInfo.verifiedToday}
           >

@@ -29,7 +29,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
   // 기존 채팅 메시지를 서버로부터 가져오는 함수
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`http://${CHAT_URL}/chat/v2`, {
+      const response = await axios.get(`https://${CHAT_URL}/chat/v2`, {
         params: { "planet-id": planetId },
       });
 
@@ -51,7 +51,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
   // 웹소켓 연결 설정
   const connect = () => {
-    const socket = new SockJS(`http://${CHAT_URL}/ws`);
+    const socket = new SockJS(`https://${CHAT_URL}/ws`);
     stompClient.current = Stomp.over(socket);
 
     console.log(stompClient);
