@@ -34,6 +34,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
 	@Override
 	protected String getDatabaseName() {
-		return "testdb";
+		return "chat_log";
 	}
 }
