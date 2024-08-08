@@ -13,12 +13,13 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>닉네임 수정</h2>
+        <h4>닉네임 수정</h4>
         <input
           type="text"
           value={newNickname}
+          className="nickname-input"
           onChange={(e) => setNewNickname(e.target.value)}
-          placeholder = {nickname}
+          placeholder={nickname}
         />
         <button onClick={handleSave}>저장</button>
         <button onClick={closeModal}>취소</button>
