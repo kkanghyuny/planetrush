@@ -16,6 +16,8 @@ const instance = axios.create({
 
 // 로그아웃 처리 함수
 const handleLogout = () => {
+  Cookies.remove("access-token");
+  Cookies.remove("refresh-token");
   window.location.href = "/"; // 홈 페이지로 리디렉션
 };
 
