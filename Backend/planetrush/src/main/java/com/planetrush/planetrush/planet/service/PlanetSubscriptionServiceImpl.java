@@ -1,5 +1,6 @@
 package com.planetrush.planetrush.planet.service;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,6 +9,7 @@ import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
+import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
 import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
@@ -36,7 +38,7 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 	public void registerResident(PlanetSubscriptionDto dto) {
 		Member member = memberRepository.findById(dto.getMemberId())
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
-		Planet planet = planetRepository.findById(dto.getPlanetId())
+		Planet planet = planetRepository.findByIdForUpdate(dto.getPlanetId())
 			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));;
 		residentRepository.findByMemberIdAndPlanetId(member.getId(), planet.getId())
 			.ifPresent(resident -> {
