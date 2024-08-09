@@ -168,17 +168,16 @@ public class ScheduledTasks {
 				tuple -> tuple.get(0, Long.class),
 				tuple -> tuple.get(1, Double.class)
 			));
-		Double d = null;
 		List<ProgressAvg> progressAvgList = memberCategoryAvgMap.entrySet().stream()
 			.map(entry -> {
 				Long memberId = entry.getKey();
 				Map<Category, Double> categoryMap = entry.getValue();
-				Double beautyAvg = categoryMap.getOrDefault(Category.BEAUTY, d);
-				Double exerciseAvg = categoryMap.getOrDefault(Category.EXERCISE, d);
-				Double lifeAvg = categoryMap.getOrDefault(Category.LIFE, d);
-				Double studyAvg = categoryMap.getOrDefault(Category.STUDY, d);
-				Double etcAvg = categoryMap.getOrDefault(Category.ETC, d);
-				Double totalAvg = memeberAvgMap.getOrDefault(memberId, d);
+				Double beautyAvg = categoryMap.getOrDefault(Category.BEAUTY, null);
+				Double exerciseAvg = categoryMap.getOrDefault(Category.EXERCISE, null);
+				Double lifeAvg = categoryMap.getOrDefault(Category.LIFE, null);
+				Double studyAvg = categoryMap.getOrDefault(Category.STUDY, null);
+				Double etcAvg = categoryMap.getOrDefault(Category.ETC, null);
+				Double totalAvg = memeberAvgMap.getOrDefault(memberId, null);
 				Member member = memberRepository.findById(memberId)
 					.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
 				return ProgressAvg.builder()
