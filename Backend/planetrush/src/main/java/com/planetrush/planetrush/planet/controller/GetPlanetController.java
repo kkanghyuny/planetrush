@@ -71,6 +71,11 @@ public class GetPlanetController extends PlanetController {
 		return planets.size() == size;
 	}
 
+	/**
+	 * 시작 전인 행성을 상세 조회합니다.
+	 * @param planetId 상세 조회할 행성의 고유 id
+	 * @return 행성의 정보를 담은 ResponseEntity
+	 */
 	@RequireJwtToken
 	@GetMapping("/detail")
 	public ResponseEntity<BaseResponse<PlanetDetailDto>> getPlanetDetail(@RequestParam("planet-id") Long planetId) {

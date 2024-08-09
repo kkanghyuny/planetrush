@@ -133,6 +133,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 		return OngoingPlanetDto.builder()
 			.planetId(planet.getId())
 			.planetImg(planet.getPlanetImg())
+			.standardVerificationImg(planet.getStandardVerificationImg())
 			.category(planet.getCategory().toString())
 			.content(planet.getContent())
 			.startDate(planet.getStartDate())
