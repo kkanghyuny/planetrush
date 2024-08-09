@@ -24,8 +24,19 @@
   border-color: #ff4081;
 }
 
+.verification-standard-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px;
+}
+
 .upload-foam {
-  border: 1px solid cyan;
+  display: flex;
+  justify-content: center;
+  border: 3px solid cyan;
   margin: 0 30px;
   padding: 30px;
   border-radius: 50px;
@@ -60,16 +71,22 @@
   margin-top: 20px;
 }
 
-.button {
-  background-color: #3f51b5;
-  color: white;
+.verificate-button {
+  background-image: url("../assets/button_cyan.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 50%;
+  height: 50px;
+  color: navy;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button:hover {
-  background-color: #ff4081;
+  margin-left: 25%;
 }

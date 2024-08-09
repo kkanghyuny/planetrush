@@ -28,7 +28,7 @@
 
 /*생성하기 버튼*/
 .create-button {
-  background-image: url("src/assets/button_cyan.png");
+  background-image: url("../assets/button_cyan.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

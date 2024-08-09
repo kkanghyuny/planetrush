@@ -52,6 +52,8 @@ const PlanetDetailInProgress = () => {
           verifiedToday: data.verifiedToday,
         });
 
+        console.log(data);
+
         setResidents(data.residents);
       } catch (error) {
         console.error("Error fetching images:", error.code);
