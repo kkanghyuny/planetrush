@@ -108,11 +108,14 @@ const PlanetVerification = () => {
 
           {selectedImageUrl && (
             <div className="buttons">
-              <button className="button" onClick={handleVerification}>
+              <button
+                className="verificate-button"
+                onClick={handleVerification}
+              >
                 업로드하기
               </button>
               <button
-                className="button"
+                className="verificate-button"
                 onClick={() => setSelectedImageUrl(null)}
               >
                 다시 찍기

@@ -94,7 +94,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
           </div>
           <p className="planet-message">{getStatusMessage()}</p>
           <button
-            className="verificate-button"
+            className="verificate-info-button"
             onClick={handleVerification}
             disabled={planetInfo.verifiedToday}
           >

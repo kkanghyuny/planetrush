@@ -63,15 +63,14 @@
   border-radius: 3px;
 }
 
-.verificate-button {
-  background-image: url("src/assets/button_cyan.png");
+.verificate-info-button {
+  background-image: url("../assets/button_cyan.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   width: 60%;
   height: 40px;
   color: black;
-  padding: 15px;
   font-size: 14px;
   font-weight: 800;
   text-align: center;
@@ -80,7 +79,6 @@
   justify-content: center;
   background-color: transparent;
   border: none;
-  margin: 10px;
 }
 
 .planet-message,
