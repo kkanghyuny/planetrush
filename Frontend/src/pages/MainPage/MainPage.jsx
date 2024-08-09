@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
+
+import Cookies from "js-cookie";
+
 import { BiSearchAlt } from "react-icons/bi";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
@@ -33,6 +36,7 @@ const MainPage = () => {
 
   const [planets, setPlanets] = useState(null);
   const [shuffledPositions, setShuffledPositions] = useState([]);
+  const nickname = Cookies.get('nickname')
 
   useEffect(() => {
     setShuffledPositions(shuffleArray([...gridPositions]));
@@ -81,12 +85,12 @@ const MainPage = () => {
     const gridHeight = 100 - ((2 * PADDING) / 600) * 100;
 
     const topValue = clamp(
-      parseFloat(position.top) + randomTopOffset,
+      parseFloat(position.top) + randomTopOffset + 5,
       0,
       gridHeight - parseFloat(sizeStyle.height) / 6
     );
     const leftValue = clamp(
-      parseFloat(position.left) + randomLeftOffset,
+      parseFloat(position.left) + randomLeftOffset + 5,
       0,
       gridWidth - parseFloat(sizeStyle.width) / 6
     );
@@ -122,6 +126,9 @@ const MainPage = () => {
         <Link to="/search" className="link-icon">
           <BiSearchAlt />
         </Link>
+      </div>
+      <div className="main-title">
+        <span className="text-color">{nickname}</span>님의 은하입니다!
       </div>
       {planets.length === 0 ? (
         <div className="rocket-center-container">

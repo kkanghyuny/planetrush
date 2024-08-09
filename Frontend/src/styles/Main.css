@@ -22,7 +22,7 @@
   width: 100%;
   max-width: 370px;
   position: relative;
-  height: 600px;
+  height: 550px;
   overflow: hidden;
   gap: 10px;
   padding: 10px;
@@ -76,7 +76,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 600px;
+  height: 550px;
   text-align: center;
   overflow: hidden;
 }
@@ -158,4 +158,9 @@ a {
   100% {
     transform: translateX(-100%);
   }
+}
+
+.main-title {
+  text-align: center;
+  margin-bottom: 20px;
 }

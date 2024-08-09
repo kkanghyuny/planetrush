@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import Cookies from "js-cookie";
 
 const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
   const [newNickname, setNewNickname] = useState("");
 
+  useEffect(() => {
+    if (!isOpen) {
+      setNewNickname("");
+    }
+  }, [isOpen]);
+
   const handleSave = () => {
-    saveNickname(newNickname);
-    closeModal();
+    if (newNickname.length > 10) {
+      alert("닉네임은 10자 이하로 입력해주세요.");
+      setNewNickname("");
+    } else {
+      saveNickname(newNickname);
+      Cookies.set('nickname', newNickname)
+      closeModal();
+    }
   };
 
   if (!isOpen) return null;

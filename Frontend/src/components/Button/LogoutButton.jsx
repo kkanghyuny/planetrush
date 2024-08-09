@@ -29,6 +29,7 @@ const LogoutButton = () => {
         // 로그아웃이 성공적으로 이루어진 경우 쿠키를 삭제하고 로그인 페이지로 리다이렉트
         Cookies.remove("access-token");
         Cookies.remove("refresh-token");
+        Cookies.remove("nickname")
         navigate("/");
       } else {
         setLogoutError("Failed to log out. Please try again.");

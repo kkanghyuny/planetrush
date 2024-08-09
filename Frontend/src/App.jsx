@@ -26,7 +26,9 @@ import "./App.css";
 
 const PrivateRoute = ({ element }) => {
   const accessToken = Cookies.get("access-token");
-  return accessToken ? element : <Navigate to="/" />;
+  const isValidToken = accessToken && accessToken.startsWith("Bearer");
+
+  return isValidToken ? element : <Navigate to="/" />;
 };
 
 function App() {

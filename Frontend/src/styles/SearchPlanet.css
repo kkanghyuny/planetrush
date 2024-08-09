@@ -4,6 +4,7 @@
 }
 
 .search-region {
+  margin-top: 20px;
   position: relative;
   padding: 10px; /* 내부 여백 */
 }
@@ -128,7 +129,6 @@
 }
 
 .challenge-img {
-  border: 1px solid rgba(255, 255, 255, 0.5);
   width: 70px;
   height: 70px;
 }

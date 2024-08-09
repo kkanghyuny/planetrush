@@ -1,10 +1,7 @@
-.logout {
-  cursor: pointer;
-}
-
 .doughnut-chart-container {
+  display: flex;
   position: relative;
-  width: 200px;
+  justify-content: center;
   height: 200px;
 }
 
@@ -31,16 +28,20 @@
 }
 
 .logout-button {
+  position: absolute;
+  top:10px;
+  right: 10px;
   cursor: pointer;
-  width: 30px;
+  width: 29px;
   height: auto;
 }
 
 .top-container {
-  display: flex;
-  justify-content: space-between;
-  height: 30px;
-  align-items: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .nickname {
@@ -89,5 +90,28 @@
   padding: 10px;
 }
 
+.cnt-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.text-color {
+  font-size: 20px;
+  font-weight: bold;
+  color: #31fff3;
+}
 
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bar-chart-container {
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+}
