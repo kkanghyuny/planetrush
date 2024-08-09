@@ -35,7 +35,7 @@ public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 				.category(history.getCategory())
 				.content(history.getChallengeContent())
 				.imageUrl(history.getPlanetImgUrl())
-				.progress(history.getProgress())
+				.progress(Double.parseDouble(String.format("%.2f", history.getProgress())))
 				.build())
 			.collect(Collectors.toList());
 	}
