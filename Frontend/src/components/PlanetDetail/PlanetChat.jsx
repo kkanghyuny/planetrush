@@ -51,7 +51,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
 
   // 웹소켓 연결 설정
   const connect = () => {
-    const socket = new SockJS(`https://${CHAT_URL}/ws`);
+    const socket = new SockJS(`https://${CHAT_URL}/wss`);
     stompClient.current = Stomp.over(() => socket); // factory 함수 전달
 
     console.log(stompClient.current);
