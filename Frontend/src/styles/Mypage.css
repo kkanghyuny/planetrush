@@ -1,8 +1,14 @@
 .doughnut-chart-container {
-  display: flex;
   position: relative;
-  justify-content: center;
   height: 200px;
+}
+
+.doughnut-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .doughnut-chart-text {
@@ -10,8 +16,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2;
   text-align: center;
 }
+
+
 
 .doughnut-chart-percentage {
   font-size: 20px;
@@ -85,8 +94,6 @@
 }
 
 .my-page {
-  height: calc(100vh - 125px); /* 네비게이션 높이와 간격을 뺀 나머지 공간 */
-  overflow-y: auto; /* 내부 스크롤 허용 */
   padding: 10px;
 }
 
@@ -112,6 +119,12 @@
 .bar-chart-container {
   width: 80%;
   max-width: 600px;
-  margin: 20px auto;
+  padding: 20px;
   text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.category-title {
+  text-align: left;
+  color: #31fff3;
 }

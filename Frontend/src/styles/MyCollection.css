@@ -1,7 +1,6 @@
 /* src/styles/MyCollection.css */
 
 .my-collection {
-  overflow-y: auto; /* 내부 스크롤 허용 */
   box-sizing: border-box;
   height: calc(100vh - 330px); /* 네비게이션 높이와 패딩을 고려한 높이 */
 }

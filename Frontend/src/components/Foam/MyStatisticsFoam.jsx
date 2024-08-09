@@ -34,7 +34,7 @@ const MyStatistics = () => {
     const handleShowStats = async () => {
         try {
             const response = await instance.get("/members/mypage");
-            const data = response.data.data; 
+            const data = response.data.data;
             return data; 
         } catch (error) {
             throw error;
@@ -54,8 +54,9 @@ const MyStatistics = () => {
         fetchStats();
     }, []); 
 
-    const completeRate = stats.challengeCnt === 0 ? 0 : Math.floor((stats.completionCnt / stats.challengeCnt) * 100);
-
+    let completeRate = stats.challengeCnt === 0 ? 0 : ((stats.completionCnt / stats.challengeCnt) * 100).toFixed(2);
+    completeRate = Math.max(0, Math.min(completeRate, 100));
+    
     const doughnutData = {
         datasets: [
             {
@@ -67,10 +68,10 @@ const MyStatistics = () => {
     };
 
     const doughnutOptions = {
-        cutout: "70%", // 도넛 차트의 두께를 설정합니다.
+        cutout: "70%",
         plugins: {
             tooltip: {
-                enabled: false, // 툴팁을 비활성화합니다.
+                enabled: false,
             },
         },
     };
@@ -80,11 +81,11 @@ const MyStatistics = () => {
             labels: ['나의 평균', '전체 평균'],
             datasets: [
                 {
-                    label: '평균',
+                    label: '',
                     data: [myAvg, avg],
                     backgroundColor: ['#31fff3', '#ffeb79'],
                     borderWidth: 1,
-                    barThickness: 20, // 막대의 두께를 조절
+                    barThickness: 15,
                 },
             ],
         };
@@ -95,12 +96,12 @@ const MyStatistics = () => {
         const maxValue = Math.max(myAvg, avg);
         const min = Math.max(0, minValue - 10);
         const max = Math.min(100, maxValue + 10);
-
+    
         return {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'top',
+                    display: false, // 레전드를 완전히 비활성화
                 },
                 title: {
                     display: true,
@@ -113,11 +114,6 @@ const MyStatistics = () => {
                         }
                     }
                 },
-                datalabels: {
-                    display: true,
-                    align: 'end',
-                    anchor: 'end',
-                },
             },
             scales: {
                 y: {
@@ -128,10 +124,19 @@ const MyStatistics = () => {
         };
     };
 
+    const categories = [
+        { title: "전체", myAvg: stats.myTotalAvg, avg: stats.totalAvg, percentage: stats.myTotalPer },
+        { title: "운동", myAvg: stats.myExerciseAvg, avg: stats.exerciseAvg, percentage: stats.myExercisePer },
+        { title: "뷰티", myAvg: stats.myBeautyAvg, avg: stats.beautyAvg, percentage: stats.myBeautyPer },
+        { title: "생활", myAvg: stats.myLifeAvg, avg: stats.lifeAvg, percentage: stats.myLifePer },
+        { title: "공부", myAvg: stats.myStudyAvg, avg: stats.studyAvg, percentage: stats.myStudyPer },
+        { title: "기타", myAvg: stats.myEtcAvg, avg: stats.etcAvg, percentage: stats.myEtcPer },
+    ];
+
     return (
         <>
             <div className="doughnut-chart-container">
-                <Doughnut data={doughnutData} options={doughnutOptions} />
+                <Doughnut className="doughnut-canvas" data={doughnutData} options={doughnutOptions} />
                 <div className="doughnut-chart-text">
                     <span className="doughnut-chart-percentage">{completeRate}%</span>
                     <br />
@@ -144,39 +149,23 @@ const MyStatistics = () => {
                         <p>완료 횟수 <span className="text-color">{stats.completionCnt}</span> 회</p>
                         <p>챌린지 횟수 <span className="text-color">{stats.challengeCnt}</span> 회</p>
                     </div>
-                    <div className="bar-chart-container">
-                        <Bar data={createBarData(stats.myTotalAvg, stats.totalAvg)} options={createBarOptions(stats.myTotalAvg, stats.totalAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myTotalPer}%</span>입니다.</p>
-                    </div>
-                    <div className="bar-chart-container">
-                        <h3>운동</h3>
-                        <Bar data={createBarData(stats.myExerciseAvg, stats.exerciseAvg)} options={createBarOptions(stats.myExerciseAvg, stats.exerciseAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myExercisePer}%</span>입니다.</p>
-                    </div>
-                    <div className="bar-chart-container">
-                        <h3>뷰티</h3>
-                        <Bar data={createBarData(stats.myBeautyAvg, stats.beautyAvg)} options={createBarOptions(stats.myBeautyAvg, stats.beautyAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myBeautyPer}%</span>입니다.</p>
-                    </div>
-                    <div className="bar-chart-container">
-                        <h3>생활</h3>
-                        <Bar data={createBarData(stats.myLifeAvg, stats.lifeAvg)} options={createBarOptions(stats.myLifeAvg, stats.lifeAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myLifePer}%</span>입니다.</p>
-                    </div>
-                    <div className="bar-chart-container">
-                        <h3>공부</h3>
-                        <Bar data={createBarData(stats.myStudyAvg, stats.studyAvg)} options={createBarOptions(stats.myStudyAvg, stats.studyAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myStudyPer}%</span>입니다.</p>
-                    </div>
-                    <div className="bar-chart-container">
-                        <h3>기타</h3>
-                        <Bar data={createBarData(stats.myEtcAvg, stats.etcAvg)} options={createBarOptions(stats.myEtcAvg, stats.etcAvg)} />
-                        <p>내 평균은 상위 <span className="text-color">{stats.myEtcPer}%</span>입니다.</p>
-                    </div>
+                    {categories.map((category, index) => (
+                        <div key={index} className="bar-chart-container">
+                            <h3 className="category-title">{category.title}</h3>
+                            {category.percentage !== 0 ? (
+                                <>
+                                    <Bar data={createBarData(category.myAvg, category.avg)} options={createBarOptions(category.myAvg, category.avg)} />
+                                    <p>내 평균은 상위 <span className="text-color">{category.percentage}%</span>입니다.</p>
+                                </>
+                            ) : (
+                                <p>참여한 행성이 없습니다.</p>
+                            )}
+                        </div>
+                    ))}
                 </div>
             )}
         </>
-    )
+    );
 };
 
 export default MyStatistics;
