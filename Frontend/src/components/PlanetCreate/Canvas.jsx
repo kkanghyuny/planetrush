@@ -234,7 +234,7 @@ const Canvas = ({ onSaveImage, onCanvasStateChange }) => {
   return (
     <div className="canvas-container">
       <div className="canvas-wrapper">
-        <canvas ref={canvasRef} />
+        <canvas className="canvas-planet" ref={canvasRef} />
       </div>
       <div className="controls">
         <div className="button-box">

@@ -24,6 +24,7 @@ const PlanetDetailInProgress = () => {
     endDate: "",
     totalVerificationCnt: "",
     imgUrl: "",
+    standardVerificationImg: "",
     verifiedToday: false,
   });
 

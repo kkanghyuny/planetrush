@@ -11,6 +11,9 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
     planetInfo.endDate[1] - 1,
     planetInfo.endDate[2]
   );
+
+  const planetVerificateImgUrl = planetInfo.standardVerificationImg;
+
   //날짜 차이 계산
   const calculateDaysLeft = () => {
     const timeDiff = endDate - nowDate;

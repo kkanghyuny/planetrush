@@ -127,12 +127,12 @@ const PlanetCreateForm = () => {
     const end = new Date(endDate);
     const today = new Date();
 
-    const weekFromToday = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const weekFromToday = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
 
     if (start < today || start > weekFromToday) {
       setErrors((prevState) => ({
         ...prevState,
-        date: "시작일은 오늘부터 일주일 이내여야 합니다.",
+        date: "시작일은 오늘부터 2주일 이내여야 합니다.",
       }));
 
       setPlanetInfo((prevState) => ({

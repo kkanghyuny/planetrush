@@ -20,7 +20,7 @@
 
 /*버튼 스타일*/
 .toggle-planet button {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 20px;
   padding: 5px 20px;
@@ -42,5 +42,5 @@
 
 /* 채팅 버튼이 활성화되지 않은 상태 */
 .toggle-planet button:last-child {
-  background-color: gray;
+  background-color: rgba(255, 255, 255, 0.5);
 }
