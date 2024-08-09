@@ -5,7 +5,6 @@ import static com.planetrush.planetrush.planet.domain.QResident.*;
 import static com.planetrush.planetrush.verification.domain.QVerificationRecord.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -13,12 +12,12 @@ import org.springframework.stereotype.Repository;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.PlanetStatus;
-import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.GetMyPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
-import com.querydsl.core.types.ExpressionUtils;
+import com.planetrush.planetrush.planet.service.vo.GetMainPlanetListVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -77,21 +76,18 @@ public class PlanetRepositoryCustom {
 	 * @param member 유저 객체
 	 * @return 행성 목록
 	 */
-	public List<GetMainPlanetListDto> getMainPlanetList(Member member) {
-		return queryFactory.select(Projections.constructor(GetMainPlanetListDto.class,
+	public List<GetMainPlanetListVo> getMainPlanetList(Member member) {
+		return queryFactory.select(Projections.constructor(GetMainPlanetListVo.class,
 				planet.id,
 				planet.planetImg,
 				planet.name,
 				planet.status.stringValue(),
-				ExpressionUtils.as(
-					queryFactory.select(verificationRecord.uploadDate.max())
-						.from(verificationRecord)
-						.where(verificationRecord.planet.eq(planet)
-							.and(verificationRecord.member.eq(member))
-							.and(verificationRecord.verified.isTrue()))
-						.loe(LocalDateTime.now().minusDays(2).withHour(0).withMinute(0).withSecond(0).withNano(0)),
-					"isLastDay"
-				)
+				planet.startDate,
+				JPAExpressions.select(verificationRecord.uploadDate.max())
+					.from(verificationRecord)
+					.where(verificationRecord.planet.eq(planet)
+						.and(verificationRecord.member.eq(member))
+						.and(verificationRecord.verified.isTrue()))
 			))
 			.from(resident)
 			.join(resident.planet, planet)
