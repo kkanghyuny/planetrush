@@ -13,7 +13,11 @@ const PlanetVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { content, id: planetId } = location.state;
+  const {
+    content,
+    id: planetId,
+    standardVerificationImg: standardVerificationImg,
+  } = location.state;
 
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
@@ -96,7 +100,7 @@ const PlanetVerification = () => {
           <div className="verification-standard-image">
             <p>인증 기준 사진:</p>
             <img
-              src={planetVerificateImgUrl}
+              src={standardVerificationImg}
               alt="Verification Standard"
               className="verification-standard-img"
             />
