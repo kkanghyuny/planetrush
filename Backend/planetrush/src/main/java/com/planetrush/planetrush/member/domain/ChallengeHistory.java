@@ -89,4 +89,18 @@ public class ChallengeHistory {
 		this.result = result;
 	}
 
+	/**
+	 * 챌린지 결과를 성공으로 저장합니다.
+	 */
+	public void successResult(){
+		this.result = ChallengeResult.SUCCESS;
+	}
+
+	/**
+	 * 챌린지 결과를 실패로 저장합니다.
+	 */
+	public void failResult(){
+		this.result = ChallengeResult.FAIL;
+	}
+
 }
