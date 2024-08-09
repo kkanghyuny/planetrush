@@ -14,6 +14,7 @@ import com.planetrush.planetrush.planet.exception.RegisterResidentTimeoutExcepti
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
 import com.planetrush.planetrush.planet.exception.ResidentExitTimeoutException;
 import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
+import com.planetrush.planetrush.planet.exception.ResidentOverflowException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,15 @@ public class ResidentExceptionHandler {
 		nm.sendNotification(e, req.getRequestURI(), getParams(req));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.REGISTER_RESIDENT_TIMEOUT));
+	}
+
+	@ExceptionHandler(ResidentOverflowException.class)
+	public ResponseEntity<BaseResponse<Object>> handleResidentOverflowException(ResidentOverflowException e,
+		HttpServletRequest req) {
+		log.info(e.getMessage());
+		nm.sendNotification(e, req.getRequestURI(), getParams(req));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.RESIDENT_OVERFLOW));
 	}
 
 	private String getParams(HttpServletRequest req) {
