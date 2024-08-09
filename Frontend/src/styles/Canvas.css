@@ -15,7 +15,7 @@
   position: relative; /* 추가: 내부 요소를 절대 위치로 배치하기 위해 상대 위치로 설정 */
 }
 
-canvas {
+.canvas-planet {
   display: block;
   width: 100%;
   height: auto;

@@ -8,7 +8,7 @@ import { botttsNeutral } from "@dicebear/collection";
 
 import "../../styles/PlanetChat.css";
 
-const CHAT_URL = "i11a509.p.ssafy.io:8003";
+const CHAT_URL = "i11a509.p.ssafy.io";
 // const LOCAL = "http://70.12.247.69:8002/chat/v2";
 
 const PlanetChat = ({ planetId, planetInfo, residents }) => {
@@ -52,11 +52,13 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
   // 웹소켓 연결 설정
   const connect = () => {
     const socket = new SockJS(`https://${CHAT_URL}/ws`);
-    stompClient.current = Stomp.over(socket);
+    stompClient.current = Stomp.over(() => socket); // factory 함수 전달
 
-    console.log(stompClient);
+    console.log(stompClient.current);
 
     stompClient.current.connect({}, () => {
+      console.log("여기1");
+
       stompClient.current.subscribe(
         `/sub/planet${planetId}`,
         (message) => {

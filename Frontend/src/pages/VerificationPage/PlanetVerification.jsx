@@ -69,41 +69,43 @@ const PlanetVerification = () => {
         <div className="back-button">
           <BiSolidLeftArrowCircle onClick={() => navigate(-1)} />
         </div>
-        <h2>{content}</h2>
-        <div>
-          {!selectedImageUrl ? (
-            <label htmlFor="upload-input" className="upload-label">
-              <BiSolidImageAlt size={50} />
-              <span>인증 기준 사진 올리기</span>
-              <input
-                id="upload-input"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="upload-input"
+        <div className="verificate-screen">
+          <h3>{content}</h3>
+          <div className="upload-foam">
+            {!selectedImageUrl ? (
+              <label htmlFor="upload-input" className="upload-label">
+                <BiSolidImageAlt size={50} />
+                <span>인증 기준 사진 올리기</span>
+                <input
+                  id="upload-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="upload-input"
+                />
+              </label>
+            ) : (
+              <img
+                src={selectedImageUrl}
+                alt="Uploaded"
+                className="uploaded-image"
               />
-            </label>
-          ) : (
-            <img
-              src={selectedImageUrl}
-              alt="Uploaded"
-              className="uploaded-image"
-            />
+            )}
+          </div>
+          {selectedImageUrl && (
+            <div className="buttons">
+              <button className="button" onClick={handleVerification}>
+                업로드하기
+              </button>
+              <button
+                className="button"
+                onClick={() => setSelectedImageUrl(null)}
+              >
+                다시 찍기
+              </button>
+            </div>
           )}
         </div>
-        {selectedImageUrl && (
-          <div className="buttons">
-            <button className="button" onClick={handleVerification}>
-              업로드하기
-            </button>
-            <button
-              className="button"
-              onClick={() => setSelectedImageUrl(null)}
-            >
-              다시 찍기
-            </button>
-          </div>
-        )}
       </div>
       {modalIsOpen &&
         (isSuccess ? (
