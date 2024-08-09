@@ -167,7 +167,7 @@ public class ProgressAvgRepositoryCustom {
 	/**
 	 * 유저가 완료한 행성의 개수를 반환합니다.
 	 * @param member 유저 객체
-	 * @return 행성의 개수
+	 * @return 완료한 행성의 개수
 	 */
 	public Long getCompletionCount(Member member) {
 		Long challengeCount = queryFactory
@@ -186,11 +186,9 @@ public class ProgressAvgRepositoryCustom {
 	 */
 	public Long getChallengeCount(Member member) {
 		Long challengeCount = queryFactory
-			.select(resident.count())
-			.from(resident)
-			.where(resident.member.eq(member),
-				resident.planet.status.in(PlanetStatus.COMPLETED, PlanetStatus.DESTROYED)
-			)
+			.select(challengeHistory.count())
+			.from(challengeHistory)
+			.where(challengeHistory.member.eq(member))
 			.fetchOne();
 		return (challengeCount != null) ? challengeCount : 0L;
 	}
