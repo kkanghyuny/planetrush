@@ -8,6 +8,7 @@ import ExitModal from "../../components/Modals/ExitModal";
 import useCategoryStore from "../../store/categoryLabelStore";
 
 import "../../styles/Modal.css";
+import "../../styles/PlanetDetailReady.css"
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 
 // 모집 중인 행성의 세부 정보를 표시하고 관리하는 메인 컴포넌트
@@ -33,7 +34,8 @@ const PlanetDetailRecruiting = () => {
   const displayedChallenges = location.state?.displayedChallenges || [];
 
   const handleClick = () => {
-    navigate(-1);
+    const previousPath = location.state?.from || "/main"; 
+    navigate(previousPath);
   };
 
   const fetchPlanetDetail = async () => {
@@ -134,37 +136,41 @@ const PlanetDetailRecruiting = () => {
 
   return (
     <>
-      <div onClick={handleClick} className="arrow-circle-icon">
+      <div onClick={handleClick} className="back-button">
         <BiSolidLeftArrowCircle />
       </div>
       <div className="detail-info-container">
-        <div className=" ">{getCategoryLabel(planet.category)}</div>
-        <div>{`${planet.startDate.join("-")} ~ ${planet.endDate.join(
-          "-"
-        )}`}</div>
+        <div className="planet-category">{getCategoryLabel(planet.category)}</div>
+        <div>{`${planet.startDate.join("-")} ~ ${planet.endDate.join("-")}`}</div>
       </div>
-      <div>{planet.content}</div>
-      <div>{planet.currentParticipants}</div>
-      <div>{planet.maxParticipants}</div>
-      <img src={planet.planetImg} alt="행성사진" />
+      <div className="planet-detail-content">{planet.content}</div>
+      <div className="detail-participant-ratio">{planet.currentParticipants} / {planet.maxParticipants}</div>
+      <div className="detail-img-container">
+        <img className="detail-img" src={planet.planetImg} alt="행성사진" />
+      </div>
       <div>
-        {displayedChallenges.length > 1 && (
-          <>
-            <button onClick={() => navigateToPlanet("prev")}> ← </button>
+        {displayedChallenges.length > 1 ? (
+          <div className="direction-button-container">
+            <button className="direction-button" onClick={() => navigateToPlanet("prev")}>
+                <div className="triangle triangle-right"></div> 
+            </button>
             <div>{planet.name}</div>
-            <button onClick={() => navigateToPlanet("next")}> → </button>
-          </>
-        )}
+            <button className="direction-button" onClick={() => navigateToPlanet("next")}>
+                <div className="triangle triangle-left"></div>
+            </button>
+          </div>
+
+      
+        ) : ( <div className="direction-button-container">{planet.name}</div>)}
       </div>
-      <div>
+      <div className = "isjoined-button-container">
         {isFull && !isJoined ? (
-          <button onClick={handleButtonClick}>가입 불가</button>
+          <button className = "isjoined-button" onClick={handleButtonClick}>가입 불가</button>
         ) : (
-          <button onClick={handleButtonClick}>
+          <button className = "isjoined-button" onClick={handleButtonClick}>
             {isJoined ? "떠나기" : "가입하기"}
           </button>
         )}
-        <div>공유버튼</div>
       </div>
       {isJoinSuccessModalOpen && (
         <JoinSuccessModal
