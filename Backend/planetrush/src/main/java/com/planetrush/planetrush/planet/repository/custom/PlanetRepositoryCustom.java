@@ -66,7 +66,8 @@ public class PlanetRepositoryCustom {
 			.from(resident)
 			.where(
 				resident.planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
-				resident.member.eq(member)
+				resident.member.eq(member),
+				resident.banned.isFalse()
 			)
 			.fetch();
 	}
@@ -93,7 +94,8 @@ public class PlanetRepositoryCustom {
 			.join(resident.planet, planet)
 			.where(
 				planet.status.in(PlanetStatus.READY, PlanetStatus.IN_PROGRESS),
-				resident.member.eq(member)
+				resident.member.eq(member),
+				resident.banned.isFalse()
 			)
 			.fetch();
 	}
