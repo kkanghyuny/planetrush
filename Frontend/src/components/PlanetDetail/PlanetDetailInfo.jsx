@@ -67,7 +67,11 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
 
   const handleVerification = () => {
     navigate("/verificate", {
-      state: { content: planetInfo.content, id: planetId },
+      state: {
+        content: planetInfo.content,
+        id: planetId,
+        standardVerificationImg: planetInfo.standardVerificationImg,
+      },
     });
   };
 
