@@ -118,13 +118,15 @@ public class ScheduledTasks {
 					.progress(memberProgress)
 					.build());
 			}
-			double totalProgressRatio = (double)actualVerificationCnt / totalVerificationCnt * 100;
+			double totalProgressRatio = (double)actualVerificationCnt / (totalVerificationCnt * residents.size()) * 100;
 			if (totalProgressRatio >= 70.0) {
 				planet.complete();
-				challengeHistoryRepository.saveAll(challengeHistories);
+				challengeHistories.forEach(ChallengeHistory::successResult);
 			} else {
 				planet.destroy();
+				challengeHistories.forEach(ChallengeHistory::failResult);
 			}
+			challengeHistoryRepository.saveAll(challengeHistories);
 		});
 	}
 
