@@ -259,7 +259,7 @@ public class Planet {
 	 * @throws PlanetDestroyedException 행성의 상태가 {@code DESTROYED}인 경우
 	 */
 	private void checkDestroyed() {
-		if(this.status == PlanetStatus.DESTROYED) {
+		if (this.status == PlanetStatus.DESTROYED) {
 			throw new PlanetDestroyedException("Planet is already destroyed : " + this.id);
 		}
 	}
@@ -271,6 +271,17 @@ public class Planet {
 	 */
 	public long calcTotalVerificationCnt() {
 		return ChronoUnit.DAYS.between(this.startDate, this.endDate);
+	}
+
+	/**
+	 * 행성이 시작된 후로 경과된 날짜를 계산합니다.
+	 *
+	 * (이 함수는 인증 기록이 없는 경우 자동 퇴소 처리를 위해 사용됩니다.)
+	 *
+	 * @return 행성이 시작된 이후 경과된 일 수
+	 */
+	public long calcElapsedPeriod() {
+		return ChronoUnit.DAYS.between(this.startDate, LocalDate.now());
 	}
 
 	/**
