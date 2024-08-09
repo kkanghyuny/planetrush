@@ -1,5 +1,7 @@
 package com.planetrush.planetrush.scheduler;
 
+import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +28,6 @@ import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepo
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,14 +71,23 @@ public class ScheduledTasks {
 			residents.forEach(resident -> {
 				VerificationRecord latestRecord = verificationRecordRepositoryCustom.findLatestRecord(
 					resident.getMember(), resident.getPlanet());
+				/* 인증 기록 없이 3일이 지난 경우 */
+				if (latestRecord == null && planet.calcElapsedPeriod() >= 4) {
+					expulsionFromPlanet(planet, latestRecord);
+				}
+				/* 마지막 인증을 한 후 3일이 지난 경우 */
 				if (latestRecord != null && latestRecord.isDifferenceGreaterThanFourDays()) {
-					log.info("[중도 퇴소 처리] the last verificationRecordId = {}", latestRecord.getId());
-					residentRepositoryCustom.banMemberFromPlanet(latestRecord.getMember(),
-						latestRecord.getPlanet());
-					planet.participantExpulsion();
+					expulsionFromPlanet(planet, latestRecord);
 				}
 			});
 		});
+	}
+
+	private void expulsionFromPlanet(Planet planet, VerificationRecord latestRecord) {
+		log.info("[중도 퇴소 처리] the last verificationRecordId = {}", latestRecord.getId());
+		residentRepositoryCustom.banMemberFromPlanet(latestRecord.getMember(),
+			latestRecord.getPlanet());
+		planet.participantExpulsion();
 	}
 
 	/**
@@ -157,7 +166,7 @@ public class ScheduledTasks {
 				tuple -> tuple.get(0, Long.class),
 				tuple -> tuple.get(1, Double.class)
 			));
-		Double d= null;
+		Double d = null;
 		List<ProgressAvg> progressAvgList = memberCategoryAvgMap.entrySet().stream()
 			.map(entry -> {
 				Long memberId = entry.getKey();
