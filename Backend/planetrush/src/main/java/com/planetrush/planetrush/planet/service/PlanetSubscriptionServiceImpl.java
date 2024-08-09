@@ -1,6 +1,5 @@
 package com.planetrush.planetrush.planet.service;
 
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,12 +8,13 @@ import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
-import com.planetrush.planetrush.planet.exception.ParticipantsOverflowException;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 import com.planetrush.planetrush.planet.exception.ResidentAlreadyExistsException;
 import com.planetrush.planetrush.planet.exception.ResidentNotFoundException;
+import com.planetrush.planetrush.planet.exception.ResidentOverflowException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
+import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
 import com.planetrush.planetrush.planet.service.dto.PlanetSubscriptionDto;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,7 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 	private final MemberRepository memberRepository;
 	private final PlanetRepository planetRepository;
 	private final ResidentRepository residentRepository;
+	private final ResidentRepositoryCustom residentRepositoryCustom;
 
 	/**
 	 * {@inheritDoc}
@@ -39,7 +40,10 @@ public class PlanetSubscriptionServiceImpl implements PlanetSubscriptionService 
 		Member member = memberRepository.findById(dto.getMemberId())
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + dto.getMemberId()));
 		Planet planet = planetRepository.findByIdForUpdate(dto.getPlanetId())
-			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));;
+			.orElseThrow(() -> new PlanetNotFoundException("Planet not found with ID: " + dto.getPlanetId()));
+		if(residentRepositoryCustom.getReadyAndInProgressResidents(member) >= 9) {
+			throw new ResidentOverflowException("resident count overflow");
+		}
 		residentRepository.findByMemberIdAndPlanetId(member.getId(), planet.getId())
 			.ifPresent(resident -> {
 				throw new ResidentAlreadyExistsException("resident already exists: " + resident.getId());

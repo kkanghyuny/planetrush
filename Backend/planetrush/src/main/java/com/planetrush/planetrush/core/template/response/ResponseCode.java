@@ -35,7 +35,8 @@ public enum ResponseCode {
 	RESIDENT_NOT_FOUND("6000", "거주자가 존재하지 않습니다."),
 	ALREADY_EXIST_RESIDENT("6001", "이미 행성에 거주 중입니다."),
 	RESIDENT_EXIT_TIMEOUT("6002", "챌린지가 시작되어 행성을 떠날 수 없습니다."),
-	REGISTER_RESIDENT_TIMEOUT("6003", "챌린지가 시작되어 참여할 수 없습니다.");
+	REGISTER_RESIDENT_TIMEOUT("6003", "챌린지가 시작되어 참여할 수 없습니다."),
+	RESIDENT_OVERFLOW("6004", "최대 참여 행성 수를 초과했습니다.");
 
 	private String code;
 	private String message;

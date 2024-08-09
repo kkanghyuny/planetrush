@@ -1,5 +1,6 @@
 package com.planetrush.planetrush.planet.repository.custom;
 
+import static com.planetrush.planetrush.planet.domain.QPlanet.*;
 import static com.planetrush.planetrush.planet.domain.QResident.*;
 
 import java.util.List;
@@ -47,6 +48,23 @@ public class ResidentRepositoryCustom {
 				isNotBanned()
 			)
 			.fetch();
+	}
+
+	/**
+	 * 현재 준비 상태 또는 진행 중인 상태에 참여 중인 행성의 수를 확인합니다.
+	 * @param member 유저 객체
+	 * @return 행성의 수
+	 */
+	public int getReadyAndInProgressResidents(Member member) {
+		return queryFactory
+			.selectFrom(resident)
+			.join(resident.planet, planet)
+			.where(
+				planet.status.stringValue().in("READY", "IN_PROGRESS"),
+				resident.member.eq(member),
+				resident.banned.isFalse()
+			)
+			.fetch().size();
 	}
 
 	/**
