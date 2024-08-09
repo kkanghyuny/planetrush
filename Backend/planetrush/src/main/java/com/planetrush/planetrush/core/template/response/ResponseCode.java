@@ -29,6 +29,7 @@ public enum ResponseCode {
 	PARTICIPANTS_OVERFLOW("5001", "최대 참여 인원 수를 초과했습니다."),
 	NEGATIVE_PARTICIPANT_COUNT("5002", "현재 참여 인원 수는 음수가 될 수 없습니다."),
 	PLANET_IS_DESTROYED("5003", "이미 파괴된 행성입니다."),
+	INVALID_START_DATE("5004", "행성의 시작 날짜가 제한 범위를 벗어났습니다."),
 
 	// 6000 - RESIDENT
 	RESIDENT_NOT_FOUND("6000", "거주자가 존재하지 않습니다."),

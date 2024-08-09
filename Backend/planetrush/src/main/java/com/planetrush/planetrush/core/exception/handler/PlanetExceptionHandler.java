@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.planetrush.planetrush.core.mattermost.NotificationManager;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
+import com.planetrush.planetrush.planet.exception.InvalidStartDateException;
 import com.planetrush.planetrush.planet.exception.NegativeParticipantCountException;
 import com.planetrush.planetrush.planet.exception.PlanetDestroyedException;
 import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
@@ -54,11 +55,19 @@ public class PlanetExceptionHandler {
 
 	@ExceptionHandler(PlanetDestroyedException.class)
 	public ResponseEntity<BaseResponse<Object>> handlePlanetDestroyedException(
-		NegativeParticipantCountException e, HttpServletRequest req) {
+		PlanetDestroyedException e, HttpServletRequest req) {
 		log.info(e.getMessage());
 		nm.sendNotification(e, req.getRequestURI(), getParams(req));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(BaseResponse.ofFail(ResponseCode.PLANET_IS_DESTROYED));
 	}
 
+	@ExceptionHandler(InvalidStartDateException.class)
+	public ResponseEntity<BaseResponse<Object>> handleInvalidStartDateException(
+		InvalidStartDateException e, HttpServletRequest req) {
+		log.info(e.getMessage());
+		nm.sendNotification(e, req.getRequestURI(), getParams(req));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(BaseResponse.ofFail(ResponseCode.INVALID_START_DATE));
+	}
 }

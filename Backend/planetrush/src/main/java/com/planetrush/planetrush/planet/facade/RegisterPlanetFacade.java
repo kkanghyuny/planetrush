@@ -1,11 +1,15 @@
 package com.planetrush.planetrush.planet.facade;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.planetrush.planetrush.infra.s3.S3ImageService;
 import com.planetrush.planetrush.infra.s3.dto.FileMetaInfo;
+import com.planetrush.planetrush.planet.exception.InvalidStartDateException;
 import com.planetrush.planetrush.planet.facade.dto.RegisterPlanetFacadeDto;
 import com.planetrush.planetrush.planet.service.RegisterPlanetService;
 import com.planetrush.planetrush.planet.service.dto.RegisterPlanetDto;
@@ -29,6 +33,9 @@ public class RegisterPlanetFacade {
 	 */
 	public void registerPlanet(RegisterPlanetFacadeDto dto, MultipartFile customPlanetImg,
 		MultipartFile stdVerificationImg) {
+		if(ChronoUnit.DAYS.between(LocalDate.now(), dto.getStartDate()) > 14) {
+			throw new InvalidStartDateException();
+		}
 		String planetImgUrl = customPlanetImg == null ? dto.getPlanetImgUrl() :
 			uploadCustomPlanetImg(customPlanetImg, dto.getMemberId());
 		String stdVerificationImgUrl = uploadStdVerificationImg(stdVerificationImg, dto.getMemberId());
