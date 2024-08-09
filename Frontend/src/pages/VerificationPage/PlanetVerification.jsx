@@ -92,6 +92,16 @@ const PlanetVerification = () => {
               />
             )}
           </div>
+
+          <div className="verification-standard-image">
+            <p>인증 기준 사진:</p>
+            <img
+              src={planetVerificateImgUrl}
+              alt="Verification Standard"
+              className="verification-standard-img"
+            />
+          </div>
+
           {selectedImageUrl && (
             <div className="buttons">
               <button className="button" onClick={handleVerification}>
