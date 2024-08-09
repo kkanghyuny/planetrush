@@ -7,6 +7,7 @@ import PlanetRank from "../../components/PlanetDetail/PlanetRank";
 import PlanetChat from "../../components/PlanetDetail/PlanetChat";
 
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
+import "../../styles/PlanetDetailInProgress.css";
 
 const PlanetDetailInProgress = () => {
   const location = useLocation();
@@ -82,10 +83,16 @@ const PlanetDetailInProgress = () => {
           />
         )}
       </div>
-      <div>
-        <div>
-          <button onClick={handleRankClick}>랭킹</button>
-          <button onClick={handleChatClick}>채팅</button>
+      <div className="rank-and-chat">
+        <div className="toggle-planet">
+          <button
+            onClick={handleRankClick}
+            className={view === "rank" ? "active" : ""}
+          ></button>
+          <button
+            onClick={handleChatClick}
+            className={view === "chat" ? "active" : ""}
+          ></button>
         </div>
         {view === "rank" ? (
           <PlanetRank residents={residents} />

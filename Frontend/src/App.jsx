@@ -42,16 +42,43 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<StartPage />} />
-          <Route path="/auth" element={<PrivateRoute element={<Auth />} />} />
-          <Route path="/main" element={<PrivateRoute element={<MainPage />} />} />
-          <Route path="/search" element={<PrivateRoute element={<SearchBar />} />} />
-          <Route path="/create" element={<PrivateRoute element={<PlanetCreateImg />} />} />
-          <Route path="/create-foam" element={<PrivateRoute element={<PlanetCreateInfo />} />} />
-          <Route path="/result" element={<PrivateRoute element={<PlanetResult />} />} />
-          <Route path="/planet/:id" element={<PrivateRoute element={<PlanetDetailRecruiting />} />} />
-          <Route path="/planet-progress" element={<PrivateRoute element={<PlanetDetailInProgress />} />} />
-          <Route path="/verificate" element={<PrivateRoute element={<PlanetVerification />} />} />
-          <Route path="/mypage" element={<PrivateRoute element={<MyPage />} />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/main"
+            element={<PrivateRoute element={<MainPage />} />}
+          />
+          <Route
+            path="/search"
+            element={<PrivateRoute element={<SearchBar />} />}
+          />
+          <Route
+            path="/create"
+            element={<PrivateRoute element={<PlanetCreateImg />} />}
+          />
+          <Route
+            path="/create-foam"
+            element={<PrivateRoute element={<PlanetCreateInfo />} />}
+          />
+          <Route
+            path="/result"
+            element={<PrivateRoute element={<PlanetResult />} />}
+          />
+          <Route
+            path="/planet/:id"
+            element={<PrivateRoute element={<PlanetDetailRecruiting />} />}
+          />
+          <Route
+            path="/planet-progress"
+            element={<PrivateRoute element={<PlanetDetailInProgress />} />}
+          />
+          <Route
+            path="/verificate"
+            element={<PrivateRoute element={<PlanetVerification />} />}
+          />
+          <Route
+            path="/mypage"
+            element={<PrivateRoute element={<MyPage />} />}
+          />
         </Routes>
       </div>
 

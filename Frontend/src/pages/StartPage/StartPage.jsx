@@ -22,8 +22,8 @@ const SocialKakao = () => {
     const refreshToken = Cookies.get("refresh-token");
 
     // access-token과 refresh-token이 존재하면서 현재 경로가 스타트 페이지가 아닌 경우 리다이렉트
-    if (accessToken && refreshToken && location.pathname === "/") {
-      navigate('/main'); // 이전 페이지로 이동
+    if (accessToken && refreshToken && location.pathname !== "/") {
+      navigate("/main"); // 이전 페이지로 이동
     }
   }, [navigate, location]);
 

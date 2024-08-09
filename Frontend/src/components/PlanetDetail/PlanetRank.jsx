@@ -14,7 +14,7 @@ const PlanetRank = ({ residents }) => {
               resident.isQuerriedMember ? "highlight" : ""
             }`}
           >
-            <div>
+            <div className="user-verificate">
               <p className="nickname">{resident.nickname}</p>
               <span className="verification-info">
                 {resident.verificationCnt} / {total}
