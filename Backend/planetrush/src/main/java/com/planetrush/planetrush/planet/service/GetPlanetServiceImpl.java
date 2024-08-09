@@ -1,6 +1,7 @@
 package com.planetrush.planetrush.planet.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
 import com.planetrush.planetrush.planet.service.dto.PlanetDetailDto;
 import com.planetrush.planetrush.planet.service.dto.ResidentDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
+import com.planetrush.planetrush.planet.service.vo.GetMainPlanetListVo;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
 
 import lombok.RequiredArgsConstructor;
@@ -229,7 +231,34 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 	public List<GetMainPlanetListDto> getMainPlanetList(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-		return planetRepositoryCustom.getMainPlanetList(member);
+		List<GetMainPlanetListVo> planetList = planetRepositoryCustom.getMainPlanetList(member);
+		return planetList.stream()
+			.map(this::convertToDto)
+			.toList();
 	}
 
+	/**
+	 * 마지막 인증 날짜 혹은 행성 시작 날짜와 오늘 날짜를 비교해 lastDay 변수에 담아줍니다.
+	 * @param vo GetMainPlanetListVo
+	 * @return GetMainPlanetListDto
+	 */
+	private GetMainPlanetListDto convertToDto(GetMainPlanetListVo vo) {
+		LocalDate today = LocalDate.now();
+		LocalDateTime lastVerifyDate = vo.getLastVerifyDate();
+		LocalDate planetStartDate = vo.getPlanetStartDate();
+		boolean isLastDay = false;
+		long daysBetween = ChronoUnit.DAYS.between(planetStartDate, today);
+		isLastDay = daysBetween >= 2;
+		if (lastVerifyDate != null) {
+			daysBetween = ChronoUnit.DAYS.between(lastVerifyDate.toLocalDate(), today);
+			isLastDay = daysBetween >= 3;
+		}
+		return GetMainPlanetListDto.builder()
+			.planetId(vo.getPlanetId())
+			.planetImgUrl(vo.getPlanetImgUrl())
+			.name(vo.getName())
+			.status(vo.getStatus())
+			.lastDay(isLastDay)
+			.build();
+	}
 }
