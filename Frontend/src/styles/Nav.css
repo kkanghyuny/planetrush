@@ -1,0 +1,48 @@
+nav {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 182px;
+  height: 85px;
+  background: url("../assets/Navbar.png") no-repeat center center;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+nav svg {
+  width: 28px;
+  height: 28px;
+  color: #000000;
+}
+
+.navbar-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-item-main {
+  position: absolute;
+  top: 11.5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navbar-item-create {
+  position: absolute;
+  bottom: 5px;
+  left: 8px;
+}
+
+.navbar-item-mypage {
+  position: absolute;
+  bottom: 5px;
+  right: 8px;
+}
