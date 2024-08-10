@@ -12,7 +12,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
     planetInfo.endDate[2]
   );
 
-  const planetVerificateImgUrl = planetInfo.standardVerificationImg;
+  const standardVerificationImg = planetInfo.standardVerificationImg;
 
   //날짜 차이 계산
   const calculateDaysLeft = () => {
@@ -62,7 +62,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
   const getStatusMessage = () => {
     if (retentionRate >= 70) return "잘 하고 있어요!";
     if (retentionRate >= 30) return "조금 더 노력해봐요!";
-    return "모두 분발해주세요!";
+    return "매일매일 열심히!";
   };
 
   const handleVerification = () => {
@@ -95,6 +95,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
           <p className="planet-message">{getStatusMessage()}</p>
           <button
             className="verificate-info-button"
+            standardVerificationImg={standardVerificationImg}
             onClick={handleVerification}
             disabled={planetInfo.verifiedToday}
           >

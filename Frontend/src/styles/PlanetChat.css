@@ -29,10 +29,12 @@
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* 아바타 이미지를 둥글게 */
+  object-fit: cover; /* 이미지 비율을 유지하면서 채우기 */
+  margin-right: 10px; /* 텍스트와 아바타 사이 간격 */
+  display: inline-block; /* 이미지가 텍스트와 같은 라인에 오도록 */
 }
 
 .my-message .avatar {

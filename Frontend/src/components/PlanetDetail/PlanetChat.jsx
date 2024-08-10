@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
 import { Stomp } from "@stomp/stompjs";
@@ -9,22 +9,22 @@ import { botttsNeutral } from "@dicebear/collection";
 import "../../styles/PlanetChat.css";
 
 const CHAT_URL = "i11a509.p.ssafy.io";
-// const LOCAL = "http://70.12.247.69:8002/chat/v2";
 
-const PlanetChat = ({ planetId, planetInfo, residents }) => {
+// 유니코드 문자열을 Base64로 변환하는 함수
+function toBase64(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+const PlanetChat = ({ planetId, residents }) => {
   const stompClient = useRef(null);
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [avatarUris, setAvatarUris] = useState({});
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
-
-  //접속 유저의 id
-  const memberId = residents
-    .filter((resident) => resident.isQuerriedMember)
-    .map((resident) => resident.memberId)[0];
 
   // 기존 채팅 메시지를 서버로부터 가져오는 함수
   const fetchMessages = async () => {
@@ -33,7 +33,15 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
         params: { "planet-id": planetId },
       });
 
-      const data = response.data;
+      const data = response.data.data.map((message) => {
+        const [year, month, day] = message.createdAt;
+
+        return {
+          ...message,
+          createdAt: new Date(year, month - 1, day), // 배열을 Date 객체로 변환
+        };
+      });
+
       setMessages(data);
     } catch (error) {
       alert("채팅을 보낼 수 없습니다");
@@ -54,11 +62,7 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
     const socket = new SockJS(`https://${CHAT_URL}/wss`);
     stompClient.current = Stomp.over(() => socket); // factory 함수 전달
 
-    console.log(stompClient.current);
-
     stompClient.current.connect({}, () => {
-      console.log("여기1");
-
       stompClient.current.subscribe(
         `/sub/planet${planetId}`,
         (message) => {
@@ -109,9 +113,43 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
     scrollToBottom();
   }, [messages]);
 
-  const avatar = createAvatar(botttsNeutral, {});
+  //접속 유저의 id
+  const memberId = residents
+    .filter((resident) => resident.isQuerriedMember)
+    .map((resident) => resident.memberId)[0];
 
-  // const svg = avatar.toString();
+  // 아바타 생성
+  // 아바타 생성
+  useEffect(() => {
+    const generateAvatars = () => {
+      const uris = {};
+
+      residents.forEach((resident) => {
+        const avatar = createAvatar(botttsNeutral, {
+          seed: resident.memberId, // resident.memberId를 seed로 사용하여 고유 아바타 생성
+          radius: 50,
+          size: 32,
+          backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"][
+            Math.floor(Math.random() * 5)
+          ],
+          eyes: ["bulging", "dizzy", "eva", "glow", "robocop"][
+            Math.floor(Math.random() * 5)
+          ],
+          mouth: ["smile02", "square01", "square02", "diagram", "bite"][
+            Math.floor(Math.random() * 5)
+          ],
+        });
+
+        const svg = avatar.toString();
+        const uri = `data:image/svg+xml;base64,${toBase64(svg)}`;
+        uris[resident.memberId] = uri;
+      });
+
+      setAvatarUris(uris);
+    };
+
+    generateAvatars();
+  }, [residents]);
 
   return (
     <div className="chat-container">
@@ -122,13 +160,13 @@ const PlanetChat = ({ planetId, planetInfo, residents }) => {
             item.memberId === memberId ? "my-message" : "other-message"
           }`}
         >
-          {/* <img
-              src={getAvatarUrl(item.name)}
-              alt={item.name}
-              className="avatar"
-            /> */}
           <div className="message-content">
             <div className="message-header">
+              <img
+                src={avatarUris[item.memberId]} // 미리 생성된 아바타 URI 사용
+                alt={item.name}
+                className="avatar"
+              />
               <span className="message-name">{item.nickname || "Unknown"}</span>
               <span className="message-time">
                 {new Date(item.createdAt).toLocaleTimeString()}

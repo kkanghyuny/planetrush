@@ -98,7 +98,7 @@ const PlanetVerification = () => {
           </div>
 
           <div className="verification-standard-image">
-            <p>인증 기준 사진:</p>
+            <p>인증 기준 사진과 같은 구도로 찍어주세요</p>
             <img
               src={standardVerificationImg}
               alt="Verification Standard"
@@ -109,13 +109,13 @@ const PlanetVerification = () => {
           {selectedImageUrl && (
             <div className="buttons">
               <button
-                className="verificate-button"
+                className="verificate-upload-button"
                 onClick={handleVerification}
               >
-                업로드하기
+                인증하기
               </button>
               <button
-                className="verificate-button"
+                className="verificate-upload-button"
                 onClick={() => setSelectedImageUrl(null)}
               >
                 다시 찍기

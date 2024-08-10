@@ -7,7 +7,7 @@ const VerificateSuccessModal = () => {
     <div className="modal">
       <div className="modal-content">
         <h4>인증되었습니다! 화이팅!</h4>
-        <button onClick={() => navigate("/main")}>다른 행성 가기</button>
+        <button onClick={() => navigate("/main")}>돌아가기</button>
       </div>
     </div>
   );
