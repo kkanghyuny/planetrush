@@ -1,0 +1,95 @@
+/* src/styles/MyCollection.css */
+
+.my-collection {
+  box-sizing: border-box;
+  height: calc(100vh - 330px); /* 네비게이션 높이와 패딩을 고려한 높이 */
+}
+
+.collection-item {
+  display: flex;
+  padding: 20px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.collection-info {
+  align-self: center;
+  margin-left: 10px;
+}
+
+.collection-img {
+  width: 100px;
+  height: 100px;
+}
+
+.collection-cate {
+  text-align: center;
+  width: 50px;
+  background-color: #31fff2;
+  color: black;
+  font-weight: bold;
+  border-radius: 30px;
+  margin-right: 10px;
+  font-size: 14px;
+  padding-top: 1px;
+}
+
+.collection-content {
+  margin: 5px 0 5px 5px;
+}
+
+.progress-info {
+  display: flex;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+.progress-bar-container {
+  width: 140px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.low-progress {
+  margin: 0;
+  background-color: #f03a00;
+}
+
+.normal-progress {
+  margin: 0;
+  background-color: #31fff2;
+}
+
+.collection-number {
+  padding-bottom: 4px;
+  align-self: center;
+}
+
+/* 전체 스크롤바 */
+.my-collection::-webkit-scrollbar {
+  width: 10px; /* 스크롤바 너비 */
+}
+
+/* 스크롤바 트랙 */
+.my-collection::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 트랙 배경색 */
+  border-radius: 10px; /* 둥근 모서리 */
+}
+
+/* 스크롤바 핸들 */
+.my-collection::-webkit-scrollbar-thumb {
+  background: #31fff2; /* 핸들 색상 */
+  border-radius: 10px; /* 둥근 모서리 */
+}
+
+/* 스크롤바 핸들:hover */
+.my-collection::-webkit-scrollbar-thumb:hover {
+  background: #31fff2;
+}
