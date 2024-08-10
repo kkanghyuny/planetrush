@@ -1,0 +1,62 @@
+.planet-rank-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.resident-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 80%;
+}
+
+.resident-container.highlight {
+  border: 2px solid cyan;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.user-verificate {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.progress-rank-bar {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  width: 70%; /* 부모 요소에 대한 너비 비율 */
+  height: 20px; /* 높이 설정 */
+  margin-right: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.planet-rank-progress-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  width: 1px;
+  min-width: 1px; /* Minimum width setting */
+  transition: width 0.3s ease; /* Width change animation */
+  background-color: cyan;
+}
+
+.verification-info {
+  font-size: 14px;
+  color: white;
+}
