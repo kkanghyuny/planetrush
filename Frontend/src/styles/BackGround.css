@@ -1,0 +1,45 @@
+/* 그라데이션 배경 */
+.gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2; /* 별 배경 아래에 위치하도록 설정 */
+  background: linear-gradient(
+    to bottom,
+    #1f1a60,
+    #2f2891
+  ); /* 기본 그라데이션 배경 */
+}
+
+.morning .gradient {
+  background: linear-gradient(to bottom, #120f3a, #18136a); /* 아침 */
+}
+
+.night .gradient {
+  background: linear-gradient(to bottom, #060514, #120f3a); /* 밤 */
+}
+
+/* 별 배경 */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: url("/background/stars.png") repeat;
+  background-size: cover; /* 별 배경을 화면에 맞게 조정 */
+  animation: starAnimation 150s linear infinite;
+}
+
+@keyframes starAnimation {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
