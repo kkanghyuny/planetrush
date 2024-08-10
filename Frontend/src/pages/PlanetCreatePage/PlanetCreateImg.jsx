@@ -31,13 +31,15 @@ const PlanetCreateImg = () => {
       planetImgUrl: selectedImage ? selectedImage.imgUrl : null,
     };
 
-    if (view === "custom" && isCanvasEmpty) {
-      setShowAlert(true);
-      return;
-    }
-
     if (view === "custom") {
-      planetImg.custumImg = canvasData;
+      if (isCanvasEmpty) {
+        setShowAlert(true);
+        return;
+      }
+
+      if (canvasData) {
+        planetImg.custumImg = canvasData;
+      }
     } else {
       if (!selectedImage) {
         setShowAlert(true);
@@ -128,7 +130,7 @@ const PlanetCreateImg = () => {
       )}
       {showAlert && <div className="alert">그림을 그려주세요!</div>}{" "}
       <button onClick={getNewPlanetInfo} className="create-button">
-        생성하기
+        창조하기
       </button>
     </div>
   );

@@ -233,17 +233,42 @@ const PlanetCreateForm = () => {
 
   //최종제출
   const submitResult = () => {
+    let imgFile = planetInfo.planetImg;
+
+    // 만약 planetImg가 data URL 형식이라면 이를 File 객체로 변환
+    if (
+      typeof planetInfo.planetImg === "string" &&
+      planetInfo.planetImg.startsWith("data:image")
+    ) {
+      imgFile = dataURLtoFile(planetInfo.planetImg, "custom-image.png");
+    }
+
+    // navigate로 페이지를 이동하면서 imgFile을 사용
     navigate("/result", {
       state: {
         planetInfo: {
           ...planetInfo,
-          planetImgUrl: planetInfo.planetImg
-            ? URL.createObjectURL(planetInfo.planetImg)
+          planetImgUrl: imgFile
+            ? URL.createObjectURL(imgFile)
             : planetInfo.planetImgUrl,
+          planetImg: imgFile, // 변환된 File 객체 또는 원본 이미지
         },
       },
     });
   };
+
+  // data URL을 File 객체로 변환하는 함수 추가
+  function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
 
   // 현재 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
   const getTodayDate = () => {

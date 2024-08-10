@@ -19,12 +19,33 @@
   gap: 20px;
   border: 1px solid #31fff2;
   width: 70%;
+  max-width: 400px;
   color: #ffffff;
   border-radius: 20px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.modal-content button {
+  background-image: url("../assets/button_cyan.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 50%;
+  height: 50px;
+  color: navy;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  margin-left: 25%;
 }
 
 .detail-info-container {

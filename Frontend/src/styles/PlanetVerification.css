@@ -33,6 +33,11 @@
   margin: 30px;
 }
 
+.verification-standard-img {
+  width: 50%;
+  object-fit: cover;
+}
+
 .upload-foam {
   display: flex;
   justify-content: center;
@@ -71,13 +76,13 @@
   margin-top: 20px;
 }
 
-.verificate-button {
+.verificate-upload-button {
   background-image: url("../assets/button_cyan.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  width: 50%;
-  height: 50px;
+  width: 40%;
+  height: 40px;
   color: navy;
   padding: 15px;
   font-size: 16px;
@@ -88,5 +93,4 @@
   justify-content: center;
   background-color: transparent;
   border: none;
-  margin-left: 25%;
 }
