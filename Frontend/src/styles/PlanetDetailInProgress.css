@@ -4,6 +4,8 @@
 
 .rank-and-chat {
   background-color: rgba(0, 0, 0, 0.3);
+  height: 70vh; /* 전체 높이를 사용하도록 설정 */
+  overflow: hidden; /* 자식 요소가 넘칠 경우 숨김 처리 */
   margin: 0 25px;
   padding: 20px;
   border-radius: 30px;
@@ -32,7 +34,6 @@
 /* 버튼이 선택된 경우 (랭킹 버튼) */
 .toggle-planet button.active {
   background-color: cyan;
-  color: white;
 }
 
 /* 랭킹 버튼이 활성화된 상태 */

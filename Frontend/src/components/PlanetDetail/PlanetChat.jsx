@@ -12,7 +12,7 @@ const CHAT_URL = "i11a509.p.ssafy.io";
 
 // 유니코드 문자열을 Base64로 변환하는 함수
 function toBase64(str) {
-  return window.btoa(unescape(encodeURIComponent(str)));
+  return window.btoa(encodeURIComponent(str));
 }
 
 const PlanetChat = ({ planetId, residents }) => {
@@ -44,7 +44,7 @@ const PlanetChat = ({ planetId, residents }) => {
 
       setMessages(data);
     } catch (error) {
-      alert("채팅을 보낼 수 없습니다");
+      alert("채팅내역을 불러올 수 없습니다");
     }
   };
 
@@ -119,25 +119,23 @@ const PlanetChat = ({ planetId, residents }) => {
     .map((resident) => resident.memberId)[0];
 
   // 아바타 생성
-  // 아바타 생성
   useEffect(() => {
     const generateAvatars = () => {
       const uris = {};
 
       residents.forEach((resident) => {
         const avatar = createAvatar(botttsNeutral, {
-          seed: resident.memberId, // resident.memberId를 seed로 사용하여 고유 아바타 생성
-          radius: 50,
-          size: 32,
+          seed: resident.memberId, // 고유한 아바타를 위해 memberId 사용
+          randomizeIds: true, // ID 충돌 방지를 위해 true 설정
           backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"][
             Math.floor(Math.random() * 5)
-          ],
+          ], // 무작위 배경색 선택
           eyes: ["bulging", "dizzy", "eva", "glow", "robocop"][
             Math.floor(Math.random() * 5)
-          ],
+          ], // 무작위 눈 선택
           mouth: ["smile02", "square01", "square02", "diagram", "bite"][
             Math.floor(Math.random() * 5)
-          ],
+          ], // 무작위 입 선택
         });
 
         const svg = avatar.toString();
