@@ -6,6 +6,7 @@
   background-color: rgba(0, 0, 0, 0.3);
   margin: 0 25px;
   padding: 20px;
+  border: 1px solid transparent;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -32,7 +33,6 @@
 /* 버튼이 선택된 경우 (랭킹 버튼) */
 .toggle-planet button.active {
   background-color: cyan;
-  color: white;
 }
 
 /* 랭킹 버튼이 활성화된 상태 */
