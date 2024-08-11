@@ -83,7 +83,8 @@ const PlanetVerification = () => {
                 <input
                   id="upload-input"
                   type="file"
-                  accept="image/*"
+                  accept=".jpg, .png, .jpeg"
+                  capture="environment"
                   onChange={handleImageUpload}
                   className="upload-input"
                 />

@@ -38,6 +38,7 @@ const PlanetDetailInProgress = () => {
             "planet-id": planetId,
           },
         });
+
         const data = response.data.data;
 
         setPlanetInfo({
@@ -51,8 +52,6 @@ const PlanetDetailInProgress = () => {
           standardVerificationImg: data.standardVerificationImg,
           verifiedToday: data.verifiedToday,
         });
-
-        console.log(data);
 
         setResidents(data.residents);
       } catch (error) {
