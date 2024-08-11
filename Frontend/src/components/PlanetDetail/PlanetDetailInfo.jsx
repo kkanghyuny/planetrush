@@ -70,7 +70,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
       state: {
         content: planetInfo.content,
         id: planetId,
-        standardVerificationImg: planetInfo.standardVerificationImg,
+        standardVerificationImg: standardVerificationImg,
       },
     });
   };

@@ -8,6 +8,7 @@
   overflow: hidden; /* 자식 요소가 넘칠 경우 숨김 처리 */
   margin: 0 25px;
   padding: 20px;
+  border: 1px solid transparent;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
