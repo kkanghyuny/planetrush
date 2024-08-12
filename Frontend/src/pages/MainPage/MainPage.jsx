@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { BiSearchAlt } from "react-icons/bi";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
-import present from "../../assets/present.png";
+import gift from "../../assets/gift.png";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -142,7 +142,7 @@ const MainPage = () => {
           {planets.map((planet, index) => {
             const planetStyle = getPlanetStyle(planet, index, []);
             const planetImgUrl =
-              planet.status === "READY" ? present : planet.planetImgUrl;
+              planet.status === "READY" ? gift : planet.planetImgUrl;
             const imgClass = planet.isLastDay
               ? "planet-img burning"
               : "planet-img";
