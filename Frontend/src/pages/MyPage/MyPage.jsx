@@ -1,126 +1,86 @@
-import React from "react";
-import { Doughnut, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
-import '../../styles/Mypage.css';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import instance from "../AuthenticaitionPage/Axiosinstance";
 
-ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+import useUserStore from "../../store/userStore";
+import LogoutButton from "../../components/Button/LogoutButton";
+import NicknameEditModal from "../../components/Modals/EditNicknameModal";
+import MyCollection from "../../components/Foam/MyCollectionFoam";
+import MyStatistics from "../../components/Foam/MyStatisticsFoam";
 
-const MyStatistics = ({ stats }) => {  
-    // 조건부 렌더링: stats가 null이 아닐 때만 렌더링
-    if (!stats) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전에 로딩 상태를 표시
-    }
+import { BiSolidPencil, BiSolidLeftArrowCircle } from "react-icons/bi";
+import "../../styles/Mypage.css";
 
-    let completeRate = stats.challengeCnt === 0 ? 0 : ((stats.completionCnt / stats.challengeCnt) * 100).toFixed(2);
-    completeRate = Math.max(0, Math.min(completeRate, 100));
-    
-    const doughnutData = {
-        datasets: [
-            {
-                data: [completeRate, 100 - completeRate],
-                backgroundColor: ["#31fff3", "rgba(255,255,255,0.7)"],
-                borderWidth: 0,
-            },
-        ],
-    };
+const MyPage = () => {
+  const navigate = useNavigate();
+  const { nickname, setNickname } = useUserStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [view, setView] = useState("statistics");
 
-    const doughnutOptions = {
-        cutout: "70%",
-        plugins: {
-            tooltip: {
-                enabled: false,
-            },
+  const handleClick = () => {
+    navigate("/main");
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSaveNickname = async (newNickname) => {
+    try {
+      // 백엔드로 닉네임 업데이트
+      await instance.patch(`/members/profile`, null, {
+        params: {
+          nickname: newNickname,
         },
-    };
+      });
 
-    const createBarData = (myAvg, avg) => {
-        return {
-            labels: ['나의 평균', '전체 평균'],
-            datasets: [
-                {
-                    label: '',
-                    data: [myAvg, avg],
-                    backgroundColor: ['#31fff3', '#ffeb79'],
-                    borderWidth: 1,
-                    barThickness: 15,
-                },
-            ],
-        };
-    };
+      setNickname(newNickname);
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    const createBarOptions = (myAvg, avg) => {
-        const minValue = Math.min(myAvg, avg);
-        const maxValue = Math.max(myAvg, avg);
-        const min = Math.max(0, minValue - 10);
-        const max = Math.min(100, maxValue + 10);
-    
-        return {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false, // 레전드를 완전히 비활성화
-                },
-                title: {
-                    display: true,
-                    text: '카테고리별 평균 비교',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw}`;
-                        }
-                    }
-                },
-            },
-            scales: {
-                y: {
-                    min: min,
-                    max: max,
-                }
-            }
-        };
-    };
+  return (
+    <>
+      <div className="top-container">
+        <div onClick={handleClick} className="back-button">
+          <BiSolidLeftArrowCircle />
+        </div>
+        <LogoutButton />
+      </div>
+      <div className="my-info">
+        {view === "statistics" ? (
+          <button className="info-button" onClick={() => setView("collection")}>
+            내 콜렉션 보기
+          </button>
+        ) : (
+          <button className="info-button" onClick={() => setView("statistics")}>
+            내 통계 보기
+          </button>
+        )}
+      </div>
+      <NicknameEditModal
+        className="logout"
+        nickname={nickname}
+        isOpen={isModalOpen}
+        closeModal={handleCloseModal}
+        saveNickname={handleSaveNickname}
+      />
+      <h2 className="nickname">
+        {nickname}
+        <BiSolidPencil className="pencil-icon" onClick={handleOpenModal} />
+      </h2>
 
-    const categories = [
-        { title: "전체", myAvg: stats.myTotalAvg, avg: stats.totalAvg, percentage: stats.myTotalPer },
-        { title: "운동", myAvg: stats.myExerciseAvg, avg: stats.exerciseAvg, percentage: stats.myExercisePer },
-        { title: "뷰티", myAvg: stats.myBeautyAvg, avg: stats.beautyAvg, percentage: stats.myBeautyPer },
-        { title: "생활", myAvg: stats.myLifeAvg, avg: stats.lifeAvg, percentage: stats.myLifePer },
-        { title: "공부", myAvg: stats.myStudyAvg, avg: stats.studyAvg, percentage: stats.myStudyPer },
-        { title: "기타", myAvg: stats.myEtcAvg, avg: stats.etcAvg, percentage: stats.myEtcPer },
-    ];
-
-    return (
-        <>
-            <div className="doughnut-chart-container">
-                <Doughnut className="doughnut-canvas" data={doughnutData} options={doughnutOptions} />
-                <div className="doughnut-chart-text">
-                    <span className="doughnut-chart-percentage">{completeRate}%</span>
-                    <br />
-                    <span className="doughnut-chart-label">완주율</span>
-                </div>
-            </div>
-            <div className="stats-container">
-                <div className="cnt-container">
-                    <p>완료 횟수 <span className="text-color">{stats.completionCnt}</span> 회</p>
-                    <p>챌린지 횟수 <span className="text-color">{stats.challengeCnt}</span> 회</p>
-                </div>
-                {categories.map((category, index) => (
-                    <div key={index} className="bar-chart-container">
-                        <h3 className="category-title">{category.title}</h3>
-                        {category.percentage !== 0 ? (
-                            <>
-                                <Bar data={createBarData(category.myAvg, category.avg)} options={createBarOptions(category.myAvg, category.avg)} />
-                                <p>내 평균은 상위 <span className="text-color">{category.percentage}%</span>입니다.</p>
-                            </>
-                        ) : (
-                            <p>참여한 행성이 없습니다.</p>
-                        )}
-                    </div>
-                ))}
-            </div>
-        </>
-    );
+      <div className="my-page">
+        {view === "statistics" && <MyStatistics />}
+        {view === "collection" && <MyCollection />}
+      </div>
+    </>
+  );
 };
 
-export default MyStatistics;
+export default MyPage;
