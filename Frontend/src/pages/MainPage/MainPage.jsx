@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
+import Tutorial from "../../components/Modals/TutorialModal.jsx";
 
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
@@ -129,8 +130,6 @@ const MainPage = () => {
         <Link to="/search" className="link-icon">
           <img className="search-icon" src={search} alt="Search Icon" />
         </Link>
-      </div>
-      <div className="main-title">
       </div>
       {planets.length === 0 ? (
         <div className="rocket-center-container">
