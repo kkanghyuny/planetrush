@@ -4,10 +4,10 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
 
-import { BiSearchAlt } from "react-icons/bi";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
 import gift from "../../assets/gift.png";
+import search from "../../assets/search.png";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -123,12 +123,14 @@ const MainPage = () => {
   return (
     <div className="page-container">
       <div className="search-container">
+        <span className="title-container">
+          <span className="text-color">{nickname}</span>님의 은하
+        </span>
         <Link to="/search" className="link-icon">
-          <BiSearchAlt />
+          <img className="search-icon" src={search} alt="Search Icon" />
         </Link>
       </div>
       <div className="main-title">
-        <span className="text-color">{nickname}</span>님의 은하입니다!
       </div>
       {planets.length === 0 ? (
         <div className="rocket-center-container">

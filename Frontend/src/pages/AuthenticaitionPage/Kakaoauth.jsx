@@ -38,7 +38,7 @@ function Auth() {
 
     return response.data;
   };
-
+  
   // 백엔드로 받아온 access_token을 넘긴다.
   const sendTokenToBackend = async (accessToken) => {
     try {

@@ -10,9 +10,18 @@
 }
 
 .search-container {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 20px;
+  padding: 0 10px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* 부모 요소의 전체 너비를 차지하도록 설정 */
+}
+
+.title-container {
+  display: flex;
+  align-items: center; /* 텍스트 내부에서의 수직 정렬을 맞춤 */
+  white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 함 */
 }
 
 .main-grid-container {
@@ -93,7 +102,7 @@
 }
 
 .link-icon {
-  padding: 10px;
+  padding: 0 10px;
   font-size: 30px;
   display: flex;
   align-items: center;
@@ -163,4 +172,9 @@ a {
 .main-title {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.search-icon {
+  width: 35px;
+  height: 35px;
 }

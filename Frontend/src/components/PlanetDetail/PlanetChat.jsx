@@ -33,12 +33,12 @@ const PlanetChat = ({ planetId, residents }) => {
         params: { "planet-id": planetId },
       });
 
-      const data = response.data.data.map((message) => {
-        const [year, month, day] = message.createdAt.split("-").map(Number);
+      const data = response.data.map((message) => {
+        const [year, month, day, hour, minute, second] = message.createdAt;
 
         return {
           ...message,
-          createdAt: new Date(year, month - 1, day), // 배열을 Date 객체로 변환
+          createdAt: new Date(year, month - 1, day, hour, minute, second), // 배열을 Date 객체로 변환
         };
       });
 
