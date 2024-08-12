@@ -22,16 +22,16 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
 	@Override
 	protected void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
-		adapter.registerConverter(new LocalDateTimeWriteConverter());
+		// adapter.registerConverter(new LocalDateTimeWriteConverter());
 		adapter.registerConverter(new LocalDateTimeReadConverter());
 	}
 
-	private static class LocalDateTimeWriteConverter implements Converter<LocalDateTime, Date> {
-		@Override
-		public Date convert(LocalDateTime source) {
-			return Date.from(source.atZone(ZoneId.of("Asia/Seoul")).toInstant());
-		}
-	}
+	// private static class LocalDateTimeWriteConverter implements Converter<LocalDateTime, Date> {
+	// 	@Override
+	// 	public Date convert(LocalDateTime source) {
+	// 		return Date.from(source.atZone(ZoneId.of("Asia/Seoul")).toInstant());
+	// 	}
+	// }
 
 	private static class LocalDateTimeReadConverter implements Converter<Date, LocalDateTime> {
 		@Override
