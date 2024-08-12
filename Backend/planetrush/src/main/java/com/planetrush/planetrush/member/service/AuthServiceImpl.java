@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 	public LoginDto kakaoLogin(String accessToken) {
 		KakaoUserInfo kakaoUserInfo = kakaoUtil.getUserInfo(accessToken);
 		String email = kakaoUserInfo.getKakaoAccount().getEmail();
-		Member member = memberRepository.findByEmailAndProvider(email, Provider.KAKAO);
+		Member member = memberRepository.findByEmailAndProviderAndStatus(email, Provider.KAKAO, Status.ACTIVE);
 		/* 회원가입 진행 */
 		if (member == null) {
 			member = memberRepository.save(Member.builder()
