@@ -21,7 +21,6 @@
   margin-bottom: 10px;
 }
 
-/*버튼 스타일*/
 /* 공통 버튼 스타일 */
 .toggle-planet button {
   background-color: rgba(255, 255, 255, 0.5);
@@ -38,4 +37,3 @@
   background-color: cyan;
 }
 
-/* 비활성화된 상태는 기본 설정을 사용 */

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 
 import Cookies from "js-cookie";
@@ -11,6 +12,13 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
   const navigate = useNavigate();
   const challengeCnt = useStatisticsStore((state) => state.challengeCnt); // challengeCnt 가져오기
   const completionCnt = useStatisticsStore((state) => state.completionCnt); // completionCnt 가져오기
+=======
+
+import Cookies from "js-cookie";
+
+const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
+  const [newNickname, setNewNickname] = useState("");
+>>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
 
   useEffect(() => {
     if (!isOpen) {

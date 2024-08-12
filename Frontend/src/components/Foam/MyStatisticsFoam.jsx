@@ -2,14 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+<<<<<<< HEAD
 import useStatisticsStore from "../../store/statisticsStore";  // 추가
+=======
+
+>>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
 import '../../styles/Mypage.css';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const MyStatistics = () => {
+<<<<<<< HEAD
     const setStatistics = useStatisticsStore((state) => state.setStatistics); // 상태 업데이트 함수 가져오기
 
+=======
+>>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
     const [stats, setStats] = useState({
         completionCnt: null,
         challengeCnt: null,

@@ -38,7 +38,6 @@ const PlanetDetailInProgress = () => {
             "planet-id": planetId,
           },
         });
-
         const data = response.data.data;
 
         setPlanetInfo({

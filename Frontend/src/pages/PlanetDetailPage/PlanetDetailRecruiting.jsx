@@ -6,7 +6,10 @@ import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
 import useCategoryStore from "../../store/categoryLabelStore";
+<<<<<<< HEAD
 import ParticipantAlert from "../../components/Foam/ParticipantAlertFoam";
+=======
+>>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
 
 import "../../styles/Modal.css";
 import "../../styles/PlanetDetailReady.css"
