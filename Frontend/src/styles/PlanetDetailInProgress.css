@@ -22,6 +22,7 @@
 }
 
 /*버튼 스타일*/
+/* 공통 버튼 스타일 */
 .toggle-planet button {
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
@@ -32,17 +33,9 @@
   transition: background-color 0.3s ease;
 }
 
-/* 버튼이 선택된 경우 (랭킹 버튼) */
+/* 활성화된 버튼 스타일 */
 .toggle-planet button.active {
   background-color: cyan;
 }
 
-/* 랭킹 버튼이 활성화된 상태 */
-.toggle-planet button:first-child.active {
-  background-color: cyan;
-}
-
-/* 채팅 버튼이 활성화되지 않은 상태 */
-.toggle-planet button:last-child {
-  background-color: rgba(255, 255, 255, 0.5);
-}
+/* 비활성화된 상태는 기본 설정을 사용 */
