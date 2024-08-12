@@ -9,10 +9,12 @@ import com.planetrush.planetrush.infra.oauth.dto.KakaoUserInfo;
 import com.planetrush.planetrush.infra.oauth.util.KakaoUtil;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.domain.Nickname;
+import com.planetrush.planetrush.member.domain.ProgressAvg;
 import com.planetrush.planetrush.member.domain.Provider;
 import com.planetrush.planetrush.member.domain.Status;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
+import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
 import com.planetrush.planetrush.member.service.dto.LoginDto;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
 	private final KakaoUtil kakaoUtil;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
+	private final ProgressAvgRepository progressAvgRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -44,6 +47,9 @@ public class AuthServiceImpl implements AuthService {
 				.nickname(Nickname.getRandomKoreanNickname())
 				.provider(Provider.KAKAO)
 				.status(Status.ACTIVE)
+				.build());
+			progressAvgRepository.save(ProgressAvg.builder()
+				.member(member)
 				.build());
 		}
 		/* 로그인 */
