@@ -88,10 +88,6 @@
   font-weight: 800;
   background-color: cyan;
   color: black;
-  border-radius: 20px;
+  border-radius: 5px;
   cursor: pointer;
-}
-
-.send-button:hover {
-  background-color: #45a049;
 }

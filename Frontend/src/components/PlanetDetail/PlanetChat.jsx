@@ -34,7 +34,7 @@ const PlanetChat = ({ planetId, residents }) => {
       });
 
       const data = response.data.data.map((message) => {
-        const [year, month, day] = message.createdAt;
+        const [year, month, day] = message.createdAt.split("-").map(Number);
 
         return {
           ...message,
