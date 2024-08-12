@@ -6,6 +6,10 @@ import '../../styles/Mypage.css';
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const MyStatistics = ({ stats }) => {  // stats를 prop으로 받아옵니다.
+    if (!stats) {
+        return <div>Loading...</div>; // 데이터가 로드되기 전에 로딩 상태를 표시
+    }
+
     let completeRate = stats.challengeCnt === 0 ? 0 : ((stats.completionCnt / stats.challengeCnt) * 100).toFixed(2);
     completeRate = Math.max(0, Math.min(completeRate, 100));
     
