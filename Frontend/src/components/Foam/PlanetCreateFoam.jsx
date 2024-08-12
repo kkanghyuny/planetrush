@@ -430,6 +430,7 @@ const PlanetCreateForm = () => {
           {planetInfo.missionUrl && (
             <img
               src={planetInfo.missionUrl}
+              accept=".jpg,.jpeg,.png"
               alt="선택된 사진"
               className="image-preview"
             />
