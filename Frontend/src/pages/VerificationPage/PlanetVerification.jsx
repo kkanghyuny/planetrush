@@ -51,6 +51,8 @@ const PlanetVerification = () => {
 
       const data = response.data.data;
 
+      console.log(data);
+
       if (data.isVerified) {
         setIsSuccess(true);
       } else {

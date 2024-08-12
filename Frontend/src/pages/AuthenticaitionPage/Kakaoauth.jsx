@@ -35,6 +35,7 @@ function Auth() {
         },
       }
     );
+
     return response.data;
   };
 
@@ -80,7 +81,9 @@ function Auth() {
           sendTokenToBackend(response.access_token);
         }
       })
-      .catch();
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return <></>;
