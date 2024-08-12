@@ -6,6 +6,7 @@ import JoinSuccessModal from "../../components/Modals/JoinSuccessModal";
 import JoinFailModal from "../../components/Modals/JoinFailModal";
 import ExitModal from "../../components/Modals/ExitModal";
 import useCategoryStore from "../../store/categoryLabelStore";
+import ParticipantAlert from "../../components/Foam/ParticipantAlertFoam";
 
 import "../../styles/Modal.css";
 import "../../styles/PlanetDetailReady.css"
@@ -145,6 +146,12 @@ const PlanetDetailRecruiting = () => {
       </div>
       <div className="planet-detail-content">{planet.content}</div>
       <div className="detail-participant-ratio">{planet.currentParticipants} / {planet.maxParticipants}</div>
+      <div className="alert-container">
+        <ParticipantAlert 
+          currentParticipants={planet.currentParticipants}
+          maxParticipants={planet.maxParticipants}
+        />
+      </div>
       <div className="detail-img-container">
         <img className="detail-img" src={planet.planetImg} alt="행성사진" />
       </div>
