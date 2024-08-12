@@ -31,10 +31,13 @@ const PlanetChat = ({ planetId, residents }) => {
     try {
       const response = await axios.get(`https://${CHAT_URL}/chat/v2`, {
         params: { "planet-id": planetId },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       const data = response.data.data.map((message) => {
-        const [year, month, day] = message.createdAt;
+        const [year, month, day] = message.createdAt.split("-").map(Number);
 
         return {
           ...message,

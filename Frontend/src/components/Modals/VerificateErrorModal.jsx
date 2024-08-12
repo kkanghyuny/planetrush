@@ -1,12 +1,12 @@
-const VerificateFailModal = ({ closeModal }) => {
+const VerificateErrorModal = ({ closeModal }) => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h4>인증을 다시 시도해주세요!</h4>
+        <h4>서버가 불안합니다! 다시 시도해주세요</h4>
         <button onClick={closeModal}>다시하기</button>
       </div>
     </div>
   );
 };
 
-export default VerificateFailModal;
+export default VerificateErrorModal;
