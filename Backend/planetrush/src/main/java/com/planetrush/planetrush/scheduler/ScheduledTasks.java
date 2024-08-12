@@ -1,11 +1,8 @@
 package com.planetrush.planetrush.scheduler;
 
-import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,10 +12,11 @@ import com.planetrush.planetrush.core.exception.handler.PlanetExceptionHandler;
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.domain.ProgressAvg;
-import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
+import com.planetrush.planetrush.member.repository.custom.ChallengeHistoryRepositoryCustom;
+import com.planetrush.planetrush.member.repository.custom.ProgressAvgRepositoryCustom;
 import com.planetrush.planetrush.planet.domain.Category;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
@@ -27,8 +25,6 @@ import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
-import com.querydsl.core.Tuple;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +39,11 @@ public class ScheduledTasks {
 	private final PlanetRepositoryCustom planetRepositoryCustom;
 	private final ResidentRepositoryCustom residentRepositoryCustom;
 	private final VerificationRecordRepositoryCustom verificationRecordRepositoryCustom;
-	private final JPAQueryFactory queryFactory;
+	private final ChallengeHistoryRepositoryCustom challengeHistoryRepositoryCustom;
 	private final ProgressAvgRepository progressAvgRepository;
 	private final MemberRepository memberRepository;
 	private final PlanetExceptionHandler planetExceptionHandler;
+	private final ProgressAvgRepositoryCustom progressAvgRepositoryCustom;
 
 	/**
 	 * <p매일 자정마다 챌린지가 시작되어야 하는 행성의 상태를 READY에서 IN_PROGRESS로 변경합니다.></p>
@@ -139,61 +136,24 @@ public class ScheduledTasks {
 	@Scheduled(cron = "${scheduled-task.member-progress-calc}")
 	@Transactional
 	void progressCalculation() {
-		progressAvgRepository.deleteAll();
-		List<Tuple> memberCategoryAvgResults = queryFactory
-			.select(
-				challengeHistory.member.id,
-				challengeHistory.category,
-				challengeHistory.progress.avg()
-			)
-			.from(challengeHistory)
-			.groupBy(challengeHistory.member.id, challengeHistory.category)
-			.fetch();
-		List<Tuple> memeberAvgResults = queryFactory
-			.select(
-				challengeHistory.member.id,
-				challengeHistory.progress.avg()
-			)
-			.from(challengeHistory)
-			.groupBy(challengeHistory.member.id)
-			.fetch();
-		Map<Long, Map<Category, Double>> memberCategoryAvgMap = memberCategoryAvgResults.stream()
-			.collect(Collectors.groupingBy(
-				tuple -> tuple.get(0, Long.class),
-				Collectors.toMap(
-					tuple -> tuple.get(1, Category.class),
-					tuple -> tuple.get(2, Double.class)
-				)
-			));
-		Map<Long, Double> memeberAvgMap = memeberAvgResults.stream()
-			.collect(Collectors.toMap(
-				tuple -> tuple.get(0, Long.class),
-				tuple -> tuple.get(1, Double.class)
-			));
-		List<ProgressAvg> progressAvgList = memberCategoryAvgMap.entrySet().stream()
-			.map(entry -> {
-				Long memberId = entry.getKey();
-				Map<Category, Double> categoryMap = entry.getValue();
-				Double beautyAvg = categoryMap.getOrDefault(Category.BEAUTY, null);
-				Double exerciseAvg = categoryMap.getOrDefault(Category.EXERCISE, null);
-				Double lifeAvg = categoryMap.getOrDefault(Category.LIFE, null);
-				Double studyAvg = categoryMap.getOrDefault(Category.STUDY, null);
-				Double etcAvg = categoryMap.getOrDefault(Category.ETC, null);
-				Double totalAvg = memeberAvgMap.getOrDefault(memberId, null);
-				Member member = memberRepository.findById(memberId)
-					.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-				return ProgressAvg.builder()
-					.member(member)
-					.totalAvg(totalAvg)
-					.beautyAvg(beautyAvg)
-					.exerciseAvg(exerciseAvg)
-					.lifeAvg(lifeAvg)
-					.studyAvg(studyAvg)
-					.etcAvg(etcAvg)
-					.build();
-			})
-			.toList();
-		progressAvgRepository.saveAll(progressAvgList);
+		List<ProgressAvg> progressAvgList = progressAvgRepository.findAll();
+		Map<Long, Map<Category, Double>> averageScoreByMember = challengeHistoryRepositoryCustom.getAverageScoreByMember();
+		averageScoreByMember.forEach((memberId, scoreByCategoryMap) -> {
+			Double beautyAvg = scoreByCategoryMap.get(Category.BEAUTY);
+			Double exerciseAvg = scoreByCategoryMap.get(Category.EXERCISE);
+			Double lifeAvg = scoreByCategoryMap.get(Category.LIFE);
+			Double studyAvg = scoreByCategoryMap.get(Category.STUDY);
+			Double etcAvg = scoreByCategoryMap.get(Category.ETC);
+			Double totalAvg = (beautyAvg + exerciseAvg + lifeAvg + studyAvg + etcAvg) / 5;
+			progressAvgRepositoryCustom.updateProgressAvg(memberId, ProgressAvg.builder()
+				.beautyAvg(beautyAvg)
+				.exerciseAvg(exerciseAvg)
+				.lifeAvg(lifeAvg)
+				.studyAvg(studyAvg)
+				.etcAvg(etcAvg)
+				.totalAvg(totalAvg)
+				.build());
+		});
 	}
 
 }
