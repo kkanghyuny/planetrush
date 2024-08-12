@@ -14,7 +14,7 @@ COPY .env /app/.env
 WORKDIR /app
 
 # Docker run 시 실행할 명령어를 설정합니다.
-ENTRYPOINT ["java", "-jar", "/app/chat-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=Asia/Seoul", "/app/chat-0.0.1-SNAPSHOT.jar"]
 
 # ENV 파일을 환경 변수로 설정합니다.
 ENV JAVA_OPTS="-Dspring.config.location=file:/app/.env"

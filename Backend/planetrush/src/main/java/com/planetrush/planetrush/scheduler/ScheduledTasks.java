@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.planetrush.planetrush.core.exception.handler.PlanetExceptionHandler;
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.domain.ProgressAvg;
@@ -45,6 +46,7 @@ public class ScheduledTasks {
 	private final JPAQueryFactory queryFactory;
 	private final ProgressAvgRepository progressAvgRepository;
 	private final MemberRepository memberRepository;
+	private final PlanetExceptionHandler planetExceptionHandler;
 
 	/**
 	 * <p매일 자정마다 챌린지가 시작되어야 하는 행성의 상태를 READY에서 IN_PROGRESS로 변경합니다.></p>
@@ -69,24 +71,24 @@ public class ScheduledTasks {
 		planets.forEach(planet -> {
 			List<Resident> residents = residentRepository.findByPlanetId(planet.getId());
 			residents.forEach(resident -> {
+				Member member = resident.getMember();
 				VerificationRecord latestRecord = verificationRecordRepositoryCustom.findLatestRecord(
-					resident.getMember(), resident.getPlanet());
+					member, planet);
 				/* 인증 기록 없이 3일이 지난 경우 */
 				if (latestRecord == null && planet.calcElapsedPeriod() >= 4) {
-					expulsionFromPlanet(planet, latestRecord);
+					expulsionFromPlanet(member, planet);
 				}
 				/* 마지막 인증을 한 후 3일이 지난 경우 */
 				if (latestRecord != null && latestRecord.isDifferenceGreaterThanFourDays()) {
-					expulsionFromPlanet(planet, latestRecord);
+					expulsionFromPlanet(member, planet);
 				}
 			});
 		});
 	}
 
-	private void expulsionFromPlanet(Planet planet, VerificationRecord latestRecord) {
-		log.info("[중도 퇴소 처리] the last verificationRecordId = {}", latestRecord.getId());
-		residentRepositoryCustom.banMemberFromPlanet(latestRecord.getMember(),
-			latestRecord.getPlanet());
+	private void expulsionFromPlanet(Member member, Planet planet) {
+		log.info("[중도 퇴소 처리] the last verificationRecordId = {}", member.getId());
+		residentRepositoryCustom.banMemberFromPlanet(member, planet);
 		planet.participantExpulsion();
 	}
 
