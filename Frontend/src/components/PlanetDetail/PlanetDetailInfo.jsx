@@ -70,7 +70,7 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
       state: {
         content: planetInfo.content,
         id: planetId,
-        standardVerificationImg: planetInfo.standardVerificationImg,
+        standardVerificationImg: standardVerificationImg,
       },
     });
   };
@@ -95,7 +95,6 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
           <p className="planet-message">{getStatusMessage()}</p>
           <button
             className="verificate-info-button"
-            standardVerificationImg={standardVerificationImg}
             onClick={handleVerification}
             disabled={planetInfo.verifiedToday}
           >

@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.1px solid white;
+  border: 0.1px solid rgba(255, 255, 255, 0.5);
   margin-bottom: 20px;
   position: relative; /* 추가: 내부 요소를 절대 위치로 배치하기 위해 상대 위치로 설정 */
 }

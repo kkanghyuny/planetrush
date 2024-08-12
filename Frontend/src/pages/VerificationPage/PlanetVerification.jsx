@@ -4,6 +4,7 @@ import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 
 import VerificateSuccessModal from "../../components/Modals/VerificateSuccessModal";
 import VerificateFailModal from "../../components/Modals/VerificateFailModal";
+import VerificateErrorModal from "../../components/Modals/VerificateErrorModal";
 
 import { BiSolidImageAlt } from "react-icons/bi";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
@@ -23,6 +24,7 @@ const PlanetVerification = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isError, setIsError] = useState(false); // 에러 상태 추가
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -58,6 +60,7 @@ const PlanetVerification = () => {
       }
     } catch (error) {
       console.error(error);
+      setIsError(true); // 에러 발생 시 상태 업데이트
     }
 
     setModalIsOpen(true); //다 하고 나서 띄운다!
@@ -65,6 +68,7 @@ const PlanetVerification = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
+    setIsError(false); // 에러 상태 초기화
   };
 
   return (
@@ -83,7 +87,8 @@ const PlanetVerification = () => {
                 <input
                   id="upload-input"
                   type="file"
-                  accept="image/*"
+                  accept=".jpg, .png, .jpeg"
+                  capture="environment"
                   onChange={handleImageUpload}
                   className="upload-input"
                 />
@@ -125,11 +130,15 @@ const PlanetVerification = () => {
         </div>
       </div>
       {modalIsOpen &&
+        !isError &&
         (isSuccess ? (
           <VerificateSuccessModal />
         ) : (
           <VerificateFailModal closeModal={closeModal} />
         ))}
+      {modalIsOpen && isError && (
+        <VerificateErrorModal closeModal={closeModal} />
+      )}
     </div>
   );
 };
