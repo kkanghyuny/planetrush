@@ -35,16 +35,10 @@ function Auth() {
         },
       }
     );
-<<<<<<< HEAD
 
     return response.data;
   };
-  
-=======
-    return response.data;
-  };
 
->>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
   // 백엔드로 받아온 access_token을 넘긴다.
   const sendTokenToBackend = async (accessToken) => {
     try {

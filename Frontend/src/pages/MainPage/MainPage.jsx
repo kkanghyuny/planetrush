@@ -37,7 +37,7 @@ const MainPage = () => {
 
   const [planets, setPlanets] = useState(null);
   const [shuffledPositions, setShuffledPositions] = useState([]);
-  const nickname = Cookies.get('nickname')
+  const nickname = Cookies.get("nickname");
 
   useEffect(() => {
     setShuffledPositions(shuffleArray([...gridPositions]));

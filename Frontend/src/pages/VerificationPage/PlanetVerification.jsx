@@ -4,10 +4,7 @@ import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 
 import VerificateSuccessModal from "../../components/Modals/VerificateSuccessModal";
 import VerificateFailModal from "../../components/Modals/VerificateFailModal";
-<<<<<<< HEAD
 import VerificateErrorModal from "../../components/Modals/VerificateErrorModal";
-=======
->>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
 
 import { BiSolidImageAlt } from "react-icons/bi";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
@@ -27,10 +24,7 @@ const PlanetVerification = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-<<<<<<< HEAD
   const [isError, setIsError] = useState(false); // 에러 상태 추가
-=======
->>>>>>> e74d78f1b3864b2ef261447073ffc350599126ba
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
