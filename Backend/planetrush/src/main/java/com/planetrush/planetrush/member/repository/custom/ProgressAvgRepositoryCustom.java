@@ -1,8 +1,7 @@
 package com.planetrush.planetrush.member.repository.custom;
 
-import static com.planetrush.planetrush.member.domain.QChallengeHistory.challengeHistory;
-import static com.planetrush.planetrush.planet.domain.QResident.resident;
-import static com.planetrush.planetrush.member.domain.QProgressAvg.progressAvg;
+import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
+import static com.planetrush.planetrush.member.domain.QProgressAvg.*;
 
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +12,6 @@ import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
 import com.planetrush.planetrush.member.service.dto.AllAvgDto;
 import com.planetrush.planetrush.member.service.dto.CategoryPerDto;
-import com.planetrush.planetrush.planet.domain.PlanetStatus;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -191,6 +189,18 @@ public class ProgressAvgRepositoryCustom {
 			.where(challengeHistory.member.eq(member))
 			.fetchOne();
 		return (challengeCount != null) ? challengeCount : 0L;
+	}
+
+	public void updateProgressAvg(Long memberId, ProgressAvg newProgressAvg) {
+		queryFactory.update(progressAvg)
+			.set(progressAvg.beautyAvg, newProgressAvg.getBeautyAvg())
+			.set(progressAvg.exerciseAvg, newProgressAvg.getExerciseAvg())
+			.set(progressAvg.lifeAvg, newProgressAvg.getLifeAvg())
+			.set(progressAvg.studyAvg, newProgressAvg.getStudyAvg())
+			.set(progressAvg.etcAvg, newProgressAvg.getEtcAvg())
+			.set(progressAvg.totalAvg, newProgressAvg.getTotalAvg())
+			.where(progressAvg.member.id.eq(memberId))
+			.execute();
 	}
 
 }
