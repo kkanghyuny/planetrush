@@ -17,6 +17,8 @@ from io import BytesIO
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
 from dotenv import load_dotenv
+import scipy.stats as stats
+import numpy as np
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
@@ -27,8 +29,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-
-# -- 인기 키워드 --
 class CategoryEnum(enum.Enum):
     BEAUTY = 'BEAUTY'
     ETC = 'ETC'
@@ -42,6 +42,11 @@ class PlanetStatusEnum(enum.Enum):
     DESTROYED = 'DESTROYED'
     IN_PROGRESS = 'IN_PROGRESS'
     READY = 'READY'
+
+
+class ChallengeResultEnum(enum.Enum):
+    FAIL = 'FAIL'
+    SUCCESS = 'SUCCESS'
 
 
 class Planet(db.Model):
@@ -71,6 +76,31 @@ class PopularKeyword(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
 
 
+class ProgressAvg(db.Model):
+    __tablename__ = 'progress_avg'
+    progress_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    beauty_avg = db.Column(db.Float, nullable=True)
+    etc_avg = db.Column(db.Float, nullable=True)
+    exercise_avg = db.Column(db.Float, nullable=True)
+    life_avg = db.Column(db.Float, nullable=True)
+    study_avg = db.Column(db.Float, nullable=True)
+    total_avg = db.Column(db.Float, nullable=True)
+    member_id = db.Column(db.BigInteger, db.ForeignKey('member.member_id'), nullable=True)
+
+
+class ChallengeHistory(db.Model):
+    __tablename__ = 'challenge_history'
+
+    challenge_history_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    category = db.Column(db.Enum(CategoryEnum), nullable=False)
+    challenge_content = db.Column(db.String(255), nullable=False)
+    planet_img_url = db.Column(db.String(255), nullable=False)
+    planet_name = db.Column(db.String(255), nullable=False)
+    progress = db.Column(db.Float, nullable=False)
+    member_id = db.Column(db.BigInteger, db.ForeignKey('member.member_id'), nullable=True)
+    challenge_result = db.Column(db.Enum(ChallengeResultEnum), nullable=False)
+
+# -- 인기 키워드 --
 # 테이블 데이터 삭제
 def delete_all_records(model):
     try:
@@ -151,7 +181,7 @@ def create_feature_extractor():
     return feature_extractor
 
 
-# 이미지 로드 및 전처리 함수
+# 이미지 로드 및 전처리
 def load_and_preprocess_image_from_url(image_url, input_size=(224, 224)):
     try:
         response = requests.get(image_url, timeout=5)  # 네트워크 타임아웃 설정
@@ -170,7 +200,7 @@ def load_and_preprocess_image_from_url(image_url, input_size=(224, 224)):
         return None
 
 
-# 두 이미지 비교 함수
+# 두 이미지 비교
 def compare_images(image1_url, image2_url, feature_extractor, threshold):
     img1 = load_and_preprocess_image_from_url(image1_url)
     img2 = load_and_preprocess_image_from_url(image2_url)
@@ -206,6 +236,100 @@ def image_verification():
         "verified": result[1]
     })
 
+# -- 마이페이지 --
+def calculate_z_score_percentiles(scores_dict, user_scores_dict):
+    percentiles = {}
+    for category, scores in scores_dict.items():
+        # 0.0 값을 제외하고 평균과 표준편차를 계산
+        scores = [score for score in scores if score != 0]
+        mean = np.mean(scores)
+        std_dev = np.std(scores)
+        # z-score 및 해당 백분위를 계산
+        z_score = (user_scores_dict[category] - mean) / std_dev if std_dev != 0 else 0
+        percentiles[category] = stats.norm.cdf(z_score) * 100
+    return percentiles
+
+def get_average_scores(scores_dict):
+    # 각 카테고리의 평균을 계산
+    return {category + 'Avg': np.mean([score for score in scores if score is not None]) for category, scores in scores_dict.items()}
+
+@app.route('/api/v1/members/mypage/<int:member_id>', methods=['GET'])
+def get_progress_avg(member_id):
+    # 해당 member_id에 대한 사용자 데이터 조회
+    user_progress = ProgressAvg.query.filter_by(member_id=member_id).first()
+
+    if not user_progress:
+        # 데이터가 없는 경우의 처리
+        response = {
+            "code": "3001",
+            "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
+            "data": None,
+            "isSuccess": False
+        }
+        return jsonify(response), 404
+
+    # 모든 사용자 데이터 조회
+    all_progress_data = ProgressAvg.query.all()
+
+    # 모든 사용자의 각 카테고리별 점수 리스트를 딕셔너리로 구성
+    scores_dict = {
+        'beauty': [progress.beauty_avg for progress in all_progress_data],
+        'etc': [progress.etc_avg for progress in all_progress_data],
+        'exercise': [progress.exercise_avg for progress in all_progress_data],
+        'life': [progress.life_avg for progress in all_progress_data],
+        'study': [progress.study_avg for progress in all_progress_data],
+        'total': [progress.total_avg for progress in all_progress_data]
+    }
+
+    # 선택된 사용자의 각 카테고리별 점수를 딕셔너리로 구성
+    user_scores_dict = {
+        'beauty': user_progress.beauty_avg,
+        'etc': user_progress.etc_avg,
+        'exercise': user_progress.exercise_avg,
+        'life': user_progress.life_avg,
+        'study': user_progress.study_avg,
+        'total': user_progress.total_avg
+    }
+
+    # 사용자의 백분위를 계산
+    user_percentiles = calculate_z_score_percentiles(scores_dict, user_scores_dict)
+
+    # 각 카테고리의 평균 점수를 계산
+    averages = get_average_scores(scores_dict)
+
+    # 응답 데이터를 구성
+    response_data = {
+        "myTotalAvg": user_scores_dict['total'],
+        "myTotalPer": user_percentiles['total'],
+        "totalAvg": averages['totalAvg'],
+        "myExerciseAvg": user_scores_dict['exercise'],
+        "myExercisePer": user_percentiles['exercise'],
+        "exerciseAvg": averages['exerciseAvg'],
+        "myBeautyAvg": user_scores_dict['beauty'],
+        "myBeautyPer": user_percentiles['beauty'],
+        "beautyAvg": averages['beautyAvg'],
+        "myLifeAvg": user_scores_dict['life'],
+        "myLifePer": user_percentiles['life'],
+        "lifeAvg": averages['lifeAvg'],
+        "myStudyAvg": user_scores_dict['study'],
+        "myStudyPer": user_percentiles['study'],
+        "studyAvg": averages['studyAvg'],
+        "myEtcAvg": user_scores_dict['etc'],
+        "myEtcPer": user_percentiles['etc'],
+        "etcAvg": averages['etcAvg']
+    }
+
+    # 최종적으로 소수점 두 자리까지 반올림
+    rounded_response_data = {key: round(value, 2) for key, value in response_data.items()}
+
+    # 최종 응답 반환
+    response = {
+        "code": "2000",
+        "message": "성공",
+        "data": rounded_response_data,
+        "isSuccess": True
+    }
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
