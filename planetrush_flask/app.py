@@ -1,15 +1,20 @@
 import os
 from flask import Flask, jsonify, request
-import cv2
-from urllib.request import urlopen
-from urllib.error import URLError, HTTPError
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from sqlalchemy import and_
 import enum
-import numpy as np
-from mecab import MeCab
+from mecab import MeCab  # MeCab 사용
 from collections import Counter
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+from torchvision import models
+from torchvision.models import EfficientNet_B0_Weights
+from PIL import Image
+import requests
+from io import BytesIO
+from sklearn.metrics.pairwise import cosine_similarity
 import logging
 from dotenv import load_dotenv
 
@@ -90,7 +95,7 @@ def get_mode_keywords(texts):
     for text in texts:
         nouns += list(set(mecab.nouns(text)))
     clean_nouns = remove_stop_words(nouns)
-    word_counts = Counter(clean_nouns) # 단어 빈도 계산
+    word_counts = Counter(clean_nouns)  # 단어 빈도 계산
     mode_keyword = [item[0] for item in word_counts.most_common(7)]  # 최빈값 추출, 상위 7개
     return mode_keyword
 
@@ -119,7 +124,7 @@ def get_challenge_content():
             planets = Planet.query.filter(
                 and_(
                     Planet.category == category.name,
-                    Planet.created_at >= datetime.utcnow()-timedelta(days=7) # 일주일 전 ~ 현재
+                    Planet.created_at >= datetime.utcnow() - timedelta(days=7)  # 일주일 전 ~ 현재
                 )
             ).all()
             if planets:
@@ -137,54 +142,68 @@ def get_challenge_content():
 
 
 # -- 이미지 유사도 --
-# URL 이미지 로드
-def load_image(url):
+# 모델 생성
+def create_feature_extractor():
+    base_model = models.efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
+    # 마지막 분류 레이어 제거하여 feature extractor로 사용
+    feature_extractor = nn.Sequential(*list(base_model.children())[:-2])
+    feature_extractor.eval()  # 평가 모드로 전환
+    return feature_extractor
+
+
+# 이미지 로드 및 전처리 함수
+def load_and_preprocess_image_from_url(image_url, input_size=(224, 224)):
     try:
-        resp = urlopen(url)
-        arr = np.asarray(bytearray(resp.read()), dtype=np.uint8)
-        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-        return img
-    except (URLError, HTTPError) as e:
-        raise ValueError(f"Error loading image from URL: {url}, {e}")
+        response = requests.get(image_url, timeout=5)  # 네트워크 타임아웃 설정
+        response.raise_for_status()  # HTTP 에러가 있는 경우 예외 발생
+        image = Image.open(BytesIO(response.content)).convert('RGB')
+
+        transform = transforms.Compose([
+            transforms.Resize(input_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+        image = transform(image).unsqueeze(0)  # 배치 차원 추가
+        return image
+    except Exception as e:
+        app.logger.error(f"Error loading or processing image: {str(e)}")
+        return None
+
+
+# 두 이미지 비교 함수
+def compare_images(image1_url, image2_url, feature_extractor, threshold):
+    img1 = load_and_preprocess_image_from_url(image1_url)
+    img2 = load_and_preprocess_image_from_url(image2_url)
+
+    if img1 is None or img2 is None:
+        return None
+
+    with torch.no_grad():
+        features1 = feature_extractor(img1).flatten().numpy()
+        features2 = feature_extractor(img2).flatten().numpy()
+
+    similarity = cosine_similarity([features1], [features2])[0][0]
+    return round(similarity * 100), bool(similarity > threshold)
+
+
+feature_extractor = create_feature_extractor()
 
 
 @app.route('/api/v1/images', methods=['POST'])
-def get_img_url():
-    # 쿼리 매개변수
-    standard_img_url = request.json.get('standardImgUrl') # 기준 이미지
-    target_img_url = request.json.get('targetImgUrl') # 유저 이미지
+def image_verification():
+    standard_img_url = request.json.get('standardImgUrl')  # 기준 이미지
+    target_img_url = request.json.get('targetImgUrl')  # 유저 이미지
     if not standard_img_url or not target_img_url:
         return jsonify({"error": "Both imgUrl1 and imgUrl2 are required"}), 400
 
-    # OpenCV 이미지 유사도 검사
-    img_urls = [standard_img_url, target_img_url]
-    hists = []
-    try:
-        for url in img_urls:
-            img = load_image(url)
-            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            hist = cv2.calcHist([hsv], [0, 1], None, [180, 256], [0, 180, 0, 256])
-            cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
-            hists.append(hist.astype(np.float32))
+    result = compare_images(standard_img_url, target_img_url, feature_extractor, threshold=0.088)
 
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-
-    standard_img = hists[0]  # 기준 이미지
-    flag = cv2.HISTCMP_INTERSECT  # 교차 검증
-    try:
-        score = cv2.compareHist(standard_img, hists[1], flag)
-        if np.sum(standard_img) == 0:
-            raise ZeroDivisionError("Sum of standard image histogram is zero.")
-        score = round(score / np.sum(standard_img) * 100)
-    except ZeroDivisionError as e:
-        return jsonify({"error": str(e)}), 500
-
-    verified = bool(score >= 35)
+    if result is None:
+        return jsonify({"error": "An error occurred while processing the images"}), 500
 
     return jsonify({
-        "similarity_score": score, # 점수
-        "verified": verified # 인증 결과
+        "score": result[0],
+        "verified": result[1]
     })
 
 
