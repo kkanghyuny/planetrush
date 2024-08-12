@@ -90,11 +90,11 @@ const PlanetDetailInProgress = () => {
         <div className="toggle-planet">
           <button
             onClick={handleRankClick}
-            className={view === "rank" ? "active" : ""}
+            className={`rank-button ${view === "rank" ? "active" : ""}`}
           ></button>
           <button
             onClick={handleChatClick}
-            className={view === "chat" ? "active" : ""}
+            className={`chat-button ${view === "chat" ? "active" : ""}`}
           ></button>
         </div>
         {view === "rank" ? (
