@@ -11,9 +11,9 @@ import "../../styles/PlanetChat.css";
 const CHAT_URL = "i11a509.p.ssafy.io";
 
 // 유니코드 문자열을 Base64로 변환하는 함수
-function toBase64(str) {
-  return window.btoa(encodeURIComponent(str));
-}
+// function toBase64(str) {
+//   return window.btoa(decodeURIComponent(encodeURIComponent(str)));
+// }
 
 const PlanetChat = ({ planetId, residents }) => {
   const stompClient = useRef(null);
@@ -31,17 +31,14 @@ const PlanetChat = ({ planetId, residents }) => {
     try {
       const response = await axios.get(`https://${CHAT_URL}/chat/v2`, {
         params: { "planet-id": planetId },
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
-      const data = response.data.data.map((message) => {
-        const [year, month, day] = message.createdAt.split("-").map(Number);
+      const data = response.data.map((message) => {
+        const [year, month, day, hour, minute, second] = message.createdAt;
 
         return {
           ...message,
-          createdAt: new Date(year, month - 1, day), // 배열을 Date 객체로 변환
+          createdAt: new Date(year, month - 1, day, hour, minute, second), // 배열을 Date 객체로 변환
         };
       });
 
@@ -128,21 +125,21 @@ const PlanetChat = ({ planetId, residents }) => {
 
       residents.forEach((resident) => {
         const avatar = createAvatar(botttsNeutral, {
-          seed: resident.memberId, // 고유한 아바타를 위해 memberId 사용
-          randomizeIds: true, // ID 충돌 방지를 위해 true 설정
+          seed: resident.memberId,
+          randomizeIds: true,
           backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"][
             Math.floor(Math.random() * 5)
-          ], // 무작위 배경색 선택
+          ],
           eyes: ["bulging", "dizzy", "eva", "glow", "robocop"][
             Math.floor(Math.random() * 5)
-          ], // 무작위 눈 선택
+          ],
           mouth: ["smile02", "square01", "square02", "diagram", "bite"][
             Math.floor(Math.random() * 5)
-          ], // 무작위 입 선택
+          ],
         });
 
         const svg = avatar.toString();
-        const uri = `data:image/svg+xml;base64,${toBase64(svg)}`;
+        const uri = `data:image/svg+xml,${encodeURIComponent(svg)}`;
         uris[resident.memberId] = uri;
       });
 
