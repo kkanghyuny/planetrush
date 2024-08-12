@@ -1,14 +1,63 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
+import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import useStatisticsStore from "../../store/statisticsStore";  // 추가
 import '../../styles/Mypage.css';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const MyStatistics = ({ stats }) => {  // stats를 prop으로 받아옵니다.
-    if (!stats) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전에 로딩 상태를 표시
-    }
+const MyStatistics = () => {
+    const setStatistics = useStatisticsStore((state) => state.setStatistics); // 상태 업데이트 함수 가져오기
+
+    const [stats, setStats] = useState({
+        completionCnt: null,
+        challengeCnt: null,
+        exerciseAvg: null,
+        beautyAvg: null,
+        lifeAvg: null,
+        studyAvg: null,
+        etcAvg: null,
+        myBeautyAvg: null,
+        myEtcAvg: null,
+        myExerciseAvg: null,
+        myLifeAvg: null,
+        myStudyAvg: null,
+        myTotalAvg: null,
+        myTotalPer: null,
+        totalAvg: null,
+        myExercisePer: null,
+        myBeautyPer: null,
+        myLifePer: null,
+        myStudyPer: null,
+        myEtcPer: null,
+    });
+
+    const handleShowStats = async () => {
+        try {
+            const response = await instance.get("/members/mypage");
+            const data = response.data.data;
+            return data; 
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const statsData = await handleShowStats(); 
+                setStats(statsData); 
+
+                // zustand 스토어에 challengeCnt와 completionCnt 저장
+                setStatistics(statsData.challengeCnt, statsData.completionCnt);
+            } catch (error) {
+                throw error;
+            }
+        };
+
+        fetchStats();
+    }, [setStatistics]);
 
     let completeRate = stats.challengeCnt === 0 ? 0 : ((stats.completionCnt / stats.challengeCnt) * 100).toFixed(2);
     completeRate = Math.max(0, Math.min(completeRate, 100));
@@ -57,7 +106,7 @@ const MyStatistics = ({ stats }) => {  // stats를 prop으로 받아옵니다.
             responsive: true,
             plugins: {
                 legend: {
-                    display: false, // 레전드를 완전히 비활성화
+                    display: false,
                 },
                 title: {
                     display: true,

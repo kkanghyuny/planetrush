@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
+import useStatisticsStore from "../../store/statisticsStore";
 
-const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname, challengeCnt, completionCnt }) => {
+const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
   const [newNickname, setNewNickname] = useState("");
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 회원 탈퇴 확인 모달 상태
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const challengeCnt = useStatisticsStore((state) => state.challengeCnt); // challengeCnt 가져오기
+  const completionCnt = useStatisticsStore((state) => state.completionCnt); // completionCnt 가져오기
 
   useEffect(() => {
     if (!isOpen) {
@@ -33,7 +37,7 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname, challen
         Cookies.remove('nickname');
 
         console.log('회원 탈퇴가 성공적으로 처리되었습니다.');
-        closeModal(); // 모달 닫기
+        closeModal(); 
       } else {
         console.log('회원 탈퇴 요청이 성공하지 않았습니다.');
       }
@@ -43,11 +47,11 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname, challen
   };
 
   const handleOpenConfirm = () => {
-    setIsConfirmOpen(true); // 회원 탈퇴 확인 모달 열기
+    setIsConfirmOpen(true);
   };
 
   const handleCloseConfirm = () => {
-    setIsConfirmOpen(false); // 회원 탈퇴 확인 모달 닫기
+    setIsConfirmOpen(false);
   };
 
   if (!isOpen) return null;
@@ -67,7 +71,7 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname, challen
         <button onClick={closeModal}>취소</button>
 
         <h4>회원 탈퇴</h4>
-        <p>탈퇴하시겠습니까?</p>
+        <p>지금까지 총 <strong>{challengeCnt}</strong>개의 챌린지에 도전했고, 그 중 <strong>{completionCnt}</strong>개를 성공하셨습니다.</p>
         <button onClick={handleOpenConfirm}>예</button>
         <button onClick={closeModal}>아니오</button>
       </div>
@@ -75,7 +79,6 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname, challen
       {isConfirmOpen && (
         <div className="modal">
           <div className="modal-content">
-            <p>지금까지 총 <strong>{challengeCnt}</strong>개의 챌린지에 도전했고, 그 중 <strong>{completionCnt}</strong>개를 성공하셨습니다.</p>
             <h4>정말 탈퇴하시겠습니까?</h4>
             <button onClick={handleUserDelete}>예</button>
             <button onClick={handleCloseConfirm}>아니오</button>
