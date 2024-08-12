@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './App.css'; // 스타일은 별도로 정의합니다.
 
 const Tutorial = () => {
   const [currentPage, setCurrentPage] = useState(0);
