@@ -16,8 +16,13 @@ RUN npm cache clean --force && \
 # Copy the rest of the application code
 COPY . . 
 
+# Copy .env file if it exists
+COPY .env ./.env
+
 # Build the Vite application
 RUN npm run build
+
+# RUN rm ./.env
 
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine
