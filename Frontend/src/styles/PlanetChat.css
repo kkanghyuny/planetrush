@@ -13,6 +13,10 @@
   margin-bottom: 20px; /* 입력창 높이만큼 여백 추가 */
 }
 
+.messages-container::-webkit-scrollbar {
+  display: none;
+}
+
 .list-item {
   display: flex;
   align-items: flex-start;

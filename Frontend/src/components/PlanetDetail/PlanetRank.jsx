@@ -2,7 +2,21 @@ import Crown from "../../assets/Crown.png";
 import "../../styles/PlanetRank.css";
 
 const PlanetRank = ({ planetInfo, residents }) => {
-  //랭킹 정렬
+  // 점수 기준으로 1등 결정
+  const topRanker = residents.reduce((top, resident) => {
+    if (
+      !top ||
+      resident.verificationContinuityPoint > top.verificationContinuityPoint ||
+      (resident.verificationContinuityPoint ===
+        top.verificationContinuityPoint &&
+        resident.verificationCnt > top.verificationCnt)
+    ) {
+      return resident;
+    }
+    return top;
+  }, null);
+
+  // 정렬은 isQuerriedMember 기준으로 진행
   const sortedResidents = [...residents].sort((a, b) => {
     if (a.isQuerriedMember && !b.isQuerriedMember) {
       return -1;
@@ -11,7 +25,6 @@ const PlanetRank = ({ planetInfo, residents }) => {
       return 1;
     }
 
-    // isQuerriedMember가 둘 다 false 또는 true인 경우
     if (a.verificationContinuityPoint !== b.verificationContinuityPoint) {
       return b.verificationContinuityPoint - a.verificationContinuityPoint;
     } else {
@@ -19,19 +32,14 @@ const PlanetRank = ({ planetInfo, residents }) => {
     }
   });
 
-  // 1등 점수 확인 (동점자 체크)
-  const highestPoint =
-    sortedResidents.length > 0
-      ? sortedResidents[0].verificationContinuityPoint
-      : null;
-
   return (
     <div className="planet-rank-container">
       {sortedResidents.map((resident, index) => {
         const total = planetInfo.totalVerificationCnt;
         const percentage = (resident.verificationCnt / total) * 100;
-        const isTopRanker =
-          resident.verificationContinuityPoint === highestPoint;
+
+        // 왕관은 topRanker에만 표시
+        const isTopRanker = resident.nickname === topRanker.nickname;
 
         return (
           <div
