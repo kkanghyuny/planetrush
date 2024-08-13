@@ -2,7 +2,8 @@ import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from sqlalchemy import and_
+from sqlalchemy import and_, case
+from sqlalchemy import func
 import enum
 from mecab import MeCab  # MeCab 사용
 from collections import Counter
@@ -17,17 +18,17 @@ from io import BytesIO
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
 from dotenv import load_dotenv
-import scipy.stats as stats
-import numpy as np
+from scipy import stats
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.INFO)  # 디버그 로그를 제한하여 성능 최적화
 
 # 데이터베이스 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 class CategoryEnum(enum.Enum):
     BEAUTY = 'BEAUTY'
@@ -67,13 +68,12 @@ class Planet(db.Model):
 
 
 class PopularKeyword(db.Model):
-    __tablename__ = 'popular_keyword'  # 테이블 이름 설정
+    __tablename__ = 'popular_keyword'
 
-    # 컬럼 정의
-    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # 자동 증가 기본 키
-    keyword = db.Column(db.String(20), nullable=False)  # NOT NULL
-    category = db.Column(db.String(20), nullable=False)  # NOT NULL
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
+    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    keyword = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
 class ProgressAvg(db.Model):
@@ -100,8 +100,8 @@ class ChallengeHistory(db.Model):
     member_id = db.Column(db.BigInteger, db.ForeignKey('member.member_id'), nullable=True)
     challenge_result = db.Column(db.Enum(ChallengeResultEnum), nullable=False)
 
+
 # -- 인기 키워드 --
-# 테이블 데이터 삭제
 def delete_all_records(model):
     try:
         db.session.query(model).delete()
@@ -113,34 +113,28 @@ def delete_all_records(model):
         return False
 
 
-# 의미없는 단어 제거
 def remove_stop_words(words):
     stop_words = set("매일 하루 일 분 시간 초 번 하나 운동 챌린지".split())
     return [word for word in words if word not in stop_words]
 
 
 def get_mode_keywords(texts):
-    nouns = []  # 명사만 저장
     mecab = MeCab()
+    nouns = []
     for text in texts:
         nouns += list(set(mecab.nouns(text)))
     clean_nouns = remove_stop_words(nouns)
-    word_counts = Counter(clean_nouns)  # 단어 빈도 계산
-    mode_keyword = [item[0] for item in word_counts.most_common(7)]  # 최빈값 추출, 상위 7개
-    return mode_keyword
+    word_counts = Counter(clean_nouns)
+    return [item[0] for item in word_counts.most_common(7)]
 
 
 def add_keyword(mode_keywords, category):
     try:
-        # `mode_keywords의 각 항목 객체 생성
         for keyword in mode_keywords:
-            new_keyword = PopularKeyword(keyword=keyword, category=category)
-            db.session.add(new_keyword)
+            db.session.add(PopularKeyword(keyword=keyword, category=category))
         db.session.commit()
         return True
-
     except Exception as e:
-        # 예외 발생 시 롤백
         db.session.rollback()
         app.logger.error(f"Error adding keyword: {str(e)}")
         return False
@@ -154,7 +148,7 @@ def get_challenge_content():
             planets = Planet.query.filter(
                 and_(
                     Planet.category == category.name,
-                    Planet.created_at >= datetime.utcnow() - timedelta(days=7)  # 일주일 전 ~ 현재
+                    Planet.created_at >= datetime.utcnow() - timedelta(days=7)
                 )
             ).all()
             if planets:
@@ -172,35 +166,29 @@ def get_challenge_content():
 
 
 # -- 이미지 유사도 --
-# 모델 생성
 def create_feature_extractor():
     base_model = models.efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
-    # 마지막 분류 레이어 제거하여 feature extractor로 사용
     feature_extractor = nn.Sequential(*list(base_model.children())[:-2])
-    feature_extractor.eval()  # 평가 모드로 전환
+    feature_extractor.eval()
     return feature_extractor
 
 
-# 이미지 로드 및 전처리
 def load_and_preprocess_image_from_url(image_url, input_size=(224, 224)):
     try:
-        response = requests.get(image_url, timeout=5)  # 네트워크 타임아웃 설정
-        response.raise_for_status()  # HTTP 에러가 있는 경우 예외 발생
+        response = requests.get(image_url, timeout=5)
+        response.raise_for_status()
         image = Image.open(BytesIO(response.content)).convert('RGB')
-
         transform = transforms.Compose([
             transforms.Resize(input_size),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
-        image = transform(image).unsqueeze(0)  # 배치 차원 추가
-        return image
+        return transform(image).unsqueeze(0)
     except Exception as e:
         app.logger.error(f"Error loading or processing image: {str(e)}")
         return None
 
 
-# 두 이미지 비교
 def compare_images(image1_url, image2_url, feature_extractor, threshold):
     img1 = load_and_preprocess_image_from_url(image1_url)
     img2 = load_and_preprocess_image_from_url(image2_url)
@@ -221,8 +209,8 @@ feature_extractor = create_feature_extractor()
 
 @app.route('/api/v1/images', methods=['POST'])
 def image_verification():
-    standard_img_url = request.json.get('standardImgUrl')  # 기준 이미지
-    target_img_url = request.json.get('targetImgUrl')  # 유저 이미지
+    standard_img_url = request.json.get('standardImgUrl')
+    target_img_url = request.json.get('targetImgUrl')
     if not standard_img_url or not target_img_url:
         return jsonify({"error": "Both imgUrl1 and imgUrl2 are required"}), 400
 
@@ -236,30 +224,34 @@ def image_verification():
         "verified": result[1]
     })
 
+
 # -- 마이페이지 --
-def calculate_z_score_percentiles(scores_dict, user_scores_dict):
+def calculate_z_score_percentiles(category_stats, user_avg):
     percentiles = {}
-    for category, scores in scores_dict.items():
-        # 0.0 값을 제외하고 평균과 표준편차를 계산
-        scores = [score for score in scores if score != 0]
-        mean = np.mean(scores)
-        std_dev = np.std(scores)
-        # z-score 및 해당 백분위를 계산
-        z_score = (user_scores_dict[category] - mean) / std_dev if std_dev != 0 else 0
-        percentiles[category] = stats.norm.cdf(z_score) * 100
+    for category, stats_data in category_stats.items():
+        mean = stats_data['avg']
+        std_dev = stats_data['stddev']
+        user_score = user_avg.get(category)
+        if user_score != -1 and mean != -1 and std_dev != -1 and std_dev != 0:
+            z_score = (user_score - mean) / std_dev
+            percentiles[category] = (1 - stats.norm.cdf(z_score)) * 100
+        else:
+            percentiles[category] = -1  # 유효하지 않은 값 처리
     return percentiles
 
-def get_average_scores(scores_dict):
-    # 각 카테고리의 평균을 계산
-    return {category + 'Avg': np.mean([score for score in scores if score is not None]) for category, scores in scores_dict.items()}
 
 @app.route('/api/v1/members/mypage/<int:member_id>', methods=['GET'])
 def get_progress_avg(member_id):
-    # 해당 member_id에 대한 사용자 데이터 조회
+    success_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+        ChallengeHistory.member_id == member_id,
+        ChallengeHistory.challenge_result == ChallengeResultEnum.SUCCESS
+        ).scalar()
+    all_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+        ChallengeHistory.member_id == member_id,
+        ).scalar()
     user_progress = ProgressAvg.query.filter_by(member_id=member_id).first()
 
     if not user_progress:
-        # 데이터가 없는 경우의 처리
         response = {
             "code": "3001",
             "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
@@ -268,21 +260,40 @@ def get_progress_avg(member_id):
         }
         return jsonify(response), 404
 
-    # 모든 사용자 데이터 조회
-    all_progress_data = ProgressAvg.query.all()
+    # 각 카테고리별 평균과 표준편차를 구하는 쿼리에서 -1을 제외하고 계산
+    stats_query = db.session.query(
+        func.avg(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_avg'),
+        func.stddev(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_stddev'),
+        func.avg(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_avg'),
+        func.stddev(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_stddev'),
+        func.avg(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label('exercise_avg'),
+        func.stddev(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label('exercise_stddev'),
+        func.avg(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_avg'),
+        func.stddev(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_stddev'),
+        func.avg(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_avg'),
+        func.stddev(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_stddev'),
+        func.avg(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_avg'),
+        func.stddev(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_stddev')
+    ).one()
 
-    # 모든 사용자의 각 카테고리별 점수 리스트를 딕셔너리로 구성
-    scores_dict = {
-        'beauty': [progress.beauty_avg for progress in all_progress_data],
-        'etc': [progress.etc_avg for progress in all_progress_data],
-        'exercise': [progress.exercise_avg for progress in all_progress_data],
-        'life': [progress.life_avg for progress in all_progress_data],
-        'study': [progress.study_avg for progress in all_progress_data],
-        'total': [progress.total_avg for progress in all_progress_data]
+    # 결과를 딕셔너리 형태로 정리
+    category_stats = {
+        'beauty': {'avg': stats_query.beauty_avg if stats_query.beauty_avg is not None else -1,
+                   'stddev': stats_query.beauty_stddev if stats_query.beauty_stddev is not None else -1},
+        'etc': {'avg': stats_query.etc_avg if stats_query.etc_avg is not None else -1,
+                'stddev': stats_query.etc_stddev if stats_query.etc_stddev is not None else -1},
+        'exercise': {'avg': stats_query.exercise_avg if stats_query.exercise_avg is not None else -1,
+                     'stddev': stats_query.exercise_stddev if stats_query.exercise_stddev is not None else -1},
+        'life': {'avg': stats_query.life_avg if stats_query.life_avg is not None else -1,
+                 'stddev': stats_query.life_stddev if stats_query.life_stddev is not None else -1},
+        'study': {'avg': stats_query.study_avg if stats_query.study_avg is not None else -1,
+                  'stddev': stats_query.study_stddev if stats_query.study_stddev is not None else -1},
+        'total': {'avg': stats_query.total_avg if stats_query.total_avg is not None else -1,
+                  'stddev': stats_query.total_stddev if stats_query.total_stddev is not None else -1},
     }
 
-    # 선택된 사용자의 각 카테고리별 점수를 딕셔너리로 구성
-    user_scores_dict = {
+    # 특정 사용자의 점수 딕셔너리
+    user_avg = {
         'beauty': user_progress.beauty_avg,
         'etc': user_progress.etc_avg,
         'exercise': user_progress.exercise_avg,
@@ -291,38 +302,35 @@ def get_progress_avg(member_id):
         'total': user_progress.total_avg
     }
 
-    # 사용자의 백분위를 계산
-    user_percentiles = calculate_z_score_percentiles(scores_dict, user_scores_dict)
+    # 사용자의 백분위수 계산
+    user_percentiles = calculate_z_score_percentiles(category_stats, user_avg)
 
-    # 각 카테고리의 평균 점수를 계산
-    averages = get_average_scores(scores_dict)
-
-    # 응답 데이터를 구성
+    # 응답 데이터
     response_data = {
-        "myTotalAvg": user_scores_dict['total'],
+        "completionCnt": success_challenge_cnt,
+        "challengeCnt": all_challenge_cnt,
+        "myTotalAvg": user_avg['total'],
         "myTotalPer": user_percentiles['total'],
-        "totalAvg": averages['totalAvg'],
-        "myExerciseAvg": user_scores_dict['exercise'],
+        "totalAvg": category_stats['total']['avg'],
+        "myExerciseAvg": user_avg['exercise'],
         "myExercisePer": user_percentiles['exercise'],
-        "exerciseAvg": averages['exerciseAvg'],
-        "myBeautyAvg": user_scores_dict['beauty'],
+        "exerciseAvg": category_stats['exercise']['avg'],
+        "myBeautyAvg": user_avg['beauty'],
         "myBeautyPer": user_percentiles['beauty'],
-        "beautyAvg": averages['beautyAvg'],
-        "myLifeAvg": user_scores_dict['life'],
+        "beautyAvg": category_stats['beauty']['avg'],
+        "myLifeAvg": user_avg['life'],
         "myLifePer": user_percentiles['life'],
-        "lifeAvg": averages['lifeAvg'],
-        "myStudyAvg": user_scores_dict['study'],
+        "lifeAvg": category_stats['life']['avg'],
+        "myStudyAvg": user_avg['study'],
         "myStudyPer": user_percentiles['study'],
-        "studyAvg": averages['studyAvg'],
-        "myEtcAvg": user_scores_dict['etc'],
+        "studyAvg": category_stats['study']['avg'],
+        "myEtcAvg": user_avg['etc'],
         "myEtcPer": user_percentiles['etc'],
-        "etcAvg": averages['etcAvg']
+        "etcAvg": category_stats['etc']['avg']
     }
 
-    # 최종적으로 소수점 두 자리까지 반올림
     rounded_response_data = {key: round(value, 2) for key, value in response_data.items()}
 
-    # 최종 응답 반환
     response = {
         "code": "2000",
         "message": "성공",
@@ -330,6 +338,7 @@ def get_progress_avg(member_id):
         "isSuccess": True
     }
     return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
