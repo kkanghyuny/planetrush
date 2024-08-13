@@ -1,0 +1,53 @@
+.modal-page {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tutorial-button {
+  position: absolute;
+  bottom: 4.5%;
+  right: 7.5%;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+
+.tutorial-img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+}
+
+.arrow-area {
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrow.hidden {
+  visibility: hidden;
+}
+
+.arrow.visible {
+  visibility: visible;
+}
+
+
+.exit-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.not-show-again {
+  display: inline-flex;
+  align-items: center;
+}
+
+.checkbox {
+  margin-top: 2px;
+  margin-right: 5px;
+}
