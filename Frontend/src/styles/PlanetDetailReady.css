@@ -94,6 +94,7 @@
     background-color: #31fff3;
     border-radius: 20px;
     font-weight: bold;
+    border: none;
 }
 
 .alert-container {
