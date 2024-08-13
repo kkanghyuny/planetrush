@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import and_, case
 from sqlalchemy import func
 import enum
-from mecab import MeCab  # MeCab 사용
+from mecab import MeCab
 from collections import Counter
 import torch
 import torch.nn as nn
@@ -22,7 +22,7 @@ from scipy import stats
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
-app.logger.setLevel(logging.INFO)  # 디버그 로그를 제한하여 성능 최적화
+app.logger.setLevel(logging.INFO)
 
 # 데이터베이스 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
