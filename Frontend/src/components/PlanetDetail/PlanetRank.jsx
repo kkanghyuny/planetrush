@@ -2,6 +2,11 @@ import Crown from "../../assets/Crown.png";
 import "../../styles/PlanetRank.css";
 
 const PlanetRank = ({ planetInfo, residents }) => {
+  // 최고 verificationContinuityPoint 값을 찾음
+  const maxPoint = residents.reduce((max, resident) => {
+    return Math.max(max, resident.verificationContinuityPoint);
+  }, 0);
+
   // 점수 기준으로 1등 결정
   const topRanker = residents.reduce((top, resident) => {
     if (
@@ -39,7 +44,7 @@ const PlanetRank = ({ planetInfo, residents }) => {
         const percentage = (resident.verificationCnt / total) * 100;
 
         // 왕관은 topRanker에만 표시
-        const isTopRanker = resident.nickname === topRanker.nickname;
+        const isTopRanker = resident.verificationContinuityPoint === maxPoint;
 
         return (
           <div
