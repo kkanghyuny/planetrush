@@ -1,5 +1,5 @@
 .modal-page {
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -34,12 +34,12 @@
   visibility: visible;
 }
 
-
 .exit-button-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  padding-right: 20%;
 }
 
 .not-show-again {

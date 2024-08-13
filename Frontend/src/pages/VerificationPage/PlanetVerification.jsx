@@ -33,10 +33,25 @@ const PlanetVerification = () => {
 
     if (file) {
       let imageUrl;
+      let fileType = file.type;
+
+      // MIME 타입이 비어 있을 경우 확장자명으로 판단
+      if (!fileType) {
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (extension === "heic") {
+          fileType = "image/heic";
+        } else if (extension === "heif") {
+          fileType = "image/heif";
+        } else if (extension === "hevc") {
+          fileType = "image/hevc";
+        }
+      }
+
       if (
-        file.type === "image/heic" ||
-        file.type === "image/heif" ||
-        file.type === "image/hevc"
+        fileType === "image/heic" ||
+        fileType === "image/heif" ||
+        fileType === "image/hevc"
       ) {
         try {
           const convertedBlob = await heic2any({
@@ -44,15 +59,28 @@ const PlanetVerification = () => {
             toType: "image/jpeg",
           });
 
-          imageUrl = URL.createObjectURL(convertedBlob);
-          setSelectedImageFile(convertedBlob);
+          //Blob파일이라 안됨
+          const convertedFile = new File(
+            [convertedBlob],
+            file.name.replace(/\.[^/.]+$/, ".jpg"),
+            {
+              type: "image/jpeg",
+            }
+          );
+
+          imageUrl = URL.createObjectURL(convertedFile);
+          setSelectedImageFile(convertedFile);
         } catch (error) {
           console.error("HEIC 변환 중 오류 발생:", error);
         }
       } else {
         imageUrl = URL.createObjectURL(file);
         setSelectedImageFile(file);
+
+        // 일반 이미지 파일 로그 출력
+        console.log("Uploaded file:", file);
       }
+
       setSelectedImageUrl(imageUrl);
     }
   };

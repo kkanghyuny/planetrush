@@ -106,21 +106,36 @@ const PlanetCreateForm = () => {
   //인증사진 업로드
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    let convertedFile = file; // 초기값을 원본 파일로 설정
 
     if (file) {
-      let convertedFile = file;
+      let fileType = file.type;
+
+      // MIME 타입이 비어 있을 경우 확장자명으로 판단
+      if (!fileType) {
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (extension === "heic") {
+          fileType = "image/heic";
+        } else if (extension === "heif") {
+          fileType = "image/heif";
+        } else if (extension === "hevc") {
+          fileType = "image/hevc";
+        }
+      }
 
       // 파일이 HEIC 형식일 경우 변환
       if (
-        file.type === "image/heic" ||
-        file.type === "image/heif" ||
-        file.type === "image/hevc"
+        fileType === "image/heic" ||
+        fileType === "image/heif" ||
+        fileType === "image/hevc"
       ) {
         try {
           const convertedBlob = await heic2any({
             blob: file,
             toType: "image/jpeg", // 변환할 파일 형식
           });
+
           convertedFile = new File(
             [convertedBlob],
             file.name.replace(/\.[^/.]+$/, ".jpg"),
