@@ -49,7 +49,7 @@ public class ScheduledTasks {
 	 * <p매일 자정마다 챌린지가 시작되어야 하는 행성의 상태를 READY에서 IN_PROGRESS로 변경합니다.></p>
 	 * <p매일 자정마다 챌린지가 종료되어야 하는 행성의 상태를 IN_PROFRESS에서 UNDER_REVIEW로 변경합니다.></p>
 	 */
-	@Scheduled(cron = "${scheduled-task.change-planet-status-cron}")
+	@Scheduled(cron = "0 0/10 * * * ?")
 	@Transactional
 	void changePlanetReadyToInProgress() {
 		planetRepositoryCustom.updateStatusReadyToInProgress();
@@ -61,7 +61,7 @@ public class ScheduledTasks {
 	 * <p>행성 입주자들을 대상으로 마지막 인증 기록을 조회합니다.</p>
 	 * <p>마지막 인증 기록 날짜와 현재 날짜가 4일 차이가 나면 퇴출됩니다. 또한 챌린지는 실패 상태로 기록됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.ban-if-last-verification-older-than-three-days}")
+	@Scheduled(cron = "2 0/10 * * * ?")
 	@Transactional
 	void removeIfLastVerificationOlderThanThreeDays() {
 		List<Planet> planets = planetRepositoryCustom.findAllStatusIsInProgressAndUnderReview();
@@ -94,7 +94,7 @@ public class ScheduledTasks {
 	 * <p>개인 기록을 저장하고 행성 전체 진행률을 계산합니다.</p>
 	 * <p>전체 진행률이 70퍼센트 이상이면 성공, 아니면 실패 상태로 저장됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.planet-complete-destroy}")
+	@Scheduled(cron = "5 0/10 * * * ?")
 	@Transactional
 	void completeOrDestroyPlanet() {
 		List<Planet> planets = planetRepositoryCustom.findAllStatusIsUnderReview();
@@ -133,18 +133,27 @@ public class ScheduledTasks {
 	 * <p>개인의 카테고리별 완주율 평균을 저장합니다.</p>
 	 * <p>완주 기록이 없는 카테고리일 경우 null이 저장됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.member-progress-calc}")
+	@Scheduled(cron = "7 0/10 * * * ?")
 	@Transactional
 	void progressCalculation() {
-		List<ProgressAvg> progressAvgList = progressAvgRepository.findAll();
+		// List<ProgressAvg> progressAvgList = progressAvgRepository.findAll();
 		Map<Long, Map<Category, Double>> averageScoreByMember = challengeHistoryRepositoryCustom.getAverageScoreByMember();
 		averageScoreByMember.forEach((memberId, scoreByCategoryMap) -> {
-			Double beautyAvg = scoreByCategoryMap.get(Category.BEAUTY);
-			Double exerciseAvg = scoreByCategoryMap.get(Category.EXERCISE);
-			Double lifeAvg = scoreByCategoryMap.get(Category.LIFE);
-			Double studyAvg = scoreByCategoryMap.get(Category.STUDY);
-			Double etcAvg = scoreByCategoryMap.get(Category.ETC);
-			Double totalAvg = (beautyAvg + exerciseAvg + lifeAvg + studyAvg + etcAvg) / 5;
+			double beautyAvg = scoreByCategoryMap.getOrDefault(Category.BEAUTY, -1.0);
+			double exerciseAvg = scoreByCategoryMap.getOrDefault(Category.EXERCISE, -1.0);
+			double lifeAvg = scoreByCategoryMap.getOrDefault(Category.LIFE, -1.0);
+			double studyAvg = scoreByCategoryMap.getOrDefault(Category.STUDY, -1.0);
+			double etcAvg = scoreByCategoryMap.getOrDefault(Category.ETC, -1.0);
+			int totalCnt = 0;
+			double sum = 0.0;
+			for (Category category : Category.values()) {
+				double avg = scoreByCategoryMap.getOrDefault(category, -1.0);
+				if (avg != -1.0) {
+					sum += avg;
+					totalCnt++;
+				}
+			}
+			double totalAvg = sum / totalCnt;
 			progressAvgRepositoryCustom.updateProgressAvg(memberId, ProgressAvg.builder()
 				.beautyAvg(beautyAvg)
 				.exerciseAvg(exerciseAvg)
