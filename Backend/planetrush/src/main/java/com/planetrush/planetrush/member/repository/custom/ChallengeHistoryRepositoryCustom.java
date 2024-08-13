@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
+import com.planetrush.planetrush.member.domain.ChallengeResult;
 import com.planetrush.planetrush.member.service.dto.CollectionSearchCond;
 import com.planetrush.planetrush.planet.domain.Category;
 import com.querydsl.core.Tuple;
