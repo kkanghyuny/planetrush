@@ -107,12 +107,17 @@ const MainPage = () => {
     };
   };
 
-  const handleToDetail = (planetStatus, planetId) => {
+  const handleToDetail = (planetStatus, planetId, isLastDay) => {
     return () => {
       if (planetStatus === "READY") {
         navigate(`/planet/${planetId}`, { state: { from: "/main" } });
       } else {
-        navigate("/planet-progress", { state: planetId });
+        navigate("/planet-progress", {
+          state: {
+            planetId: planetId,
+            isLastDay: isLastDay,
+          },
+        });
       }
     };
   };
@@ -155,7 +160,11 @@ const MainPage = () => {
                   planet.isLastDay ? "burning" : ""
                 }`}
                 style={planetStyle}
-                onClick={handleToDetail(planet.status, planet.planetId)}
+                onClick={handleToDetail(
+                  planet.status,
+                  planet.planetId,
+                  planet.isLastDay
+                )}
               >
                 <img
                   src={planetImgUrl}
