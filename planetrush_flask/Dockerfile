@@ -8,10 +8,11 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# requirements.txt 파일을 먼저 복사
-COPY requirements.txt .
+# PyTorch 및 관련 패키지 설치 (CPU 버전)
+RUN pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
 
-# 필요한 패키지 설치
+# 나머지 패키지 설치
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 나머지 파일을 복사
