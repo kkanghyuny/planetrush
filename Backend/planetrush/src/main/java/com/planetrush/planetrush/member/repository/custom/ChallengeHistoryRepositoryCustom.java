@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.planetrush.planetrush.member.domain.ChallengeHistory;
+import com.planetrush.planetrush.member.service.dto.CollectionSearchCond;
 import com.planetrush.planetrush.planet.domain.Category;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -46,4 +49,34 @@ public class ChallengeHistoryRepositoryCustom {
 			));
 	}
 
+	/**
+	 * 회원별 챌린지 기록을 페이징 처리하여 조회합니다.
+	 *
+	 * @param cond 검색 조건 (memberId, lastId, size)
+	 * @return 페이징 처리된 챌린지 기록 목록
+	 */
+	public List<ChallengeHistory> getMyChallengeHistory(CollectionSearchCond cond) {
+		return queryFactory
+			.selectFrom(challengeHistory)
+			.where(
+				memberIdEq(cond.getMemberId()),
+				ltLastHistoryId(cond.getLastHistoryId()),
+				resultIsSuccess()
+			)
+			.orderBy(challengeHistory.id.desc())
+			.limit(cond.getSize())
+			.fetch();
+	}
+
+	private BooleanExpression memberIdEq(Long memberId) {
+		return memberId != null ? challengeHistory.member.id.eq(memberId) : null;
+	}
+
+	private BooleanExpression ltLastHistoryId(Long lastHistoryId) {
+		return lastHistoryId != null ? challengeHistory.id.lt(lastHistoryId) : null;
+	}
+
+	private BooleanExpression resultIsSuccess() {
+		return challengeHistory.result.eq(ChallengeResult.SUCCESS);
+	}
 }
