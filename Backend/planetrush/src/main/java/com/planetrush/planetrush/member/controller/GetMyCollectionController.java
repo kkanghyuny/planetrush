@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
 import com.planetrush.planetrush.core.aop.member.MemberContext;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
+import com.planetrush.planetrush.member.controller.response.GetMyCollectionRes;
 import com.planetrush.planetrush.member.service.GetMyCollectionService;
+import com.planetrush.planetrush.member.service.dto.CollectionSearchCond;
 import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
 
 import lombok.RequiredArgsConstructor;
@@ -26,9 +29,16 @@ public class GetMyCollectionController extends MemberController {
 	 */
 	@RequireJwtToken
 	@GetMapping("/collections")
-	public ResponseEntity<BaseResponse<List<PlanetCollectionDto>>> getPlanetCollections() {
+	public ResponseEntity<BaseResponse<GetMyCollectionRes>> getPlanetCollections(
+		@RequestParam(value = "lh-id", required = false) Long lastHistoryId,
+		@RequestParam("size") int size) {
 		Long memberId = MemberContext.getMemberId();
-		List<PlanetCollectionDto> planetCollections = getPlanetCollectionService.getPlanetCollections(memberId);
-		return ResponseEntity.ok(BaseResponse.ofSuccess(planetCollections));
+		List<PlanetCollectionDto> planetCollection = getPlanetCollectionService.getPlanetCollections(
+			CollectionSearchCond.builder().memberId(memberId).lastHistoryId(lastHistoryId).size(size).build());
+		return ResponseEntity.ok(
+			BaseResponse.ofSuccess(GetMyCollectionRes.builder()
+				.planetCollection(planetCollection)
+				.hasNext(planetCollection.size() == size)
+				.build()));
 	}
 }
