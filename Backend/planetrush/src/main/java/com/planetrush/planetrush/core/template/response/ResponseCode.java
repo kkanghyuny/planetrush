@@ -18,6 +18,7 @@ public enum ResponseCode {
 
 	// 3000 - MEMBER
 	MEMBER_NOT_FOUND("3000", "회원이 존재하지 않습니다."),
+	PROGRESS_AVG_NOT_FOUND("3001", "평균 진행률 데이터가 존재하지 않습니다."),
 
 	// 4000 - S3
 	FILE_SIZE_OVERFLOW("4000", "개별 사진 사이즈는 최대 10MB, 총합 사이즈는 최대 100MB를 초과할 수 없습니다."),
@@ -36,7 +37,11 @@ public enum ResponseCode {
 	ALREADY_EXIST_RESIDENT("6001", "이미 행성에 거주 중입니다."),
 	RESIDENT_EXIT_TIMEOUT("6002", "챌린지가 시작되어 행성을 떠날 수 없습니다."),
 	REGISTER_RESIDENT_TIMEOUT("6003", "챌린지가 시작되어 참여할 수 없습니다."),
-	RESIDENT_OVERFLOW("6004", "최대 참여 행성 수를 초과했습니다.");
+	RESIDENT_OVERFLOW("6004", "최대 참여 행성 수를 초과했습니다."),
+
+	// 7000 - FLASK
+	FLASK_SERVER_NOT_CONNECTED("7001", "플라스크 연결에 실패했습니다.");
+
 
 	private String code;
 	private String message;
