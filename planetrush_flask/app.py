@@ -140,7 +140,7 @@ def add_keyword(mode_keywords, category):
         return False
 
 
-@app.route('/api/v1/admin/keyword', methods=['GET'])
+@app.route('/ai/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
     if delete_all_records(PopularKeyword):
         app.logger.info("All keyword records have been deleted successfully")
@@ -207,7 +207,7 @@ def compare_images(image1_url, image2_url, feature_extractor, threshold):
 feature_extractor = create_feature_extractor()
 
 
-@app.route('/api/v1/images', methods=['POST'])
+@app.route('/ai/v1/images', methods=['POST'])
 def image_verification():
     standard_img_url = request.json.get('standardImgUrl')
     target_img_url = request.json.get('targetImgUrl')
@@ -240,7 +240,7 @@ def calculate_z_score_percentiles(category_stats, user_avg):
     return percentiles
 
 
-@app.route('/api/v1/members/mypage/<int:member_id>', methods=['GET'])
+@app.route('/ai/v1/members/mypage/<int:member_id>', methods=['GET'])
 def get_progress_avg(member_id):
     success_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
         ChallengeHistory.member_id == member_id,
