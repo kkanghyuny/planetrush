@@ -20,6 +20,7 @@ import logging
 from dotenv import load_dotenv
 from scipy import stats
 from apscheduler.schedulers.background import BackgroundScheduler
+from waitress import serve
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
@@ -70,7 +71,6 @@ class Planet(db.Model):
 
 class PopularKeyword(db.Model):
     __tablename__ = 'popular_keyword'
-
     keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     keyword = db.Column(db.String(20), nullable=False)
     category = db.Column(db.String(20), nullable=False)
@@ -91,7 +91,6 @@ class ProgressAvg(db.Model):
 
 class ChallengeHistory(db.Model):
     __tablename__ = 'challenge_history'
-
     challenge_history_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     category = db.Column(db.Enum(CategoryEnum), nullable=False)
     challenge_content = db.Column(db.String(255), nullable=False)
@@ -166,7 +165,7 @@ def get_challenge_content():
 
 # 스케줄러
 cron = BackgroundScheduler(daemon=True, timezone='Asia/Seoul')
-cron.add_job(get_challenge_content, 'cron', day_of_week='sun', hour=0, minute=0) # 매주 일요일 밤 12시(00:00)에 실행
+cron.add_job(get_challenge_content, 'cron', day_of_week='sun', hour=0, minute=0)  # 매주 일요일 밤 12시(00:00)에 실행
 # 스케줄러 시작
 cron.start()
 
@@ -347,4 +346,7 @@ def get_progress_avg(member_id):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    if os.getenv('FLASK_ENV') == 'development':
+        app.run(host="0.0.0.0", port=5000, debug=True)
+    else:
+        serve(app, host="0.0.0.0", port=5000)
