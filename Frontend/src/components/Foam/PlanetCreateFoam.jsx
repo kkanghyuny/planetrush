@@ -143,8 +143,15 @@ const PlanetCreateForm = () => {
               type: "image/jpeg",
             }
           );
+
+          // 변환된 파일의 크기가 제한을 초과하는지 확인
+          if (convertedFile.size > 10 * 1024 * 1024) {
+            // 10MB 초과 체크
+            alert("파일이 10MB를 초과합니다. 다른 사진을 선택하세요.");
+            return;
+          }
         } catch (error) {
-          console.error("HEIC 변환 중 오류 발생:", error);
+          alert("이미지 변환 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
       }
 

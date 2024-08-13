@@ -39,9 +39,7 @@ const MyPage = () => {
       });
 
       setNickname(newNickname);
-    } catch (error) {
-      throw error;
-    }
+    } catch (error) {}
   };
 
   return (
@@ -74,6 +72,9 @@ const MyPage = () => {
         {nickname}
         <BiSolidPencil className="pencil-icon" onClick={handleOpenModal} />
       </h2>
+      <p className="notification">
+        통계와 컬렉션은 오전 12시~12시 15분에 반영됩니다.
+      </p>
 
       <div className="my-page">
         {view === "statistics" && <MyStatistics />}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -10,7 +11,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
 import useStatisticsStore from "../../store/statisticsStore"; // 추가
+import MyPageErrorModal from "../Modals/MyPageErrorModal";
+
 import "../../styles/Mypage.css";
 
 ChartJS.register(
@@ -24,6 +28,7 @@ ChartJS.register(
 
 const MyStatistics = () => {
   const setStatistics = useStatisticsStore((state) => state.setStatistics); // 상태 업데이트 함수 가져오기
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // 에러 모달 상태
 
   const [stats, setStats] = useState({
     completionCnt: null,
@@ -54,7 +59,11 @@ const MyStatistics = () => {
       const data = response.data.data;
       return data;
     } catch (error) {
-      throw error;
+      if (error.response && error.response.status === 400) {
+        setIsErrorModalOpen(true); // 에러 모달 열기
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 
@@ -188,6 +197,7 @@ const MyStatistics = () => {
 
   return (
     <>
+      <MyPageErrorModal isOpen={isErrorModalOpen} />
       <div className="doughnut-chart-container">
         <Doughnut
           className="doughnut-canvas"
