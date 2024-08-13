@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
@@ -37,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class GetPlanetServiceImpl implements GetPlanetService {
 
-	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
 	private final PlanetRepository planetRepository;
 	private final ResidentRepositoryCustom residentRepositoryCustom;
