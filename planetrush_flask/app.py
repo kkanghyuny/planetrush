@@ -19,6 +19,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import logging
 from dotenv import load_dotenv
 from scipy import stats
+from apscheduler.schedulers.background import BackgroundScheduler
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
@@ -140,29 +141,34 @@ def add_keyword(mode_keywords, category):
         return False
 
 
-@app.route('/ai/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
-    if delete_all_records(PopularKeyword):
-        app.logger.info("All keyword records have been deleted successfully")
-        for category in CategoryEnum:
-            planets = Planet.query.filter(
-                and_(
-                    Planet.category == category.name,
-                    Planet.created_at >= datetime.utcnow() - timedelta(days=7)
-                )
-            ).all()
-            if planets:
-                challenge_contents = [planet.challenge_content for planet in planets]
-                mode_keyword = get_mode_keywords(challenge_contents)
-                if add_keyword(mode_keyword, category.name):
-                    app.logger.info(f"Keywords added for category: {category.name}")
+    with app.app_context():  # current_app 대신 app을 직접 사용하여 애플리케이션 컨텍스트 설정
+        if delete_all_records(PopularKeyword):
+            for category in CategoryEnum:
+                planets = Planet.query.filter(
+                    and_(
+                        Planet.category == category.name,
+                        Planet.created_at >= datetime.utcnow() - timedelta(days=7)
+                    )
+                ).all()
+                if planets:
+                    challenge_contents = [planet.challenge_content for planet in planets]
+                    mode_keyword = get_mode_keywords(challenge_contents)
+                    if add_keyword(mode_keyword, category.name):
+                        app.logger.info(f"Keywords added for category: {category.name}")
+                    else:
+                        app.logger.error("There was an issue adding the keyword")
                 else:
-                    return jsonify({'message': 'There was an issue adding the keyword'}), 500
-            else:
-                app.logger.info(f"No planets found for category: {category.name}")
-        return jsonify({'message': 'Keywords for all categories have been created successfully'}), 201
-    else:
-        return jsonify({"error": "An error occurred while deleting records"}), 500
+                    app.logger.info(f"No planets found for category: {category.name}")
+        else:
+            app.logger.error("An error occurred while deleting records")
+
+
+# 스케줄러
+cron = BackgroundScheduler(daemon=True, timezone='Asia/Seoul')
+cron.add_job(get_challenge_content, 'cron', day_of_week='sun', hour=0, minute=0) # 매주 일요일 밤 12시(00:00)에 실행
+# 스케줄러 시작
+cron.start()
 
 
 # -- 이미지 유사도 --
