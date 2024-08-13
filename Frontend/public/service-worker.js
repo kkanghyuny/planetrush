@@ -1,12 +1,4 @@
 // src/service-worker.js
-self.addEventListener("install", (event) => {
-  // console.log("Service Worker installing.");
-});
+self.addEventListener("install", (event) => {});
 
-self.addEventListener("activate", (event) => {
-  // console.log("Service Worker activating.");
-});
-
-self.addEventListener("fetch", (event) => {
-  // console.log("Fetch intercepted for:", event.request.url);
-});
+self.addEventListener("activate", (event) => {});

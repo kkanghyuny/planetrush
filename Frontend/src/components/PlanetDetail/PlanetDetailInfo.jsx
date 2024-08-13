@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../../styles/PlanetDetailInfo.css";
 
-const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
+const PlanetDetailInfo = ({ planetId, isLastDay, planetInfo, residents }) => {
   const navigate = useNavigate();
 
   const nowDate = new Date();
@@ -79,7 +79,11 @@ const PlanetDetailInfo = ({ planetId, planetInfo, residents }) => {
     <div className="progress-container">
       <p className="planet-content">{planetInfo.content}</p>
       <div className="progress-planet-info">
-        <img src={planetInfo.imgUrl} alt="Burning Planet" className="image" />
+        <img
+          src={planetInfo.imgUrl}
+          alt="Burning Planet"
+          className={`image ${isLastDay ? "burning" : ""}`}
+        />
         <div className="text-container">
           <p className="planet-title">{planetInfo.name}</p>
           <p className="days-left">{daysLeft}일 남았습니다!</p>
