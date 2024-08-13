@@ -235,6 +235,8 @@ const PlanetCreateForm = () => {
   const submitResult = () => {
     let imgFile = planetInfo.planetImg;
 
+    console.log(planetInfo);
+
     // 만약 planetImg가 data URL 형식이라면 이를 File 객체로 변환
     if (
       typeof planetInfo.planetImg === "string" &&

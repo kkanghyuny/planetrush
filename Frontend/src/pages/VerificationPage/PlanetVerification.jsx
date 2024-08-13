@@ -40,6 +40,13 @@ const PlanetVerification = () => {
     const verifyImg = new FormData();
     verifyImg.append("verificationImg", selectedImageFile);
 
+    // 파일 이름에서 확장자 추출
+    const fileName = selectedImageFile.name;
+    const fileExtension = fileName.split(".").pop();
+
+    console.log(verifyImg);
+    console.log("인증사진 파일 확장자:", fileExtension);
+
     try {
       const response = await instance.post(
         `/verify/planets/${planetId}`,
@@ -48,10 +55,14 @@ const PlanetVerification = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          timeout: 5000,
         }
       );
 
       const data = response.data.data;
+
+      console.log(data);
+      console.log("데이터임");
 
       if (data.isVerified) {
         setIsSuccess(true);
@@ -59,7 +70,7 @@ const PlanetVerification = () => {
         setIsSuccess(false);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setIsError(true); // 에러 발생 시 상태 업데이트
     }
 
