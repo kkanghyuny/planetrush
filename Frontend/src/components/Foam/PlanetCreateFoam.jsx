@@ -103,46 +103,43 @@ const PlanetCreateForm = () => {
     }));
   };
 
-  //인증 사진 파일 업로드
+  //인증사진 업로드
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
 
     if (file) {
-      let missionUrl = URL.createObjectURL(file);
+      let convertedFile = file;
 
-      // HEIC 파일인지 확인하고 변환
-      if (file.type === "image/heic") {
+      // 파일이 HEIC 형식일 경우 변환
+      if (
+        file.type === "image/heic" ||
+        file.type === "image/heif" ||
+        file.type === "image/hevc"
+      ) {
         try {
           const convertedBlob = await heic2any({
             blob: file,
-            toType: "image/jpeg",
+            toType: "image/jpeg", // 변환할 파일 형식
           });
-
-          const convertedFile = new File(
+          convertedFile = new File(
             [convertedBlob],
             file.name.replace(/\.[^/.]+$/, ".jpg"),
             {
               type: "image/jpeg",
             }
           );
-
-          missionUrl = URL.createObjectURL(convertedFile);
-          setPlanetInfo((prevState) => ({
-            ...prevState,
-            missionFile: convertedFile,
-            missionUrl: missionUrl,
-          }));
         } catch (error) {
-          console.error("HEIC 파일 변환 중 오류 발생:", error);
-          alert("사진을 다시 골라주세요");
+          console.error("HEIC 변환 중 오류 발생:", error);
         }
-      } else {
-        setPlanetInfo((prevState) => ({
-          ...prevState,
-          missionFile: file,
-          missionUrl: missionUrl,
-        }));
       }
+
+      const missionUrl = URL.createObjectURL(convertedFile);
+
+      setPlanetInfo((prevState) => ({
+        ...prevState,
+        missionFile: convertedFile,
+        missionUrl: missionUrl,
+      }));
     }
   };
 
@@ -264,8 +261,6 @@ const PlanetCreateForm = () => {
   //최종제출
   const submitResult = () => {
     let imgFile = planetInfo.planetImg;
-
-    console.log(planetInfo);
 
     // 만약 planetImg가 data URL 형식이라면 이를 File 객체로 변환
     if (
@@ -462,7 +457,6 @@ const PlanetCreateForm = () => {
           {planetInfo.missionUrl && (
             <img
               src={planetInfo.missionUrl}
-              accept=".jpg,.jpeg,.png"
               alt="선택된 사진"
               className="image-preview"
             />

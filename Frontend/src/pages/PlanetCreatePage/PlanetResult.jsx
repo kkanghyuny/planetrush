@@ -42,24 +42,10 @@ const PlanetResult = () => {
         formdata.append("stdVerificationImg", planetInfo.missionFile);
       }
 
-      // 파일 이름에서 확장자 추출
-      const fileName = planetInfo.missionFile.name;
-      const fileExtension = fileName.split(".").pop();
-
-      console.log("인증사진 파일 확장자:", fileExtension);
-
       //커스텀행성이면 넣어줘
       if (planetInfo.planetImg) {
         formdata.append("customPlanetImg", planetInfo.planetImg);
       }
-
-      // 파일 이름에서 확장자 추출
-      const fileName2 = planetInfo.missionFile.name;
-      const fileExtension2 = fileName2.split(".").pop();
-
-      console.log("커스텀 파일 확장자:", fileExtension2);
-
-      console.log("post 보낸다");
 
       const response = await instance.post(`/planets`, formdata, {
         headers: {
@@ -67,9 +53,6 @@ const PlanetResult = () => {
         },
         timeout: 5000,
       });
-
-      console.log("답왔따");
-      console.log(response.data);
 
       if (response.status === 200) {
         setIsSuccess(true);

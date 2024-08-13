@@ -32,48 +32,34 @@ const PlanetVerification = () => {
     const file = e.target.files[0];
 
     if (file) {
-      if (file.type === "image/heic") {
+      let imageUrl;
+      if (
+        file.type === "image/heic" ||
+        file.type === "image/heif" ||
+        file.type === "image/hevc"
+      ) {
         try {
           const convertedBlob = await heic2any({
             blob: file,
             toType: "image/jpeg",
           });
 
-          const convertedFile = new File(
-            [convertedBlob],
-            file.name.replace(/\.[^/.]+$/, ".jpg"),
-            {
-              type: "image/jpeg",
-            }
-          );
-
-          setSelectedImageFile(convertedFile);
-
-          const imageUrl = URL.createObjectURL(convertedFile);
-          setSelectedImageUrl(imageUrl);
+          imageUrl = URL.createObjectURL(convertedBlob);
+          setSelectedImageFile(convertedBlob);
         } catch (error) {
-          console.error("HEIC 파일 변환 중 오류 발생:", error);
-          setIsError(true);
-          setModalIsOpen(true);
+          console.error("HEIC 변환 중 오류 발생:", error);
         }
       } else {
-        const imageUrl = URL.createObjectURL(file);
+        imageUrl = URL.createObjectURL(file);
         setSelectedImageFile(file);
-        setSelectedImageUrl(imageUrl);
       }
+      setSelectedImageUrl(imageUrl);
     }
   };
 
   const handleVerification = async () => {
     const verifyImg = new FormData();
     verifyImg.append("verificationImg", selectedImageFile);
-
-    // 파일 이름에서 확장자 추출
-    const fileName = selectedImageFile.name;
-    const fileExtension = fileName.split(".").pop();
-
-    console.log(verifyImg);
-    console.log("인증사진 파일 확장자:", fileExtension);
 
     try {
       const response = await instance.post(
@@ -88,9 +74,6 @@ const PlanetVerification = () => {
       );
 
       const data = response.data.data;
-
-      console.log(data);
-      console.log("데이터임");
 
       if (data.isVerified) {
         setIsSuccess(true);
@@ -126,7 +109,7 @@ const PlanetVerification = () => {
                 <input
                   id="upload-input"
                   type="file"
-                  accept=".jpg, .png, .jpeg, .heic"
+                  accept=".jpg, .png, .jpeg, .heic, .heif, .hevc"
                   capture="environment"
                   onChange={handleImageUpload}
                   className="upload-input"
