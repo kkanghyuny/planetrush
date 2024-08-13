@@ -76,9 +76,6 @@ const PlanetVerification = () => {
       } else {
         imageUrl = URL.createObjectURL(file);
         setSelectedImageFile(file);
-
-        // 일반 이미지 파일 로그 출력
-        console.log("Uploaded file:", file);
       }
 
       setSelectedImageUrl(imageUrl);
