@@ -3,12 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
-import Tutorial from "../../components/Modals/TutorialModal.jsx";
 
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
 import gift from "../../assets/gift.png";
-import search from "../../assets/search.png";
+import search from "../../assets/searchbutton.png";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -179,6 +178,7 @@ const MainPage = () => {
               </div>
             );
           })}
+        
         </div>
       )}
     </div>

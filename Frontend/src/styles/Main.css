@@ -11,7 +11,7 @@
 
 .search-container {
   padding: 0 10px;
-  margin-top: 15px;
+  margin: 5px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,6 +19,7 @@
 }
 
 .title-container {
+  padding-left: 10px;
   display: flex;
   align-items: center; /* 텍스트 내부에서의 수직 정렬을 맞춤 */
   white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 함 */
@@ -31,7 +32,7 @@
   width: 100%;
   max-width: 370px;
   position: relative;
-  height: 550px;
+  height: 100vh;
   overflow: hidden;
   gap: 10px;
   padding: 10px;

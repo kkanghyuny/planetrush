@@ -10,6 +10,7 @@ import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
+import Tutorial from "./components/Modals/TutorialModal";
 
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruiting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
@@ -34,6 +35,7 @@ const PrivateRoute = ({ element }) => {
 function App() {
   const location = useLocation();
   const isStartPage = location.pathname === "/";
+  const isMainPage = location.pathname === "/main";
 
   return (
     <div className="App">
@@ -83,8 +85,8 @@ function App() {
           />
         </Routes>
       </div>
-
       {!isStartPage && <Navigation />}
+      {isMainPage && <Tutorial />}
     </div>
   );
 }
