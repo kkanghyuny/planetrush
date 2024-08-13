@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
 
+import heic2any from "heic2any";
+
 import VerificateSuccessModal from "../../components/Modals/VerificateSuccessModal";
 import VerificateFailModal from "../../components/Modals/VerificateFailModal";
 import VerificateErrorModal from "../../components/Modals/VerificateErrorModal";
@@ -26,13 +28,39 @@ const PlanetVerification = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isError, setIsError] = useState(false); // 에러 상태 추가
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
 
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImageFile(file);
-      setSelectedImageUrl(imageUrl);
+      if (file.type === "image/heic") {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+          });
+
+          const convertedFile = new File(
+            [convertedBlob],
+            file.name.replace(/\.[^/.]+$/, ".jpg"),
+            {
+              type: "image/jpeg",
+            }
+          );
+
+          setSelectedImageFile(convertedFile);
+
+          const imageUrl = URL.createObjectURL(convertedFile);
+          setSelectedImageUrl(imageUrl);
+        } catch (error) {
+          console.error("HEIC 파일 변환 중 오류 발생:", error);
+          setIsError(true);
+          setModalIsOpen(true);
+        }
+      } else {
+        const imageUrl = URL.createObjectURL(file);
+        setSelectedImageFile(file);
+        setSelectedImageUrl(imageUrl);
+      }
     }
   };
 
@@ -98,7 +126,7 @@ const PlanetVerification = () => {
                 <input
                   id="upload-input"
                   type="file"
-                  accept=".jpg, .png, .jpeg"
+                  accept=".jpg, .png, .jpeg, .heic"
                   capture="environment"
                   onChange={handleImageUpload}
                   className="upload-input"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import heic2any from "heic2any";
+
 import "../../styles/PlanetCreateForm.css";
 
 const PlanetCreateForm = () => {
@@ -102,17 +104,45 @@ const PlanetCreateForm = () => {
   };
 
   //인증 사진 파일 업로드
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
 
     if (file) {
-      const missionUrl = URL.createObjectURL(file);
+      let missionUrl = URL.createObjectURL(file);
 
-      setPlanetInfo((prevState) => ({
-        ...prevState,
-        missionFile: file,
-        missionUrl: missionUrl,
-      }));
+      // HEIC 파일인지 확인하고 변환
+      if (file.type === "image/heic") {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+          });
+
+          const convertedFile = new File(
+            [convertedBlob],
+            file.name.replace(/\.[^/.]+$/, ".jpg"),
+            {
+              type: "image/jpeg",
+            }
+          );
+
+          missionUrl = URL.createObjectURL(convertedFile);
+          setPlanetInfo((prevState) => ({
+            ...prevState,
+            missionFile: convertedFile,
+            missionUrl: missionUrl,
+          }));
+        } catch (error) {
+          console.error("HEIC 파일 변환 중 오류 발생:", error);
+          alert("사진을 다시 골라주세요");
+        }
+      } else {
+        setPlanetInfo((prevState) => ({
+          ...prevState,
+          missionFile: file,
+          missionUrl: missionUrl,
+        }));
+      }
     }
   };
 
