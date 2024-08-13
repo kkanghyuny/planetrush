@@ -217,12 +217,24 @@ def image_verification():
     standard_img_url = request.json.get('standardImgUrl')
     target_img_url = request.json.get('targetImgUrl')
     if not standard_img_url or not target_img_url:
-        return jsonify({"error": "Both imgUrl1 and imgUrl2 are required"}), 400
+        response = {
+            "code": "8000",
+            "message": "두 개의 이미지 URL이 필요합니다.",
+            "data": None,
+            "isSuccess": False
+        }
+        return jsonify(response), 400
 
     result = compare_images(standard_img_url, target_img_url, feature_extractor, threshold=0.088)
 
     if result is None:
-        return jsonify({"error": "An error occurred while processing the images"}), 500
+        response = {
+            "code": "8001",
+            "message": "이미지 처리에서 오류가 발생했습니다.",
+            "data": None,
+            "isSuccess": False
+        }
+        return jsonify(response), 500
 
     return jsonify({
         "score": result[0],
@@ -258,7 +270,7 @@ def get_progress_avg(member_id):
 
     if not user_progress:
         response = {
-            "code": "3001",
+            "code": "8002",
             "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
             "data": None,
             "isSuccess": False
