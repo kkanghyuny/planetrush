@@ -24,6 +24,8 @@ const PlanetDetailInfo = ({ planetId, isLastDay, planetInfo, residents }) => {
 
   const daysLeft = calculateDaysLeft(planetInfo.endDate);
 
+  console.log(residents);
+
   //행성 유지율 판단
   const calculateRetentionRate = () => {
     const nowDate = new Date();
@@ -34,17 +36,22 @@ const PlanetDetailInfo = ({ planetId, isLastDay, planetInfo, residents }) => {
       planetInfo.startDate[2]
     );
 
-    const daysElapsed = (nowDate - startDate) / (1000 * 3600 * 24);
+    // 경과된 일수 계산
+    const daysElapsed = Math.ceil((nowDate - startDate) / (1000 * 3600 * 24));
 
-    let sum = 0;
+    // resident가 총 인증한 횟수 계산
+    const totalVerifications = residents.reduce(
+      (sum, resident) => sum + resident.verificationCnt,
+      0
+    );
 
-    for (let resident of residents) {
-      sum += resident.verificationCnt / daysElapsed;
-    }
+    // 기대되는 총 인증 횟수 = resident 수 * 경과된 일수
+    const expectedVerifications = residents.length * daysElapsed;
 
-    const average = sum / residents.length;
+    // 유지율 계산 (퍼센트로 변환)
+    const retentionRate = (totalVerifications / expectedVerifications) * 100;
 
-    return Math.floor(average * 100);
+    return Math.floor(retentionRate);
   };
 
   const retentionRate = calculateRetentionRate();
