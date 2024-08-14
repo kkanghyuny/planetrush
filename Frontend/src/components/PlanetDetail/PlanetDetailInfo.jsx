@@ -24,8 +24,6 @@ const PlanetDetailInfo = ({ planetId, isLastDay, planetInfo, residents }) => {
 
   const daysLeft = calculateDaysLeft(planetInfo.endDate);
 
-  console.log(residents);
-
   //행성 유지율 판단
   const calculateRetentionRate = () => {
     const nowDate = new Date();
