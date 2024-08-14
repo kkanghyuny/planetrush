@@ -1,22 +1,18 @@
+# 베이스 이미지로 Python 3.11 사용
 FROM python:3.11
 
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# 필요한 시스템 패키지 설치
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-# PyTorch 및 관련 패키지 설치 (CPU 버전)
+# PyTorch 및 관련 패키지 설치 (필요시 버전 고정)
 RUN pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
 
-# 나머지 패키지 설치
+# 애플리케이션의 Python 패키지 설치
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 나머지 파일을 복사
+# 애플리케이션 코드 복사
 COPY . .
 
-# 앱 실행
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:5000", "app:app"]
+# Gunicorn을 사용하여 애플리케이션 실행
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:3000", "app:app"]
