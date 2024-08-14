@@ -65,7 +65,7 @@ public class ChallengeHistoryRepositoryCustom {
 				resultIsSuccess()
 			)
 			.orderBy(challengeHistory.id.desc())
-			.limit(cond.getSize())
+			.limit(cond.getSize() + 1)
 			.fetch();
 	}
 
