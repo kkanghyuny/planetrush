@@ -69,7 +69,6 @@ function Auth() {
       // 메인페이지로 리다이렉트
       navigate("/main");
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -82,7 +81,7 @@ function Auth() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        throw error
       });
   }, []);
 

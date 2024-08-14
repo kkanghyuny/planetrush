@@ -38,13 +38,11 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
         Cookies.remove("refresh-token");
         Cookies.remove("nickname");
         navigate("/");
-        console.log("회원 탈퇴가 성공적으로 처리되었습니다.");
         closeModal();
       } else {
-        console.log("회원 탈퇴 요청이 성공하지 않았습니다.");
       }
     } catch (error) {
-      console.error("회원 탈퇴 중 오류가 발생했습니다:", error);
+      throw error
     }
   };
 

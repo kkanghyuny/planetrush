@@ -59,16 +59,12 @@ const MyStatistics = () => {
       
       if (response.status === 200) {
         const data = response.data.data;
-        console.log(response.status);
         return data;
       } else {
-        console.log(error.response.message)
-        // setIsErrorModalOpen(true);
-        // console.error("Unexpected status code:", response.status);
+        setIsErrorModalOpen(true);
       }
     } catch (error) {
-      console.log(error.response.message)
-      // setIsErrorModalOpen(true);
+      setIsErrorModalOpen(true);
     }
   };
 

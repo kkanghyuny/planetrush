@@ -53,7 +53,6 @@ const PlanetDetailRecruiting = () => {
         setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
       }
     } catch (error) {
-      console.error(error);
     }
   };
 

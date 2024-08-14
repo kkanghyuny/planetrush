@@ -4,6 +4,7 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
 
+import "../../App.css";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
 import gift from "../../assets/gift.png";
