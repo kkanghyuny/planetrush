@@ -121,6 +121,10 @@ const PlanetCreateForm = () => {
           fileType = "image/heif";
         } else if (extension === "hevc") {
           fileType = "image/hevc";
+        } else if (extension === "jpg" || extension === "jpeg") {
+          fileType = "image/jpeg";
+        } else if (extension === "png") {
+          fileType = "image/png";
         }
       }
 
@@ -153,6 +157,17 @@ const PlanetCreateForm = () => {
         } catch (error) {
           alert("이미지 변환 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
+      } else if (fileType === "image/jpeg" || fileType === "image/png") {
+        // 일반 이미지 파일일 경우
+        if (file.size > 10 * 1024 * 1024) {
+          // 10MB 초과 체크
+          alert("파일이 10MB를 초과합니다. 다른 사진을 선택하세요.");
+          return;
+        }
+      } else {
+        // 지원하지 않는 파일 형식의 경우
+        alert("지원하지 않는 파일 형식입니다. 다른 파일을 선택하세요.");
+        return;
       }
 
       const missionUrl = URL.createObjectURL(convertedFile);
