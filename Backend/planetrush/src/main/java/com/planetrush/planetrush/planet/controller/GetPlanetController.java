@@ -49,22 +49,17 @@ public class GetPlanetController extends PlanetController {
 			.size(size)
 			.lastPlanetId(lastPlanetId)
 			.build());
+		boolean hasNext = false;
+		if (planets.size() > size) {
+			planets.remove(size);
+			hasNext = true;
+		}
 		return ResponseEntity.ok(
 			BaseResponse.ofSuccess(
 				SearchPlanetRes.builder()
 					.planets(planets)
-					.hasNext(isNotLastPage(size, planets))
+					.hasNext(hasNext)
 					.build()));
-	}
-
-	/**
-	 * 무한 스크롤을 위해 마지막 페이지인지 확인합니다.
-	 * @param size 크기
-	 * @param planets 행성 목록
-	 * @return 마지막 페이지인지 여부
-	 */
-	private boolean isNotLastPage(int size, List<PlanetDetailDto> planets) {
-		return planets.size() == size;
 	}
 
 	/**
