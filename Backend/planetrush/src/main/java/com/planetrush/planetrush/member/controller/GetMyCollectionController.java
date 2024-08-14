@@ -35,10 +35,17 @@ public class GetMyCollectionController extends MemberController {
 		Long memberId = MemberContext.getMemberId();
 		List<PlanetCollectionDto> planetCollection = getPlanetCollectionService.getPlanetCollections(
 			CollectionSearchCond.builder().memberId(memberId).lastHistoryId(lastHistoryId).size(size).build());
+
+		boolean hasNext = false;
+		if(planetCollection.size() > size) {
+			planetCollection.remove(size);
+			hasNext = true;
+		}
+
 		return ResponseEntity.ok(
 			BaseResponse.ofSuccess(GetMyCollectionRes.builder()
 				.planetCollection(planetCollection)
-				.hasNext(planetCollection.size() == size)
+				.hasNext(hasNext)
 				.build()));
 	}
 }
