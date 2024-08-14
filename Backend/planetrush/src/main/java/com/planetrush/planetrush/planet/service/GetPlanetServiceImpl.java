@@ -163,7 +163,6 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 					.memberId(member.getId())
 					.nickname(member.getNickname())
 					.querriedMember(qurriedMember.equals(member))
-					// TODO: verification service로 위임할 것(의존 순환 생기지 않도록 주의할 것)
 					.verificationCnt(verificationInfo.size())
 					.verificationContinuityPoint(calcContinuityPoint(verificationInfo))
 					.build();
