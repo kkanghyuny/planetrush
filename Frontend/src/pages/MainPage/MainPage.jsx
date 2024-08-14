@@ -9,6 +9,7 @@ import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
 import gift from "../../assets/gift.png";
 import search from "../../assets/searchbutton.png";
+import UseChallengeCountStore from "../../store/challengeCountStore";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -37,6 +38,7 @@ const MainPage = () => {
 
   const [planets, setPlanets] = useState(null);
   const [shuffledPositions, setShuffledPositions] = useState([]);
+  const { resetChallengeCount } = UseChallengeCountStore();
   const nickname = Cookies.get("nickname");
 
   useEffect(() => {
@@ -49,6 +51,8 @@ const MainPage = () => {
         const response = await instance.get(`/planets/main/list`);
         if (response.data.isSuccess) {
           const data = response.data.data;
+          const count = data.length;
+          resetChallengeCount(count);
           setPlanets(data);
         } else {
           setPlanets([]);
@@ -179,7 +183,6 @@ const MainPage = () => {
               </div>
             );
           })}
-        
         </div>
       )}
     </div>
