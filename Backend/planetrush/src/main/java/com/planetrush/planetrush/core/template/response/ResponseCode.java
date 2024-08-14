@@ -43,6 +43,9 @@ public enum ResponseCode {
 	FLASK_SERVER_NOT_CONNECTED("7001", "플라스크 서버 연결에 실패했습니다."),
 	IMAGE_SIMILARITY_CHECK_ERROR("7002", "이미지 유사도 측정 과정에서 에러가 발생했습니다."),
 	PROGRESS_AVG_NOT_FOUND("7003", "평균 진행률 데이터가 존재하지 않습니다."),
+
+	// 8000 - VERIFICATION
+	ALREADY_VERIFIED("8000", "오늘 이미 인증을 완료한 사용자입니다."),
 	;
 
 	private String code;

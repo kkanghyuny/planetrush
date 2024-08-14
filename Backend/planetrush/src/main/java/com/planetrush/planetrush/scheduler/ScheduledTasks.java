@@ -23,8 +23,8 @@ import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
 import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
-import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
+import com.planetrush.planetrush.verification.repository.custom.VerificationRecordRepositoryCustom;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

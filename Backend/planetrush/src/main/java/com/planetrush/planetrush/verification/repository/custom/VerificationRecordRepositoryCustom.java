@@ -1,4 +1,4 @@
-package com.planetrush.planetrush.planet.repository.custom;
+package com.planetrush.planetrush.verification.repository.custom;
 
 import static com.planetrush.planetrush.verification.domain.QVerificationRecord.*;
 
