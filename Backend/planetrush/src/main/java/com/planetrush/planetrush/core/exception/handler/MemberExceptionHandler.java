@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.planetrush.planetrush.core.mattermost.NotificationManager;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.core.template.response.ResponseCode;
-import com.planetrush.planetrush.infra.flask.exception.FlaskServerNotConnectedException;
-import com.planetrush.planetrush.infra.flask.exception.ProgressAvgNotFoundException;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,22 +29,6 @@ public class MemberExceptionHandler {
 		log.info(e.getMessage());
 		nm.sendNotification(e, req.getRequestURI(), getParams(req));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.MEMBER_NOT_FOUND));
-	}
-
-	@ExceptionHandler(ProgressAvgNotFoundException.class)
-	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(ProgressAvgNotFoundException e,
-		HttpServletRequest req) {
-		log.info(e.getMessage());
-		nm.sendNotification(e, req.getRequestURI(), getParams(req));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.PROGRESS_AVG_NOT_FOUND));
-	}
-
-	@ExceptionHandler(FlaskServerNotConnectedException.class)
-	public ResponseEntity<BaseResponse<Object>> handleMemberNotFoundException(FlaskServerNotConnectedException e,
-		HttpServletRequest req) {
-		log.info(e.getMessage());
-		nm.sendNotification(e, req.getRequestURI(), getParams(req));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.ofFail(ResponseCode.FLASK_SERVER_NOT_CONNECTED));
 	}
 
 	private String getParams(HttpServletRequest req) {
