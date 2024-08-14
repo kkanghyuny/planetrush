@@ -14,5 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 애플리케이션 코드 복사
 COPY . .
 
+# Gunicorn 설치
+RUN pip install gunicorn
+
 # Gunicorn을 사용하여 애플리케이션 실행
 CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:3000", "app:app"]
