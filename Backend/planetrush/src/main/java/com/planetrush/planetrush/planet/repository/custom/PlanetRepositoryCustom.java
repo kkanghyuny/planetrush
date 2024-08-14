@@ -41,7 +41,7 @@ public class PlanetRepositoryCustom {
 				ltPlanetId(cond.getLastPlanetId()),
 				isInCategory(cond.getCategory()))
 			.orderBy(planet.id.desc())
-			.limit(cond.getSize())
+			.limit(cond.getSize() + 1)
 			.fetch();
 	}
 
