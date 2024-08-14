@@ -75,8 +75,7 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
           지금까지 총 <strong>{challengeCnt}</strong>개의 챌린지에 도전했고, 그
           중 <strong>{completionCnt}</strong>개를 성공하셨습니다.
         </p>
-        <button onClick={handleOpenConfirm}>예</button>
-        <button onClick={closeModal}>아니오</button>
+        <button onClick={handleOpenConfirm}>탈퇴한다</button>
       </div>
 
       {isConfirmOpen && (
