@@ -56,14 +56,19 @@ const MyStatistics = () => {
   const handleShowStats = async () => {
     try {
       const response = await instance.get("/members/mypage");
-      const data = response.data.data;
-      return data;
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setIsErrorModalOpen(true); // 에러 모달 열기
+      
+      if (response.status === 200) {
+        const data = response.data.data;
+        console.log(response.status);
+        return data;
       } else {
-        console.error("An unexpected error occurred:", error);
+        console.log(error.response.message)
+        // setIsErrorModalOpen(true);
+        // console.error("Unexpected status code:", response.status);
       }
+    } catch (error) {
+      console.log(error.response.message)
+      // setIsErrorModalOpen(true);
     }
   };
 
@@ -225,7 +230,9 @@ const MyStatistics = () => {
           {categories.map((category, index) => (
             <div key={index} className="bar-chart-container">
               <h3 className="category-title">{category.title}</h3>
-              {category.percentage !== 0 ? (
+              {category.myAvg === -1 || category.percentage === -1  || category.avg === -1 ? (
+                <p>참여한 행성이 없습니다.</p>
+              ) : (
                 <>
                   <Bar
                     data={createBarData(category.myAvg, category.avg)}
@@ -237,8 +244,6 @@ const MyStatistics = () => {
                     입니다.
                   </p>
                 </>
-              ) : (
-                <p>참여한 행성이 없습니다.</p>
               )}
             </div>
           ))}
@@ -249,3 +254,4 @@ const MyStatistics = () => {
 };
 
 export default MyStatistics;
+
