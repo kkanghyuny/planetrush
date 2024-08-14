@@ -60,7 +60,6 @@ const PlanetResult = () => {
         setIsSuccess(false);
       }
     } catch (error) {
-      console.error("There was an error!", error);
     }
   };
 

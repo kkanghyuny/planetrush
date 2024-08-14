@@ -65,7 +65,7 @@ const PlanetChat = ({ planetId, residents }) => {
           scrollToBottom();
         },
         (error) => {
-          console.error("STOMP connection error:", error);
+          throw error
         }
       );
     });

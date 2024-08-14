@@ -96,7 +96,6 @@ const SearchPlanet = () => {
 
       setHasNext(data.hasNext);
     } catch (error) {
-      console.error("Failed to fetch challenges", error);
     }
   };
 

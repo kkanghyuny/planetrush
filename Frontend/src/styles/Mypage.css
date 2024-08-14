@@ -1,3 +1,37 @@
+/* MyPage.jsx */
+
+.top-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.my-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.info-button {
+  background-image: url("/src/assets/myinfobutton.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 45%;
+  height: 50px;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  margin-left: 26%;
+}
+
 .doughnut-chart-container {
   position: relative;
   height: 200px;
@@ -41,14 +75,6 @@
   height: auto;
 }
 
-.top-container {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
 .nickname {
   display: flex; /* Flexbox 사용 */
   align-items: center; /* 수직 중앙 정렬 */
@@ -62,30 +88,6 @@
   cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
 }
 
-.my-info {
-  padding: 20px;
-  text-align: center;
-}
-
-.info-button {
-  background-image: url("/src/assets/myinfobutton.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 45%;
-  height: 50px;
-  padding: 15px;
-  font-size: 14px;
-  font-weight: 900;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: none;
-  margin-left: 26%;
-}
-
 .my-page {
   padding: 10px;
 }
@@ -94,12 +96,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.text-color {
-  font-size: 20px;
-  font-weight: bold;
-  color: #31fff3;
 }
 
 .stats-container {

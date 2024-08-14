@@ -71,7 +71,6 @@ const PlanetVerification = () => {
           imageUrl = URL.createObjectURL(convertedFile);
           setSelectedImageFile(convertedFile);
         } catch (error) {
-          console.error("HEIC 변환 중 오류 발생:", error);
         }
       } else {
         imageUrl = URL.createObjectURL(file);
@@ -106,7 +105,6 @@ const PlanetVerification = () => {
         setIsSuccess(false);
       }
     } catch (error) {
-      console.log(error);
       setIsError(true); // 에러 발생 시 상태 업데이트
     }
 

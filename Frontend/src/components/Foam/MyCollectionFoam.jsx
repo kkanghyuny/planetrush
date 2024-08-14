@@ -31,7 +31,7 @@ const MyCollection = () => {
       }
       setHasNext(data.hasNext);
     } catch (error) {
-      console.error("Failed to fetch collections", error);
+      throw error
     }
   };
 
