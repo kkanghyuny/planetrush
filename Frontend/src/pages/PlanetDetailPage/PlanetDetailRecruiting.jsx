@@ -28,6 +28,7 @@ const PlanetDetailRecruiting = () => {
   const [currentParticipants, setCurrentParticipants] = useState(null);
   const [planet, setPlanet] = useState(null);
   const [noMorePlanetModalOpen, setNoMorePlanetModalOpen] = useState(false);
+  const [isOpenVerificateImg, setIsOpenVerificateImg] = useState(false);
 
   // 챌린지 카운트 관련 함수 불러오기
   const { incrementChallengeCount, decrementChallengeCount } =
@@ -55,8 +56,7 @@ const PlanetDetailRecruiting = () => {
         setIsJoined(data.isJoined); // isJoined 설정
         setCurrentParticipants(data.currentParticipants); // currentParticipants 설정
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const PlanetDetailRecruiting = () => {
         setIsJoinFailModalOpen(true);
       }
     } catch (error) {
-      if ((error.response.data.code === "6004")) {
+      if (error.response.data.code === "6004") {
         setNoMorePlanetModalOpen(true);
       } else {
         setIsJoinFailModalOpen(true);
@@ -141,6 +141,11 @@ const PlanetDetailRecruiting = () => {
     navigate(`/planet/${newPlanetId}`, { state: { displayedChallenges } });
   };
 
+  //인증사진보기
+  const handleVerificateImg = () => {
+    setIsOpenVerificateImg(!isOpenVerificateImg);
+  };
+
   return (
     <>
       <div onClick={handleClick} className="back-button">
@@ -199,6 +204,23 @@ const PlanetDetailRecruiting = () => {
           </button>
         )}
       </div>
+      <p className="open-verificate-img" onClick={handleVerificateImg}>
+        대표 사진 보기
+      </p>
+      {isOpenVerificateImg ? (
+        <div className="recruit-verificate-info">
+          <p className="recruit-verificate-content">
+            미션 : <br /> {planet.verificationCond}
+          </p>
+          <img
+            src={planet.standardVerificationImg}
+            alt="인증 미션 사진"
+            className="recruit-verificate-img"
+          />
+        </div>
+      ) : (
+        <></>
+      )}
       {isJoinSuccessModalOpen && (
         <JoinSuccessModal
           setIsJoinSuccessModalOpen={setIsJoinSuccessModalOpen}
@@ -218,7 +240,7 @@ const PlanetDetailRecruiting = () => {
         />
       )}
       {noMorePlanetModalOpen && (
-        <NoMorePlanetModal 
+        <NoMorePlanetModal
           setNoMorePlanetModalOpen={setNoMorePlanetModalOpen}
         />
       )}
