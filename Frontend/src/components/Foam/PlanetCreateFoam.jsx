@@ -181,7 +181,7 @@ const PlanetCreateForm = () => {
     if (start < today || start > weekFromToday) {
       setErrors((prevState) => ({
         ...prevState,
-        date: "시작일은 오늘부터 2주일 이내여야 합니다.",
+        date: "시작일은 내일부터 2주일 이내여야 합니다.",
       }));
 
       setPlanetInfo((prevState) => ({
@@ -228,16 +228,51 @@ const PlanetCreateForm = () => {
 
   const handleDateChange = (e) => {
     const { name, value } = e.target;
+    let adjustedValue = value;
+
+    // startDate가 today와 같으면 내일 날짜로 변경
+    if (name === "startDate") {
+      const today = getTodayDate();
+      const tomorrow = new Date();
+
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const formattedTomorrow = `${tomorrow.getFullYear()}-${String(
+        tomorrow.getMonth() + 1
+      ).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
+
+      if (value === today) {
+        adjustedValue = formattedTomorrow;
+
+        setErrors((prevState) => ({
+          ...prevState,
+          date: "시작일은 내일부터 가능합니다.",
+        }));
+
+        // 여기서 return하여 이후의 validateDate 호출을 막음
+        setPlanetInfo((prevState) => ({
+          ...prevState,
+          [name]: adjustedValue,
+        }));
+
+        return; // validateDate 함수를 호출하지 않음
+      } else {
+        setErrors((prevState) => ({
+          ...prevState,
+          date: "",
+        }));
+      }
+    }
 
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: adjustedValue,
     }));
-    name;
+
     if (name === "startDate" || name === "endDate") {
       validateDate(
-        name === "startDate" ? value : planetInfo.startDate,
-        name === "endDate" ? value : planetInfo.endDate
+        name === "startDate" ? adjustedValue : planetInfo.startDate,
+        name === "endDate" ? adjustedValue : planetInfo.endDate
       );
     }
   };
