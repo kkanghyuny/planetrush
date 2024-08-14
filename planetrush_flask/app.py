@@ -20,7 +20,6 @@ import logging
 from dotenv import load_dotenv
 from scipy import stats
 from apscheduler.schedulers.background import BackgroundScheduler
-from waitress import serve
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
@@ -366,5 +365,3 @@ def get_progress_avg(member_id):
 if __name__ == '__main__':
     if os.getenv('FLASK_ENV') == 'development':
         app.run(host="0.0.0.0", port=3000, debug=True)
-    else:
-        serve(app, host="0.0.0.0", port=3000)
