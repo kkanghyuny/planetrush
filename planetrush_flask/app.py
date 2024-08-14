@@ -165,7 +165,6 @@ def get_challenge_content():
 # 스케줄러
 cron = BackgroundScheduler(daemon=True, timezone='Asia/Seoul')
 cron.add_job(get_challenge_content, 'cron', day_of_week='sun', hour=0, minute=0)  # 매주 일요일 밤 12시(00:00)에 실행
-# 스케줄러 시작
 cron.start()
 
 
@@ -239,7 +238,7 @@ def image_verification():
         "code": "2000",
         "message": "성공",
         "data": {
-            "score": result[0],
+            "similarity_score": result[0],
             "verified": result[1]
         },
         "isSuccess": True
@@ -298,7 +297,7 @@ def get_progress_avg(member_id):
         func.stddev(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_stddev')
     ).one()
 
-    # 결과를 딕셔너리 형태로 정리
+    # 카테고리별 평균, 표준편차
     category_stats = {
         'beauty': {'avg': stats_query.beauty_avg if stats_query.beauty_avg is not None else -1,
                    'stddev': stats_query.beauty_stddev if stats_query.beauty_stddev is not None else -1},
@@ -314,7 +313,7 @@ def get_progress_avg(member_id):
                   'stddev': stats_query.total_stddev if stats_query.total_stddev is not None else -1},
     }
 
-    # 특정 사용자의 점수 딕셔너리
+    # 특정 사용자의 카테고리별 평균
     user_avg = {
         'beauty': user_progress.beauty_avg,
         'etc': user_progress.etc_avg,
@@ -327,7 +326,6 @@ def get_progress_avg(member_id):
     # 사용자의 백분위수 계산
     user_percentiles = calculate_z_score_percentiles(category_stats, user_avg)
 
-    # 응답 데이터
     response_data = {
         "completionCnt": success_challenge_cnt,
         "challengeCnt": all_challenge_cnt,
