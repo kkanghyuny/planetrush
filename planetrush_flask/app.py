@@ -236,10 +236,16 @@ def image_verification():
         }
         return jsonify(response), 500
 
-    return jsonify({
-        "score": result[0],
-        "verified": result[1]
-    })
+    response = {
+        "code": "2000",
+        "message": "성공",
+        "data": {
+            "score": result[0],
+            "verified": result[1]
+        },
+        "isSuccess": True
+    }
+    return jsonify(response), 200
 
 
 # -- 마이페이지 --
@@ -359,6 +365,6 @@ def get_progress_avg(member_id):
 
 if __name__ == '__main__':
     if os.getenv('FLASK_ENV') == 'development':
-        app.run(host="0.0.0.0", port=5000, debug=True)
+        app.run(host="0.0.0.0", port=3000, debug=True)
     else:
-        serve(app, host="0.0.0.0", port=5000)
+        serve(app, host="0.0.0.0", port=3000)
