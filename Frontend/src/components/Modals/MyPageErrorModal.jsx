@@ -1,7 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-const MyPageErrorModal = () => {
+const MyPageErrorModal = ({ isOpen }) => {
   const navigate = useNavigate();
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="modal">
