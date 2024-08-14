@@ -95,6 +95,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.planetId(planet.getId())
 			.name(planet.getName())
 			.planetImg(planet.getPlanetImg())
+			.standardVerificationImg(planet.getStandardVerificationImg())
+			.verificationCond(planet.getVerificationCond())
 			.content(planet.getContent())
 			.startDate(planet.getStartDate())
 			.endDate(planet.getEndDate())
