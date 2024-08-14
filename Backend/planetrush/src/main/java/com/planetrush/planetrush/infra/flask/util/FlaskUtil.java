@@ -23,7 +23,9 @@ import com.planetrush.planetrush.member.service.dto.GetMyProgressAvgDto;
 import com.planetrush.planetrush.verification.service.dto.FlaskResponseDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class FlaskUtil {
@@ -84,6 +86,7 @@ public class FlaskUtil {
 			}
 			return res.getData();
 		} catch (URISyntaxException | RestClientException e) {
+			log.info("예외={}", e);
 			throw new FlaskServerNotConnectedException("Flask server not connected");
 		}
 	}
