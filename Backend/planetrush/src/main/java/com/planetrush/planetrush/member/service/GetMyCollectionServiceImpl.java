@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
-import com.planetrush.planetrush.member.domain.ChallengeResult;
-import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
 import com.planetrush.planetrush.member.repository.custom.ChallengeHistoryRepositoryCustom;
 import com.planetrush.planetrush.member.service.dto.CollectionSearchCond;
 import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
@@ -30,7 +28,7 @@ public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 		List<ChallengeHistory> historyList = challengeHistoryRepositoryCustom.getMyChallengeHistory(searchCond);
 		return historyList.stream()
 			.map(history -> PlanetCollectionDto.builder()
-				.planetId(history.getId())
+				.historyId(history.getId())
 				.name(history.getPlanetName())
 				.category(history.getCategory())
 				.content(history.getChallengeContent())
