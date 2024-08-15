@@ -121,7 +121,7 @@ def delete_all_records(model):
 
 
 def remove_stop_words(words):
-    stop_words = set("매일 하루 일 분 시간 초 번 하나 운동 챌린지".split())
+    stop_words = set("매일 하루 일 시간 시 분 초 번 하나 운동 챌린지 층".split())
     return [word for word in words if word not in stop_words]
 
 
