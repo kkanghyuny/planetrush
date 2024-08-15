@@ -28,6 +28,14 @@ app.logger.setLevel(logging.INFO)
 # 데이터베이스 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 10,          # 기본 커넥션 풀 크기
+    'max_overflow': 20,       # 풀 초과 시 생성할 수 있는 최대 커넥션 수
+    'pool_timeout': 30,       # 연결을 기다리는 최대 시간(초)
+    'pool_recycle': 7200,      # 커넥션이 재활용되기까지의 시간(초)
+    'pool_pre_ping': True  # 각 연결 사용 전에 사전 확인하여 재연결 시도
+}
+
 db = SQLAlchemy(app)
 
 
@@ -263,101 +271,185 @@ def calculate_z_score_percentiles(category_stats, user_avg):
 
 @app.route('/ai/v1/members/mypage/<int:member_id>', methods=['GET'])
 def get_progress_avg(member_id):
-    success_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
-        ChallengeHistory.member_id == member_id,
-        ChallengeHistory.challenge_result == ChallengeResultEnum.SUCCESS
-        ).scalar()
-    all_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
-        ChallengeHistory.member_id == member_id,
-        ).scalar()
-    user_progress = ProgressAvg.query.filter_by(member_id=member_id).first()
+    try:
+        try:
+            success_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+                ChallengeHistory.member_id == member_id,
+                ChallengeHistory.challenge_result == ChallengeResultEnum.SUCCESS
+            ).scalar()
+        except Exception as e:
+            app.logger.error(f"Error calculating success_challenge_cnt: {str(e)}")
+            return jsonify({
+                "code": "8003",
+                "message": "챌린지 성공 횟수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
 
-    if not user_progress:
+        try:
+            all_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+                ChallengeHistory.member_id == member_id,
+            ).scalar()
+        except Exception as e:
+            app.logger.error(f"Error calculating all_challenge_cnt: {str(e)}")
+            return jsonify({
+                "code": "8004",
+                "message": "전체 챌린지 횟수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            user_progress = ProgressAvg.query.filter_by(member_id=member_id).first()
+            if not user_progress:
+                response = {
+                    "code": "8002",
+                    "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
+                    "data": None,
+                    "isSuccess": False
+                }
+                return jsonify(response), 404
+        except Exception as e:
+            app.logger.error(f"Error fetching user_progress: {str(e)}")
+            return jsonify({
+                "code": "8005",
+                "message": "사용자 진행 데이터를 가져오는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            stats_query = db.session.query(
+                func.avg(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_avg'),
+                func.stddev(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label(
+                    'beauty_stddev'),
+                func.avg(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_avg'),
+                func.stddev(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_stddev'),
+                func.avg(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label(
+                    'exercise_avg'),
+                func.stddev(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label(
+                    'exercise_stddev'),
+                func.avg(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_avg'),
+                func.stddev(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_stddev'),
+                func.avg(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_avg'),
+                func.stddev(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label(
+                    'study_stddev'),
+                func.avg(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_avg'),
+                func.stddev(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label(
+                    'total_stddev')
+            ).one()
+        except Exception as e:
+            app.logger.error(f"Error fetching stats_query: {str(e)}")
+            return jsonify({
+                "code": "8006",
+                "message": "통계 데이터를 가져오는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            category_stats = {
+                'beauty': {'avg': stats_query.beauty_avg if stats_query.beauty_avg is not None else -1,
+                           'stddev': stats_query.beauty_stddev if stats_query.beauty_stddev is not None else -1},
+                'etc': {'avg': stats_query.etc_avg if stats_query.etc_avg is not None else -1,
+                        'stddev': stats_query.etc_stddev if stats_query.etc_stddev is not None else -1},
+                'exercise': {'avg': stats_query.exercise_avg if stats_query.exercise_avg is not None else -1,
+                             'stddev': stats_query.exercise_stddev if stats_query.exercise_stddev is not None else -1},
+                'life': {'avg': stats_query.life_avg if stats_query.life_avg is not None else -1,
+                         'stddev': stats_query.life_stddev if stats_query.life_stddev is not None else -1},
+                'study': {'avg': stats_query.study_avg if stats_query.study_avg is not None else -1,
+                          'stddev': stats_query.study_stddev if stats_query.study_stddev is not None else -1},
+                'total': {'avg': stats_query.total_avg if stats_query.total_avg is not None else -1,
+                          'stddev': stats_query.total_stddev if stats_query.total_stddev is not None else -1},
+            }
+        except Exception as e:
+            app.logger.error(f"Error preparing category_stats: {str(e)}")
+            return jsonify({
+                "code": "8007",
+                "message": "카테고리 통계를 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            user_avg = {
+                'beauty': user_progress.beauty_avg,
+                'etc': user_progress.etc_avg,
+                'exercise': user_progress.exercise_avg,
+                'life': user_progress.life_avg,
+                'study': user_progress.study_avg,
+                'total': user_progress.total_avg
+            }
+        except Exception as e:
+            app.logger.error(f"Error preparing user_avg: {str(e)}")
+            return jsonify({
+                "code": "8008",
+                "message": "사용자 평균을 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            user_percentiles = calculate_z_score_percentiles(category_stats, user_avg)
+        except Exception as e:
+            app.logger.error(f"Error calculating user_percentiles: {str(e)}")
+            return jsonify({
+                "code": "8009",
+                "message": "사용자 백분위수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            response_data = {
+                "completionCnt": success_challenge_cnt,
+                "challengeCnt": all_challenge_cnt,
+                "myTotalAvg": user_avg['total'],
+                "myTotalPer": user_percentiles['total'],
+                "totalAvg": category_stats['total']['avg'],
+                "myExerciseAvg": user_avg['exercise'],
+                "myExercisePer": user_percentiles['exercise'],
+                "exerciseAvg": category_stats['exercise']['avg'],
+                "myBeautyAvg": user_avg['beauty'],
+                "myBeautyPer": user_percentiles['beauty'],
+                "beautyAvg": category_stats['beauty']['avg'],
+                "myLifeAvg": user_avg['life'],
+                "myLifePer": user_percentiles['life'],
+                "lifeAvg": category_stats['life']['avg'],
+                "myStudyAvg": user_avg['study'],
+                "myStudyPer": user_percentiles['study'],
+                "studyAvg": category_stats['study']['avg'],
+                "myEtcAvg": user_avg['etc'],
+                "myEtcPer": user_percentiles['etc'],
+                "etcAvg": category_stats['etc']['avg']
+            }
+
+            rounded_response_data = {key: round(value, 2) for key, value in response_data.items()}
+        except Exception as e:
+            app.logger.error(f"Error preparing response_data: {str(e)}")
+            return jsonify({
+                "code": "8010",
+                "message": "응답 데이터를 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
         response = {
-            "code": "8002",
-            "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
+            "code": "2000",
+            "message": "성공",
+            "data": rounded_response_data,
+            "isSuccess": True
+        }
+        return jsonify(response)
+
+    except Exception as e:
+        app.logger.error(f"Unhandled error in get_progress_avg: {str(e)}")
+        return jsonify({
+            "code": "8011",
+            "message": "알 수 없는 오류가 발생했습니다.",
             "data": None,
             "isSuccess": False
-        }
-        return jsonify(response), 404
-
-    # 각 카테고리별 평균과 표준편차를 구하는 쿼리에서 -1을 제외하고 계산
-    stats_query = db.session.query(
-        func.avg(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_avg'),
-        func.stddev(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_stddev'),
-        func.avg(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_avg'),
-        func.stddev(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_stddev'),
-        func.avg(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label('exercise_avg'),
-        func.stddev(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label('exercise_stddev'),
-        func.avg(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_avg'),
-        func.stddev(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_stddev'),
-        func.avg(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_avg'),
-        func.stddev(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_stddev'),
-        func.avg(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_avg'),
-        func.stddev(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_stddev')
-    ).one()
-
-    # 카테고리별 평균, 표준편차
-    category_stats = {
-        'beauty': {'avg': stats_query.beauty_avg if stats_query.beauty_avg is not None else -1,
-                   'stddev': stats_query.beauty_stddev if stats_query.beauty_stddev is not None else -1},
-        'etc': {'avg': stats_query.etc_avg if stats_query.etc_avg is not None else -1,
-                'stddev': stats_query.etc_stddev if stats_query.etc_stddev is not None else -1},
-        'exercise': {'avg': stats_query.exercise_avg if stats_query.exercise_avg is not None else -1,
-                     'stddev': stats_query.exercise_stddev if stats_query.exercise_stddev is not None else -1},
-        'life': {'avg': stats_query.life_avg if stats_query.life_avg is not None else -1,
-                 'stddev': stats_query.life_stddev if stats_query.life_stddev is not None else -1},
-        'study': {'avg': stats_query.study_avg if stats_query.study_avg is not None else -1,
-                  'stddev': stats_query.study_stddev if stats_query.study_stddev is not None else -1},
-        'total': {'avg': stats_query.total_avg if stats_query.total_avg is not None else -1,
-                  'stddev': stats_query.total_stddev if stats_query.total_stddev is not None else -1},
-    }
-
-    # 특정 사용자의 카테고리별 평균
-    user_avg = {
-        'beauty': user_progress.beauty_avg,
-        'etc': user_progress.etc_avg,
-        'exercise': user_progress.exercise_avg,
-        'life': user_progress.life_avg,
-        'study': user_progress.study_avg,
-        'total': user_progress.total_avg
-    }
-
-    # 사용자의 백분위수 계산
-    user_percentiles = calculate_z_score_percentiles(category_stats, user_avg)
-
-    response_data = {
-        "completionCnt": success_challenge_cnt,
-        "challengeCnt": all_challenge_cnt,
-        "myTotalAvg": user_avg['total'],
-        "myTotalPer": user_percentiles['total'],
-        "totalAvg": category_stats['total']['avg'],
-        "myExerciseAvg": user_avg['exercise'],
-        "myExercisePer": user_percentiles['exercise'],
-        "exerciseAvg": category_stats['exercise']['avg'],
-        "myBeautyAvg": user_avg['beauty'],
-        "myBeautyPer": user_percentiles['beauty'],
-        "beautyAvg": category_stats['beauty']['avg'],
-        "myLifeAvg": user_avg['life'],
-        "myLifePer": user_percentiles['life'],
-        "lifeAvg": category_stats['life']['avg'],
-        "myStudyAvg": user_avg['study'],
-        "myStudyPer": user_percentiles['study'],
-        "studyAvg": category_stats['study']['avg'],
-        "myEtcAvg": user_avg['etc'],
-        "myEtcPer": user_percentiles['etc'],
-        "etcAvg": category_stats['etc']['avg']
-    }
-
-    rounded_response_data = {key: round(value, 2) for key, value in response_data.items()}
-
-    response = {
-        "code": "2000",
-        "message": "성공",
-        "data": rounded_response_data,
-        "isSuccess": True
-    }
-    return jsonify(response)
+        }), 500
 
 
 if __name__ == '__main__':
