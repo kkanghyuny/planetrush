@@ -56,7 +56,7 @@ const MyStatistics = () => {
   const handleShowStats = async () => {
     try {
       const response = await instance.get("/members/mypage");
-      
+
       if (response.status === 200) {
         const data = response.data.data;
         return data;
@@ -127,8 +127,8 @@ const MyStatistics = () => {
   const createBarOptions = (myAvg, avg) => {
     const minValue = Math.min(myAvg, avg);
     const maxValue = Math.max(myAvg, avg);
-    const min = Math.max(0, minValue - 10);
-    const max = Math.min(100, maxValue + 10);
+    const min = Math.max(0, minValue - 5);
+    const max = Math.min(100, maxValue + 5);
 
     return {
       responsive: true,
@@ -226,7 +226,9 @@ const MyStatistics = () => {
           {categories.map((category, index) => (
             <div key={index} className="bar-chart-container">
               <h3 className="category-title">{category.title}</h3>
-              {category.myAvg === -1 || category.percentage === -1  || category.avg === -1 ? (
+              {category.myAvg === -1 ||
+              category.percentage === -1 ||
+              category.avg === -1 ? (
                 <p>참여한 행성이 없습니다.</p>
               ) : (
                 <>
@@ -250,4 +252,3 @@ const MyStatistics = () => {
 };
 
 export default MyStatistics;
-
