@@ -47,6 +47,8 @@ const PlanetResult = () => {
         formdata.append("customPlanetImg", planetInfo.planetImg);
       }
 
+      console.log(planetInfo);
+
       const response = await instance.post(`/planets`, formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -59,8 +61,7 @@ const PlanetResult = () => {
       } else {
         setIsSuccess(false);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   if (!planetInfo) {
