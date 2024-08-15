@@ -68,6 +68,7 @@ public class FlaskUtil {
 	}
 
 	public GetMyProgressAvgDto getMyProgressAvg(Long memberId) {
+		log.info("Flask API Call");
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);

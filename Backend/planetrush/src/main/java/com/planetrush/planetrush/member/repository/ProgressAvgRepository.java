@@ -6,6 +6,4 @@ import com.planetrush.planetrush.member.domain.ProgressAvg;
 
 public interface ProgressAvgRepository extends JpaRepository<ProgressAvg, Long> {
 
-	ProgressAvg findByMemberId(Long id);
-
 }
