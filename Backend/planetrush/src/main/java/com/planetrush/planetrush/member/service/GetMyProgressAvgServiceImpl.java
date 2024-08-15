@@ -8,8 +8,6 @@ import com.planetrush.planetrush.infra.flask.util.FlaskUtil;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
-import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
-import com.planetrush.planetrush.member.repository.custom.ProgressAvgRepositoryCustom;
 import com.planetrush.planetrush.member.service.dto.GetMyProgressAvgDto;
 
 import lombok.RequiredArgsConstructor;
@@ -20,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class GetMyProgressAvgServiceImpl implements GetMyProgressAvgService {
 
 	private final MemberRepository memberRepository;
-	private final ProgressAvgRepositoryCustom progressAvgRepositoryCustom;
-	private final ProgressAvgRepository progressAvgRepository;
 	private final FlaskUtil flaskUtil;
 
 	/**
