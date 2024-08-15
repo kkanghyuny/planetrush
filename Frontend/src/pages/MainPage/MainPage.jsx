@@ -53,7 +53,10 @@ const MainPage = () => {
           const data = response.data.data;
           const count = data.length;
           resetChallengeCount(count);
-          setPlanets(data);
+
+          const shuffledData = shuffleArray(data);
+
+          setPlanets(shuffledData);
         } else {
           setPlanets([]);
         }

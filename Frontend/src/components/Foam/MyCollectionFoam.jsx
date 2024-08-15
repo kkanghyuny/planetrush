@@ -100,7 +100,7 @@ const MyCollection = () => {
           </div>
         ))
       ) : (
-        <p>콜렉션이 없습니다.</p>
+        <p className = "no-collection">콜렉션이 없습니다.</p>
       )}
       <div className="loadMore"></div>
     </div>
