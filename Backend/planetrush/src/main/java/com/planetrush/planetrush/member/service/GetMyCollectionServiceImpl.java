@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
-import com.planetrush.planetrush.member.domain.ChallengeResult;
-import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
+import com.planetrush.planetrush.member.repository.custom.ChallengeHistoryRepositoryCustom;
+import com.planetrush.planetrush.member.service.dto.CollectionSearchCond;
 import com.planetrush.planetrush.member.service.dto.PlanetCollectionDto;
 
 import lombok.RequiredArgsConstructor;
@@ -18,19 +18,17 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class GetMyCollectionServiceImpl implements GetMyCollectionService {
 
-	private final ChallengeHistoryRepository challengeHistoryRepository;
+	private final ChallengeHistoryRepositoryCustom challengeHistoryRepositoryCustom;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PlanetCollectionDto> getPlanetCollections(Long memberId) {
-		List<ChallengeHistory> historyList = challengeHistoryRepository.findByMemberId(memberId)
-			.orElseGet(List::of);
+	public List<PlanetCollectionDto> getPlanetCollections(CollectionSearchCond searchCond) {
+		List<ChallengeHistory> historyList = challengeHistoryRepositoryCustom.getMyChallengeHistory(searchCond);
 		return historyList.stream()
-			.filter(history -> history.getResult() == ChallengeResult.SUCCESS)
 			.map(history -> PlanetCollectionDto.builder()
-				.planetId(history.getId())
+				.historyId(history.getId())
 				.name(history.getPlanetName())
 				.category(history.getCategory())
 				.content(history.getChallengeContent())

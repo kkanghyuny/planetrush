@@ -1,7 +1,7 @@
 spring:
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 50MB
   config:
     import: optional:file:.env[.properties]
     activate:
@@ -67,6 +67,7 @@ cloud:
 
 flask:
   verifyurl: ${FLASK_VERIFY_URL}
+  progressavgurl: ${FLASK_PROGRESS_AVG_URL}
 
 notification:
   mattermost:

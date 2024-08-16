@@ -1,21 +1,15 @@
 package com.planetrush.planetrush.verification.facade;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.planetrush.planetrush.infra.flask.util.FlaskUtil;
 import com.planetrush.planetrush.infra.s3.S3ImageService;
 import com.planetrush.planetrush.infra.s3.dto.FileMetaInfo;
+import com.planetrush.planetrush.verification.exception.AlreadyVerifiedException;
 import com.planetrush.planetrush.verification.facade.dto.VerifyChallengeDto;
+import com.planetrush.planetrush.verification.service.GetTodayRecordService;
 import com.planetrush.planetrush.verification.service.VerificationService;
 import com.planetrush.planetrush.verification.service.dto.FlaskResponseDto;
 import com.planetrush.planetrush.verification.service.dto.VerificationResultDto;
@@ -27,12 +21,10 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class VerificationFacade {
 
-	@Value("${flask.verifyurl}")
-	private String verifyUrl;
-
-	private final RestTemplate restTemplate;
 	private final S3ImageService s3ImageService;
 	private final VerificationService verificationService;
+	private final GetTodayRecordService getTodayRecordService;
+	private final FlaskUtil flaskUtil;
 
 	/**
 	 * 사진을 저장하고 유사도를 검사해 결과를 보여줍니다.
@@ -42,39 +34,25 @@ public class VerificationFacade {
 	 * @return 인증 여부, 유사도
 	 */
 	public VerifyChallengeDto saveImgAndVerifyChallenge(MultipartFile verificationImg, Long memberId, Long planetId) {
+		if(getTodayRecordService.getTodayRecord(memberId, planetId)) {
+			throw new AlreadyVerifiedException("Member: " + memberId + ", Planet : " + planetId + " already verified today");
+		}
 		FileMetaInfo fileMetaInfo = s3ImageService.uploadVerificationImg(verificationImg, memberId);
 		String standardImgUrl = verificationService.getStandardImgUrlByPlanetId(planetId);
 		String targetImgUrl = fileMetaInfo.getUrl();
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-
-		Map<String, String> body = new HashMap<>();
-		body.put("standardImgUrl", standardImgUrl);
-		body.put("targetImgUrl", targetImgUrl);
-
-		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
-
-		ResponseEntity<FlaskResponseDto> response = restTemplate.exchange(
-			verifyUrl,
-			HttpMethod.POST,
-			requestEntity,
-			FlaskResponseDto.class
-		);
-
-		FlaskResponseDto responseDto = response.getBody();
+		FlaskResponseDto response = flaskUtil.verifyChallengeImg(standardImgUrl, targetImgUrl);
 
 		verificationService.saveVerificationResult(VerificationResultDto.builder()
-			.verified(responseDto.isVerified())
-			.similarityScore(responseDto.getSimilarityScore())
+			.verified(response.isVerified())
+			.similarityScore(response.getSimilarityScore())
 			.imgUrl(fileMetaInfo.getUrl())
 			.memberId(memberId)
 			.planetId(planetId)
 			.build());
 		return VerifyChallengeDto.builder()
-			.verified(responseDto.isVerified())
-			.similarityScore(responseDto.getSimilarityScore())
+			.verified(response.isVerified())
+			.similarityScore(response.getSimilarityScore())
 			.build();
 	}
-
 }
