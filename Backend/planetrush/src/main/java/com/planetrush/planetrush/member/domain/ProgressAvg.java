@@ -38,37 +38,37 @@ public class ProgressAvg {
 	/**
 	 * 모든 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "total_avg")
+	@Column(name = "total_avg", nullable = false)
 	private Double totalAvg;
 
 	/**
 	 * BEAUTY 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "beauty_avg")
+	@Column(name = "beauty_avg", nullable = false)
 	private Double beautyAvg;
 
 	/**
 	 * EXERCISE 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "exercise_avg")
+	@Column(name = "exercise_avg", nullable = false)
 	private Double exerciseAvg;
 
 	/**
 	 * LIFE 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "life_avg")
+	@Column(name = "life_avg", nullable = false)
 	private Double lifeAvg;
 
 	/**
 	 * STUDY 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "study_avg")
+	@Column(name = "study_avg", nullable = false)
 	private Double studyAvg;
 
 	/**
 	 * ETC 카테고리의 완주율 평균을 나타냅니다.
 	 */
-	@Column(name = "etc_avg")
+	@Column(name = "etc_avg", nullable = false)
 	private Double etcAvg;
 
 	@Builder

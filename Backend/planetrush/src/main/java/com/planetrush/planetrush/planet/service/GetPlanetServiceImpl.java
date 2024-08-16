@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
@@ -18,7 +18,6 @@ import com.planetrush.planetrush.planet.exception.PlanetNotFoundException;
 import com.planetrush.planetrush.planet.repository.PlanetRepository;
 import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
-import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
 import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.GetMyPlanetListDto;
 import com.planetrush.planetrush.planet.service.dto.OngoingPlanetDto;
@@ -27,6 +26,7 @@ import com.planetrush.planetrush.planet.service.dto.ResidentDto;
 import com.planetrush.planetrush.planet.service.dto.SearchCond;
 import com.planetrush.planetrush.planet.service.vo.GetMainPlanetListVo;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
+import com.planetrush.planetrush.verification.repository.custom.VerificationRecordRepositoryCustom;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class GetPlanetServiceImpl implements GetPlanetService {
 
-	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberRepository memberRepository;
 	private final PlanetRepository planetRepository;
 	private final ResidentRepositoryCustom residentRepositoryCustom;
@@ -70,7 +69,7 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 				.currentParticipants(p.getCurrentParticipants())
 				.planetStatus(p.getStatus().toString())
 				.build())
-			.toList();
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -96,6 +95,8 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 			.planetId(planet.getId())
 			.name(planet.getName())
 			.planetImg(planet.getPlanetImg())
+			.standardVerificationImg(planet.getStandardVerificationImg())
+			.verificationCond(planet.getVerificationCond())
 			.content(planet.getContent())
 			.startDate(planet.getStartDate())
 			.endDate(planet.getEndDate())
@@ -164,7 +165,6 @@ public class GetPlanetServiceImpl implements GetPlanetService {
 					.memberId(member.getId())
 					.nickname(member.getNickname())
 					.querriedMember(qurriedMember.equals(member))
-					// TODO: verification service로 위임할 것(의존 순환 생기지 않도록 주의할 것)
 					.verificationCnt(verificationInfo.size())
 					.verificationContinuityPoint(calcContinuityPoint(verificationInfo))
 					.build();

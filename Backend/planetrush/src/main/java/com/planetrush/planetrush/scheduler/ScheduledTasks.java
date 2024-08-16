@@ -1,33 +1,32 @@
 package com.planetrush.planetrush.scheduler;
 
-import static com.planetrush.planetrush.member.domain.QChallengeHistory.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.planetrush.planetrush.core.exception.handler.PlanetExceptionHandler;
 import com.planetrush.planetrush.member.domain.ChallengeHistory;
 import com.planetrush.planetrush.member.domain.Member;
 import com.planetrush.planetrush.member.domain.ProgressAvg;
-import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.ChallengeHistoryRepository;
 import com.planetrush.planetrush.member.repository.MemberRepository;
 import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
+import com.planetrush.planetrush.member.repository.custom.ChallengeHistoryRepositoryCustom;
+import com.planetrush.planetrush.member.repository.custom.ProgressAvgRepositoryCustom;
 import com.planetrush.planetrush.planet.domain.Category;
 import com.planetrush.planetrush.planet.domain.Planet;
 import com.planetrush.planetrush.planet.domain.Resident;
 import com.planetrush.planetrush.planet.repository.ResidentRepository;
 import com.planetrush.planetrush.planet.repository.custom.PlanetRepositoryCustom;
 import com.planetrush.planetrush.planet.repository.custom.ResidentRepositoryCustom;
-import com.planetrush.planetrush.planet.repository.custom.VerificationRecordRepositoryCustom;
+import com.planetrush.planetrush.scheduler.log.JobLog;
+import com.planetrush.planetrush.scheduler.log.JobLogRepository;
 import com.planetrush.planetrush.verification.domain.VerificationRecord;
-import com.querydsl.core.Tuple;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.planetrush.planetrush.verification.repository.custom.VerificationRecordRepositoryCustom;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,19 +41,27 @@ public class ScheduledTasks {
 	private final PlanetRepositoryCustom planetRepositoryCustom;
 	private final ResidentRepositoryCustom residentRepositoryCustom;
 	private final VerificationRecordRepositoryCustom verificationRecordRepositoryCustom;
-	private final JPAQueryFactory queryFactory;
+	private final ChallengeHistoryRepositoryCustom challengeHistoryRepositoryCustom;
 	private final ProgressAvgRepository progressAvgRepository;
 	private final MemberRepository memberRepository;
+	private final PlanetExceptionHandler planetExceptionHandler;
+	private final ProgressAvgRepositoryCustom progressAvgRepositoryCustom;
+
+	private final JobLogRepository jobLogRepository;
 
 	/**
 	 * <p매일 자정마다 챌린지가 시작되어야 하는 행성의 상태를 READY에서 IN_PROGRESS로 변경합니다.></p>
 	 * <p매일 자정마다 챌린지가 종료되어야 하는 행성의 상태를 IN_PROFRESS에서 UNDER_REVIEW로 변경합니다.></p>
 	 */
-	@Scheduled(cron = "${scheduled-task.change-planet-status-cron}")
+	@Scheduled(cron = "0 0/10 * * * ?")
 	@Transactional
 	void changePlanetReadyToInProgress() {
+		log.info("[SCHEDULE] changePlanetReadyToInProgress start");
+		JobLog joblog = new JobLog("changePlanetReadyToInProgress");
 		planetRepositoryCustom.updateStatusReadyToInProgress();
 		planetRepositoryCustom.updateStatusInProgressToUnderReview();
+		joblog.finish();
+		jobLogRepository.save(joblog);
 	}
 
 	/**
@@ -62,31 +69,35 @@ public class ScheduledTasks {
 	 * <p>행성 입주자들을 대상으로 마지막 인증 기록을 조회합니다.</p>
 	 * <p>마지막 인증 기록 날짜와 현재 날짜가 4일 차이가 나면 퇴출됩니다. 또한 챌린지는 실패 상태로 기록됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.ban-if-last-verification-older-than-three-days}")
+	@Scheduled(cron = "0 2/10 * * * ?")
 	@Transactional
 	void removeIfLastVerificationOlderThanThreeDays() {
+		log.info("[SCHEDULE] removeIfLastVerificationOlderThanThreeDays start");
+		JobLog joblog = new JobLog("removeIfLastVerificationOlderThanThreeDays");
 		List<Planet> planets = planetRepositoryCustom.findAllStatusIsInProgressAndUnderReview();
 		planets.forEach(planet -> {
 			List<Resident> residents = residentRepository.findByPlanetId(planet.getId());
 			residents.forEach(resident -> {
+				Member member = resident.getMember();
 				VerificationRecord latestRecord = verificationRecordRepositoryCustom.findLatestRecord(
-					resident.getMember(), resident.getPlanet());
+					member, planet);
 				/* 인증 기록 없이 3일이 지난 경우 */
 				if (latestRecord == null && planet.calcElapsedPeriod() >= 4) {
-					expulsionFromPlanet(planet, latestRecord);
+					expulsionFromPlanet(member, planet);
 				}
 				/* 마지막 인증을 한 후 3일이 지난 경우 */
 				if (latestRecord != null && latestRecord.isDifferenceGreaterThanFourDays()) {
-					expulsionFromPlanet(planet, latestRecord);
+					expulsionFromPlanet(member, planet);
 				}
 			});
 		});
+		joblog.finish();
+		jobLogRepository.save(joblog);
 	}
 
-	private void expulsionFromPlanet(Planet planet, VerificationRecord latestRecord) {
-		log.info("[중도 퇴소 처리] the last verificationRecordId = {}", latestRecord.getId());
-		residentRepositoryCustom.banMemberFromPlanet(latestRecord.getMember(),
-			latestRecord.getPlanet());
+	private void expulsionFromPlanet(Member member, Planet planet) {
+		log.info("[EXPULSION] the last verificationRecordId = {}", member.getId());
+		residentRepositoryCustom.banMemberFromPlanet(member, planet);
 		planet.participantExpulsion();
 	}
 
@@ -95,9 +106,11 @@ public class ScheduledTasks {
 	 * <p>개인 기록을 저장하고 행성 전체 진행률을 계산합니다.</p>
 	 * <p>전체 진행률이 70퍼센트 이상이면 성공, 아니면 실패 상태로 저장됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.planet-complete-destroy}")
+	@Scheduled(cron = "0 4/10 * * * ?")
 	@Transactional
 	void completeOrDestroyPlanet() {
+		log.info("[SCHEDULE] completeOrDestroyPlanet start");
+		JobLog joblog = new JobLog("completeOrDestroyPlanet");
 		List<Planet> planets = planetRepositoryCustom.findAllStatusIsUnderReview();
 		List<ChallengeHistory> challengeHistories = new ArrayList<>();
 		planets.forEach(planet -> {
@@ -128,70 +141,47 @@ public class ScheduledTasks {
 			}
 			challengeHistoryRepository.saveAll(challengeHistories);
 		});
+		joblog.finish();
+		jobLogRepository.save(joblog);
 	}
 
 	/**
 	 * <p>개인의 카테고리별 완주율 평균을 저장합니다.</p>
 	 * <p>완주 기록이 없는 카테고리일 경우 null이 저장됩니다.</p>
 	 */
-	@Scheduled(cron = "${scheduled-task.member-progress-calc}")
+	@Scheduled(cron = "0 6/10 * * * ?")
 	@Transactional
 	void progressCalculation() {
-		progressAvgRepository.deleteAll();
-		List<Tuple> memberCategoryAvgResults = queryFactory
-			.select(
-				challengeHistory.member.id,
-				challengeHistory.category,
-				challengeHistory.progress.avg()
-			)
-			.from(challengeHistory)
-			.groupBy(challengeHistory.member.id, challengeHistory.category)
-			.fetch();
-		List<Tuple> memeberAvgResults = queryFactory
-			.select(
-				challengeHistory.member.id,
-				challengeHistory.progress.avg()
-			)
-			.from(challengeHistory)
-			.groupBy(challengeHistory.member.id)
-			.fetch();
-		Map<Long, Map<Category, Double>> memberCategoryAvgMap = memberCategoryAvgResults.stream()
-			.collect(Collectors.groupingBy(
-				tuple -> tuple.get(0, Long.class),
-				Collectors.toMap(
-					tuple -> tuple.get(1, Category.class),
-					tuple -> tuple.get(2, Double.class)
-				)
-			));
-		Map<Long, Double> memeberAvgMap = memeberAvgResults.stream()
-			.collect(Collectors.toMap(
-				tuple -> tuple.get(0, Long.class),
-				tuple -> tuple.get(1, Double.class)
-			));
-		List<ProgressAvg> progressAvgList = memberCategoryAvgMap.entrySet().stream()
-			.map(entry -> {
-				Long memberId = entry.getKey();
-				Map<Category, Double> categoryMap = entry.getValue();
-				Double beautyAvg = categoryMap.getOrDefault(Category.BEAUTY, null);
-				Double exerciseAvg = categoryMap.getOrDefault(Category.EXERCISE, null);
-				Double lifeAvg = categoryMap.getOrDefault(Category.LIFE, null);
-				Double studyAvg = categoryMap.getOrDefault(Category.STUDY, null);
-				Double etcAvg = categoryMap.getOrDefault(Category.ETC, null);
-				Double totalAvg = memeberAvgMap.getOrDefault(memberId, null);
-				Member member = memberRepository.findById(memberId)
-					.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-				return ProgressAvg.builder()
-					.member(member)
-					.totalAvg(totalAvg)
-					.beautyAvg(beautyAvg)
-					.exerciseAvg(exerciseAvg)
-					.lifeAvg(lifeAvg)
-					.studyAvg(studyAvg)
-					.etcAvg(etcAvg)
-					.build();
-			})
-			.toList();
-		progressAvgRepository.saveAll(progressAvgList);
+		log.info("[SCHEDULE] progressCalculation start");
+		JobLog joblog = new JobLog("progressCalculation");
+		Map<Long, Map<Category, Double>> averageScoreByMember = challengeHistoryRepositoryCustom.getAverageScoreByMember();
+		averageScoreByMember.forEach((memberId, scoreByCategoryMap) -> {
+			double beautyAvg = scoreByCategoryMap.getOrDefault(Category.BEAUTY, -1.0);
+			double exerciseAvg = scoreByCategoryMap.getOrDefault(Category.EXERCISE, -1.0);
+			double lifeAvg = scoreByCategoryMap.getOrDefault(Category.LIFE, -1.0);
+			double studyAvg = scoreByCategoryMap.getOrDefault(Category.STUDY, -1.0);
+			double etcAvg = scoreByCategoryMap.getOrDefault(Category.ETC, -1.0);
+			int totalCnt = 0;
+			double sum = 0.0;
+			for (Category category : Category.values()) {
+				double avg = scoreByCategoryMap.getOrDefault(category, -1.0);
+				if (avg != -1.0) {
+					sum += avg;
+					totalCnt++;
+				}
+			}
+			double totalAvg = sum / totalCnt;
+			progressAvgRepositoryCustom.updateProgressAvg(memberId, ProgressAvg.builder()
+				.beautyAvg(beautyAvg)
+				.exerciseAvg(exerciseAvg)
+				.lifeAvg(lifeAvg)
+				.studyAvg(studyAvg)
+				.etcAvg(etcAvg)
+				.totalAvg(totalAvg)
+				.build());
+		});
+		joblog.finish();
+		jobLogRepository.save(joblog);
 	}
 
 }

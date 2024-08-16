@@ -12,10 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.planetrush.planetrush.infra.oauth.dto.KakaoUserInfo;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class KakaoUtil {
 
 	@Value("${kakao.loginurl}")

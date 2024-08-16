@@ -15,6 +15,8 @@ public class PlanetDetailDto {
 
 	private Long planetId;
 	private String planetImg;
+	private String standardVerificationImg;
+	private String verificationCond;
 	private String category;
 	private String name;
 	private String content;

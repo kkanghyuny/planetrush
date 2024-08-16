@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
+import Tutorial from "../../components/Modals/TutorialModal.jsx";
 
 import "../../App.css";
 import "../../styles/Main.css";

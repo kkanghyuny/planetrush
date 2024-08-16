@@ -42,7 +42,7 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
       } else {
       }
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 

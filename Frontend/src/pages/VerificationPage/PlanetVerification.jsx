@@ -72,8 +72,7 @@ const PlanetVerification = () => {
 
           imageUrl = URL.createObjectURL(convertedFile);
           setSelectedImageFile(convertedFile);
-        } catch (error) {
-        }
+        } catch (error) {}
       } else {
         imageUrl = URL.createObjectURL(file);
         setSelectedImageFile(file);
@@ -110,8 +109,9 @@ const PlanetVerification = () => {
       if (error.response.data.code === "8000") {
         setIsAlreadyVerified(true);
         setIsError(true);
-      }
-      else {setIsError(true)}; // 에러 발생 시 상태 업데이트
+      } else {
+        setIsError(true);
+      } // 에러 발생 시 상태 업데이트
     }
 
     setModalIsOpen(true); //다 하고 나서 띄운다!

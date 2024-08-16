@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import useTutorialStore from '../../store/tutorialStore';
+import React, { useEffect } from "react";
+import useTutorialStore from "../../store/tutorialStore";
 
-import TutorialList from '../Lists/TutorialList';
+import TutorialList from "../Lists/TutorialList";
 
 import tutorialButton from "../../assets/tutorial.png";
-import "../../styles/Tutorial.css"
+import "../../styles/Tutorial.css";
 
 const Tutorial = () => {
-  const { 
-    currentPage, 
-    showModal, 
-    setCurrentPage, 
-    setShowModal, 
-    initialize, 
-    closeModal 
+  const {
+    currentPage,
+    showModal,
+    setCurrentPage,
+    setShowModal,
+    initialize,
+    closeModal,
   } = useTutorialStore();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Tutorial = () => {
     initialize();
 
     // 로그인 이력 확인
-    const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
 
     if (!hasSeenTutorial) {
       setShowModal(true);
@@ -30,7 +30,7 @@ const Tutorial = () => {
     }
   }, [initialize, setShowModal]);
 
-  const pages = TutorialList();  // pages 배열 가져오기
+  const pages = TutorialList(); // pages 배열 가져오기
 
   const handlePrev = () => {
     if (currentPage > 0) {
@@ -46,16 +46,16 @@ const Tutorial = () => {
 
   const handleCloseModal = () => {
     closeModal();
-    localStorage.setItem('hasSeenTutorial', 'true');  // 모달이 닫힐 때 로그인 이력을 localStorage에 저장
+    localStorage.setItem("hasSeenTutorial", "true"); // 모달이 닫힐 때 로그인 이력을 localStorage에 저장
   };
 
   return (
     <div>
       <img
-        className="tutorial-button" 
-        src={tutorialButton} 
-        alt="Open Tutorial" 
-        onClick={() => setShowModal(true)} 
+        className="tutorial-button"
+        src={tutorialButton}
+        alt="Open Tutorial"
+        onClick={() => setShowModal(true)}
       />
 
       {showModal && (
@@ -63,32 +63,41 @@ const Tutorial = () => {
           <div className="modal-content">
             <div className="modal-page">
               튜토리얼
-              <img className="tutorial-img" src={pages[currentPage].image} alt={`Tutorial Page ${currentPage + 1}`} />
+              <img
+                className="tutorial-img"
+                src={pages[currentPage].image}
+                alt={`Tutorial Page ${currentPage + 1}`}
+              />
               <p>{pages[currentPage].description}</p>
             </div>
             <div className="arrow-area">
               <span
                 onClick={handlePrev}
-                className={`arrow ${currentPage === 0 ? 'hidden' : 'visible'}`}
+                className={`arrow ${currentPage === 0 ? "hidden" : "visible"}`}
               >
                 &#9664;
               </span>
               <span
                 onClick={handleNext}
-                className={`arrow ${currentPage === pages.length - 1 ? 'hidden' : 'visible'}`}
+                className={`arrow ${
+                  currentPage === pages.length - 1 ? "hidden" : "visible"
+                }`}
               >
                 &#9654;
               </span>
             </div>
 
             <div className="exit-button-container">
-                <button onClick={handleCloseModal} className="close-button">
+              <button onClick={handleCloseModal} className="close-button">
                 닫기
-                </button>
+              </button>
             </div>
             <div className="pagination">
               {pages.map((_, index) => (
-                <span key={index} className={`dot ${index === currentPage ? 'active' : ''}`}></span>
+                <span
+                  key={index}
+                  className={`dot ${index === currentPage ? "active" : ""}`}
+                ></span>
               ))}
             </div>
           </div>
@@ -96,6 +105,6 @@ const Tutorial = () => {
       )}
     </div>
   );
-}
+};
 
 export default Tutorial;
