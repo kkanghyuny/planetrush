@@ -47,6 +47,8 @@ const PlanetResult = () => {
         formdata.append("customPlanetImg", planetInfo.planetImg);
       }
 
+      console.log(planetInfo);
+
       const response = await instance.post(`/planets`, formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -59,9 +61,7 @@ const PlanetResult = () => {
       } else {
         setIsSuccess(false);
       }
-    } catch (error) {
-      console.error("There was an error!", error);
-    }
+    } catch (error) {}
   };
 
   if (!planetInfo) {
@@ -87,9 +87,8 @@ const PlanetResult = () => {
             className="planet-image"
           />
         )}
-        <p className="planet-info-title">{planetInfo.name}</p>
+        <p className="planet-info-title">{planetInfo.name} 행성</p>
         <p className="planet-info-title">"{planetInfo.content}"를 도전합니다</p>
-        <p className="planet-info">{planetInfo.category}</p>
         <p className="planet-info">
           {planetInfo.startDate}부터 {planetInfo.endDate}까지
         </p>

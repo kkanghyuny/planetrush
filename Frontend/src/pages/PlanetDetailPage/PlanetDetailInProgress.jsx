@@ -14,7 +14,7 @@ const PlanetDetailInProgress = () => {
   const navigate = useNavigate();
 
   const [view, setView] = useState("rank");
-  const planetId = location.state;
+  const { planetId, isLastDay } = location.state;
 
   const [planetInfo, setPlanetInfo] = useState({
     name: "",
@@ -52,11 +52,8 @@ const PlanetDetailInProgress = () => {
           verifiedToday: data.verifiedToday,
         });
 
-        console.log(data);
-
         setResidents(data.residents);
       } catch (error) {
-        console.error("Error fetching images:", error.code);
       }
     };
 
@@ -82,6 +79,7 @@ const PlanetDetailInProgress = () => {
         {planetInfo && (
           <PlanetDetailInfo
             planetId={planetId}
+            isLastDay={isLastDay}
             planetInfo={planetInfo}
             residents={residents}
           />
@@ -91,15 +89,15 @@ const PlanetDetailInProgress = () => {
         <div className="toggle-planet">
           <button
             onClick={handleRankClick}
-            className={view === "rank" ? "active" : ""}
+            className={`rank-button ${view === "rank" ? "active" : ""}`}
           ></button>
           <button
             onClick={handleChatClick}
-            className={view === "chat" ? "active" : ""}
+            className={`chat-button ${view === "chat" ? "active" : ""}`}
           ></button>
         </div>
         {view === "rank" ? (
-          <PlanetRank residents={residents} />
+          <PlanetRank planetInfo={planetInfo} residents={residents} />
         ) : (
           <PlanetChat
             planetId={planetId}

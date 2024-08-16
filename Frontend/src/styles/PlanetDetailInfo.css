@@ -86,3 +86,29 @@
 .days-left {
   margin-left: 10px;
 }
+
+@keyframes floating {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fire {
+  0%,
+  100% {
+    filter: brightness(1) hue-rotate(0deg) drop-shadow(0 0 10px red);
+  }
+  50% {
+    filter: brightness(1.8) hue-rotate(30deg) drop-shadow(0 0 20px red);
+  }
+}
+
+.burning {
+  animation: fire 0.5s infinite alternate, floating 0.3s infinite alternate;
+}

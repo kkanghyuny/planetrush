@@ -1,3 +1,37 @@
+/* MyPage.jsx */
+
+.top-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.my-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.info-button {
+  background-image: url("/src/assets/myinfobutton.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 45%;
+  height: 50px;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  margin-left: 26%;
+}
+
 .doughnut-chart-container {
   position: relative;
   height: 200px;
@@ -8,7 +42,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
 }
 
 .doughnut-chart-text {
@@ -16,11 +49,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
   text-align: center;
 }
-
-
 
 .doughnut-chart-percentage {
   font-size: 20px;
@@ -38,19 +68,11 @@
 
 .logout-button {
   position: absolute;
-  top:10px;
+  top: 10px;
   right: 10px;
   cursor: pointer;
   width: 29px;
   height: auto;
-}
-
-.top-container {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
 }
 
 .nickname {
@@ -66,33 +88,6 @@
   cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
 }
 
-.my-info {
-  padding: 20px;
-  text-align: center;
-}
-
-.info-button {
-  border: 5px solid rgba(255, 255, 255, 0.5); /* 테두리 설정 */
-  background-color: #ffeb79; /* 배경색 설정 */
-  padding: 3px;
-  border-radius: 20px; /* 테두리와 내부 콘텐츠를 둥글게 설정 */
-  width: 130px;
-  font-weight: 900;
-  position: relative; /* 내부 그림자를 위해 상대 위치 설정 */
-}
-
-.info-button::before {
-  content: "";
-  position: absolute;
-  top: -5px; /* 테두리 두께와 동일하게 설정 */
-  left: -5px; /* 테두리 두께와 동일하게 설정 */
-  right: -5px; /* 테두리 두께와 동일하게 설정 */
-  bottom: -5px; /* 테두리 두께와 동일하게 설정 */
-  background-color: inherit; /* 부모 요소의 배경색을 상속 */
-  border-radius: inherit; /* 부모 요소의 border-radius를 상속 */
-  z-index: -1; /* 부모 요소 뒤에 위치 */
-}
-
 .my-page {
   padding: 10px;
 }
@@ -101,12 +96,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.text-color {
-  font-size: 20px;
-  font-weight: bold;
-  color: #31fff3;
 }
 
 .stats-container {
@@ -127,4 +116,10 @@
 .category-title {
   text-align: left;
   color: #31fff3;
+}
+
+.notification {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
 }

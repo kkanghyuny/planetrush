@@ -2,7 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-evenly;
   width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .resident-container {
@@ -34,6 +37,7 @@
 .progress-info {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   width: 100%;
 }
 
@@ -47,16 +51,21 @@
   overflow: hidden;
 }
 
-.planet-rank-progress-bar-fill {
+.progress-rank-bar-fill {
   height: 100%;
   border-radius: 5px;
   width: 1px;
-  min-width: 1px; /* Minimum width setting */
-  transition: width 0.3s ease; /* Width change animation */
+  min-width: 1px;
+  transition: none;
   background-color: cyan;
 }
 
 .verification-info {
   font-size: 14px;
   color: white;
+}
+
+.crown-icon {
+  width: 30px;
+  object-fit: cover;
 }

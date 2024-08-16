@@ -17,6 +17,7 @@ const SearchPlanet = () => {
   const [displayedChallenges, setDisplayedChallenges] = useState([]);
   const [isSearchPerformed, setIsSearchPerformed] = useState(false);
   const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState(""); // 검색이 실행된 후의 쿼리
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedRecommend, setSelectedRecommend] = useState(null);
   const [hasNext, setHasNext] = useState(true);
@@ -94,9 +95,7 @@ const SearchPlanet = () => {
       }
 
       setHasNext(data.hasNext);
-    } catch (error) {
-      console.error("Failed to fetch challenges", error);
-    }
+    } catch (error) {}
   };
 
   const handleInputChange = (e) => {
@@ -106,6 +105,7 @@ const SearchPlanet = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     setLastPlanetId(null);
+    setSubmittedQuery(query); // 검색어가 제출되었음을 설정
     fetchChallenges(query, selectedCategory, null);
     setIsSearchPerformed(true);
   };
@@ -115,6 +115,13 @@ const SearchPlanet = () => {
 
     setSelectedCategory(newCategory);
     setLastPlanetId(null);
+
+    // 카테고리가 초기화될 때 추천 검색어도 초기화
+    if (newCategory === "") {
+      setSelectedRecommend(null);
+      setRecommends([]);
+    }
+
     fetchChallenges(query, newCategory, null);
 
     if (newCategory) {
@@ -127,8 +134,6 @@ const SearchPlanet = () => {
       } catch (error) {
         throw error;
       }
-    } else {
-      setRecommends([]);
     }
   };
 
@@ -221,13 +226,13 @@ const SearchPlanet = () => {
         {recommends.length > 0 && (
           <div className="recommend-container">
             <h3 className="search-h3">
-              지난 주,  
+              지난 주,
               <span className="category-recommend">
                 {getCategoryLabel(selectedCategory)} 카테고리
               </span>
               에서
             </h3>
-            <h3 className="search-h3">가장 핫한 챌린지예요</h3>
+            <h3 className="search-h3">가장 핫한 키워드예요</h3>
             <div className="recommend-list">
               {recommends.map((recommend, index) => (
                 <button
@@ -245,7 +250,7 @@ const SearchPlanet = () => {
         )}
 
         <div className="results-container">
-          {isSearchPerformed || selectedCategory !== "" ? (
+          {isSearchPerformed || selectedCategory !== "" || selectedRecommend ? (
             filteredChallenges.length > 0 ? (
               <>
                 <ChallengeList
@@ -257,14 +262,33 @@ const SearchPlanet = () => {
             ) : (
               <>
                 <div className="search-fail">
-                  <h4>
-                    <div className="fail-query">
-                      {selectedRecommend || query}
-                    </div>
-                    에 해당하는 챌린지가
-                  </h4>
-                  <br />
-                  <h4>존재하지 않습니다.</h4>
+                  {submittedQuery ? (
+                    <>
+                      <h4>
+                        <span className="fail-query">{submittedQuery}</span>에
+                        해당하는 챌린지가
+                      </h4>
+                      <h4>존재하지 않습니다.</h4>
+                    </>
+                  ) : selectedRecommend ? (
+                    <>
+                      <h4>
+                        <span className="fail-query">{selectedRecommend}</span>
+                        에 해당하는 챌린지가
+                      </h4>
+                      <h4>존재하지 않습니다.</h4>
+                    </>
+                  ) : selectedCategory && !query ? (
+                    <>
+                      <h4>
+                        <span className="fail-query">
+                          {getCategoryLabel(selectedCategory)}
+                        </span>
+                        카테고리에 해당하는 챌린지가
+                      </h4>
+                      <h4>존재하지 않습니다.</h4>
+                    </>
+                  ) : null}
                 </div>
               </>
             )

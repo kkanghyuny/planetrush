@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
 const VerificateFailModal = ({ closeModal }) => {
-  const navigate = useNavigate();
-
   return (
     <div className="modal">
       <div className="modal-content">

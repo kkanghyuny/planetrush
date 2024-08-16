@@ -20,10 +20,6 @@
   transition: border-color 0.3s ease;
 }
 
-.image-upload:hover {
-  border-color: #ff4081;
-}
-
 .verification-standard-image {
   display: flex;
   flex-direction: column;

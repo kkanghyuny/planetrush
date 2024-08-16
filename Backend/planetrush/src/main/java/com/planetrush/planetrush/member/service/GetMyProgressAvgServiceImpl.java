@@ -1,17 +1,14 @@
 package com.planetrush.planetrush.member.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.planetrush.planetrush.infra.flask.util.FlaskUtil;
 import com.planetrush.planetrush.member.domain.Member;
-import com.planetrush.planetrush.member.domain.ProgressAvg;
 import com.planetrush.planetrush.member.exception.MemberNotFoundException;
 import com.planetrush.planetrush.member.repository.MemberRepository;
-import com.planetrush.planetrush.member.repository.ProgressAvgRepository;
-import com.planetrush.planetrush.member.repository.custom.ProgressAvgRepositoryCustom;
-import com.planetrush.planetrush.member.service.dto.AllAvgDto;
 import com.planetrush.planetrush.member.service.dto.GetMyProgressAvgDto;
-import com.planetrush.planetrush.member.service.dto.CategoryPerDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,52 +18,20 @@ import lombok.RequiredArgsConstructor;
 public class GetMyProgressAvgServiceImpl implements GetMyProgressAvgService {
 
 	private final MemberRepository memberRepository;
-	private final ProgressAvgRepositoryCustom progressAvgRepositoryCustom;
-	private final ProgressAvgRepository progressAvgRepository;
+	private final FlaskUtil flaskUtil;
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * <p>이 메서드는 반환값을 캐싱하여 관리합니다.</p>
+	 * <p>캐시 미스가 발생하는 경우에만 플라스크 서버로 API 요청을 전송하여 새로운 데이터로 캐시에 저장합니다.</p>
 	 */
+	@Cacheable(value = "myProgressAvgCache", key = "#memberId")
 	@Override
 	public GetMyProgressAvgDto getMyProgressAvgPer(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + memberId));
-		Long completionCnt = progressAvgRepositoryCustom.getCompletionCount(member);
-		Long challengeCnt = progressAvgRepositoryCustom.getChallengeCount(member);
-		ProgressAvg myProgressAvg = progressAvgRepository.findByMemberId(memberId);
-		CategoryPerDto categoryPer = progressAvgRepositoryCustom.getCategoryPer(member);
-		AllAvgDto allAvg = progressAvgRepositoryCustom.getAllAvg();
-		return GetMyProgressAvgDto.builder()
-			.completionCnt(completionCnt)
-			.challengeCnt(challengeCnt)
-			.myTotalAvg(nullToZero(myProgressAvg.getTotalAvg()))
-			.myExerciseAvg(nullToZero(myProgressAvg.getExerciseAvg()))
-			.myBeautyAvg(nullToZero(myProgressAvg.getBeautyAvg()))
-			.myLifeAvg(nullToZero(myProgressAvg.getLifeAvg()))
-			.myStudyAvg(nullToZero(myProgressAvg.getStudyAvg()))
-			.myEtcAvg(nullToZero(myProgressAvg.getEtcAvg()))
-			.myTotalPer(categoryPer.getMyTotalPer())
-			.myExercisePer(categoryPer.getMyExercisePer())
-			.myBeautyPer(categoryPer.getMyBeautyPer())
-			.myLifePer(categoryPer.getMyLifePer())
-			.myStudyPer(categoryPer.getMyStudyPer())
-			.myEtcPer(categoryPer.getMyEtcPer())
-			.totalAvg(allAvg.getTotalAvg())
-			.exerciseAvg(allAvg.getExerciseAvg())
-			.beautyAvg(allAvg.getBeautyAvg())
-			.lifeAvg(allAvg.getLifeAvg())
-			.studyAvg(allAvg.getStudyAvg())
-			.etcAvg(allAvg.getEtcAvg())
-			.build();
+		return flaskUtil.getMyProgressAvg(memberId);
 	}
-
-	/**
-	 * null을 0으로 처리합니다.
-	 * @param value avg
-	 * @return avg
-	 */
-	public Double nullToZero(Double value) {
-		return value != null ? value : 0.0;
-	}
-
+	
 }

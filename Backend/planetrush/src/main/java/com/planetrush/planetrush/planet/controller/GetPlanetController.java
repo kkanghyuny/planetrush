@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
 import com.planetrush.planetrush.core.aop.member.MemberContext;
-import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
-import com.planetrush.planetrush.infra.s3.S3ImageService;
 import com.planetrush.planetrush.planet.controller.response.SearchPlanetRes;
 import com.planetrush.planetrush.planet.service.GetPlanetService;
 import com.planetrush.planetrush.planet.service.dto.GetMainPlanetListDto;
@@ -28,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class GetPlanetController extends PlanetController {
 
-	private final JwtTokenProvider jwtTokenProvider;
-	private final S3ImageService s3ImageService;
 	private final GetPlanetService getPlanetService;
 
 	/**
@@ -53,22 +49,17 @@ public class GetPlanetController extends PlanetController {
 			.size(size)
 			.lastPlanetId(lastPlanetId)
 			.build());
+		boolean hasNext = false;
+		if (planets.size() > size) {
+			planets.remove(size);
+			hasNext = true;
+		}
 		return ResponseEntity.ok(
 			BaseResponse.ofSuccess(
 				SearchPlanetRes.builder()
 					.planets(planets)
-					.hasNext(isNotLastPage(size, planets))
+					.hasNext(hasNext)
 					.build()));
-	}
-
-	/**
-	 * 무한 스크롤을 위해 마지막 페이지인지 확인합니다.
-	 * @param size 크기
-	 * @param planets 행성 목록
-	 * @return 마지막 페이지인지 여부
-	 */
-	private boolean isNotLastPage(int size, List<PlanetDetailDto> planets) {
-		return planets.size() == size;
 	}
 
 	/**

@@ -71,9 +71,9 @@ input::placeholder {
 
 .error {
   color: cyan;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 span {

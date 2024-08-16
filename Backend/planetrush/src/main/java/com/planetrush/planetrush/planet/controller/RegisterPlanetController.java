@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
 import com.planetrush.planetrush.core.aop.member.MemberContext;
-import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.planet.controller.request.RegisterPlanetReq;
 import com.planetrush.planetrush.planet.facade.RegisterPlanetFacade;
@@ -22,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class RegisterPlanetController extends PlanetController {
 
-	private final JwtTokenProvider jwtTokenProvider;
 	private final RegisterPlanetFacade registerPlanetFacade;
 
 	/**

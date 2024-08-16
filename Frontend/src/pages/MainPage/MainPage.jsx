@@ -3,11 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import instance from "../AuthenticaitionPage/Axiosinstance";
 
 import Cookies from "js-cookie";
+import Tutorial from "../../components/Modals/TutorialModal.jsx";
 
-import { BiSearchAlt } from "react-icons/bi";
+import "../../App.css";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
-import present from "../../assets/present.png";
+import gift from "../../assets/gift.png";
+import search from "../../assets/searchbutton.png";
+import UseChallengeCountStore from "../../store/challengeCountStore";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -36,7 +39,8 @@ const MainPage = () => {
 
   const [planets, setPlanets] = useState(null);
   const [shuffledPositions, setShuffledPositions] = useState([]);
-  const nickname = Cookies.get('nickname')
+  const { resetChallengeCount } = UseChallengeCountStore();
+  const nickname = Cookies.get("nickname");
 
   useEffect(() => {
     setShuffledPositions(shuffleArray([...gridPositions]));
@@ -48,7 +52,12 @@ const MainPage = () => {
         const response = await instance.get(`/planets/main/list`);
         if (response.data.isSuccess) {
           const data = response.data.data;
-          setPlanets(data);
+          const count = data.length;
+          resetChallengeCount(count);
+
+          const shuffledData = shuffleArray(data);
+
+          setPlanets(shuffledData);
         } else {
           setPlanets([]);
         }
@@ -106,12 +115,17 @@ const MainPage = () => {
     };
   };
 
-  const handleToDetail = (planetStatus, planetId) => {
+  const handleToDetail = (planetStatus, planetId, isLastDay) => {
     return () => {
       if (planetStatus === "READY") {
         navigate(`/planet/${planetId}`, { state: { from: "/main" } });
       } else {
-        navigate("/planet-progress", { state: planetId });
+        navigate("/planet-progress", {
+          state: {
+            planetId: planetId,
+            isLastDay: isLastDay,
+          },
+        });
       }
     };
   };
@@ -123,12 +137,12 @@ const MainPage = () => {
   return (
     <div className="page-container">
       <div className="search-container">
+        <span className="title-container">
+          <span className="text-color">{nickname}</span>님의 은하
+        </span>
         <Link to="/search" className="link-icon">
-          <BiSearchAlt />
+          <img className="search-icon" src={search} alt="Search Icon" />
         </Link>
-      </div>
-      <div className="main-title">
-        <span className="text-color">{nickname}</span>님의 은하입니다!
       </div>
       {planets.length === 0 ? (
         <div className="rocket-center-container">
@@ -142,7 +156,7 @@ const MainPage = () => {
           {planets.map((planet, index) => {
             const planetStyle = getPlanetStyle(planet, index, []);
             const planetImgUrl =
-              planet.status === "READY" ? present : planet.planetImgUrl;
+              planet.status === "READY" ? gift : planet.planetImgUrl;
             const imgClass = planet.isLastDay
               ? "planet-img burning"
               : "planet-img";
@@ -154,7 +168,11 @@ const MainPage = () => {
                   planet.isLastDay ? "burning" : ""
                 }`}
                 style={planetStyle}
-                onClick={handleToDetail(planet.status, planet.planetId)}
+                onClick={handleToDetail(
+                  planet.status,
+                  planet.planetId,
+                  planet.isLastDay
+                )}
               >
                 <img
                   src={planetImgUrl}

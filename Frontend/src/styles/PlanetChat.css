@@ -1,14 +1,20 @@
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  width: 100%;
 }
 
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px; /* 입력창 높이만큼 여백 추가 */
+}
+
+.messages-container::-webkit-scrollbar {
+  display: none;
 }
 
 .list-item {
@@ -29,8 +35,9 @@
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 24x;
+  height: 24px;
+  margin-bottom: 5px;
   border-radius: 50%; /* 아바타 이미지를 둥글게 */
   object-fit: cover; /* 이미지 비율을 유지하면서 채우기 */
   margin-right: 10px; /* 텍스트와 아바타 사이 간격 */
@@ -49,7 +56,7 @@
 
 .message-header {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
 
 .message-name {
@@ -60,6 +67,7 @@
 .message-time {
   font-size: 0.8em;
   color: gray;
+  font-size: 10px;
 }
 
 .message-text {
@@ -75,8 +83,12 @@
 
 .input-container {
   display: flex;
+  align-items: center;
   padding: 10px;
   border-top: 1px solid #ccc;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .chat-input {
@@ -88,14 +100,12 @@
 }
 
 .send-button {
-  padding: 10px 20px;
   border: none;
-  background-color: #4caf50;
+  transform: rotate(-20deg);
+  font-size: 24px;
+  font-weight: 800;
   color: white;
+  background-color: none;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.send-button:hover {
-  background-color: #45a049;
 }

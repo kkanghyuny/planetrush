@@ -36,7 +36,17 @@ public enum ResponseCode {
 	ALREADY_EXIST_RESIDENT("6001", "이미 행성에 거주 중입니다."),
 	RESIDENT_EXIT_TIMEOUT("6002", "챌린지가 시작되어 행성을 떠날 수 없습니다."),
 	REGISTER_RESIDENT_TIMEOUT("6003", "챌린지가 시작되어 참여할 수 없습니다."),
-	RESIDENT_OVERFLOW("6004", "최대 참여 행성 수를 초과했습니다.");
+	RESIDENT_OVERFLOW("6004", "최대 참여 행성 수를 초과했습니다."),
+
+	// 7000 - FLASK
+	INVALID_IMAGE_URL_COUNT("7000", "유사도 검사에 필요한 이미지 개수가 부족합니다."),
+	FLASK_SERVER_NOT_CONNECTED("7001", "플라스크 서버 연결에 실패했습니다."),
+	IMAGE_SIMILARITY_CHECK_ERROR("7002", "이미지 유사도 측정 과정에서 에러가 발생했습니다."),
+	PROGRESS_AVG_NOT_FOUND("7003", "평균 진행률 데이터가 존재하지 않습니다."),
+
+	// 8000 - VERIFICATION
+	ALREADY_VERIFIED("8000", "오늘 이미 인증을 완료한 사용자입니다."),
+	;
 
 	private String code;
 	private String message;
