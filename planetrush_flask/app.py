@@ -1,29 +1,44 @@
 import os
 from flask import Flask, jsonify, request
-import cv2
-from urllib.request import urlopen
-from urllib.error import URLError, HTTPError
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from sqlalchemy import and_
+from sqlalchemy import and_, case
+from sqlalchemy import func
 import enum
-import numpy as np
 from mecab import MeCab
 from collections import Counter
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+from torchvision import models
+from torchvision.models import EfficientNet_B0_Weights
+from PIL import Image
+import requests
+from io import BytesIO
+from sklearn.metrics.pairwise import cosine_similarity
 import logging
 from dotenv import load_dotenv
+from scipy import stats
+from apscheduler.schedulers.background import BackgroundScheduler
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.INFO)
 
 # 데이터베이스 설정
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 10,          # 기본 커넥션 풀 크기
+    'max_overflow': 20,       # 풀 초과 시 생성할 수 있는 최대 커넥션 수
+    'pool_timeout': 30,       # 연결을 기다리는 최대 시간(초)
+    'pool_recycle': 7200,      # 커넥션이 재활용되기까지의 시간(초)
+    'pool_pre_ping': True  # 각 연결 사용 전에 사전 확인하여 재연결 시도
+}
+
 db = SQLAlchemy(app)
 
 
-# -- 인기 키워드 --
 class CategoryEnum(enum.Enum):
     BEAUTY = 'BEAUTY'
     ETC = 'ETC'
@@ -37,6 +52,11 @@ class PlanetStatusEnum(enum.Enum):
     DESTROYED = 'DESTROYED'
     IN_PROGRESS = 'IN_PROGRESS'
     READY = 'READY'
+
+
+class ChallengeResultEnum(enum.Enum):
+    FAIL = 'FAIL'
+    SUCCESS = 'SUCCESS'
 
 
 class Planet(db.Model):
@@ -57,16 +77,38 @@ class Planet(db.Model):
 
 
 class PopularKeyword(db.Model):
-    __tablename__ = 'popular_keyword'  # 테이블 이름 설정
-
-    # 컬럼 정의
-    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)  # 자동 증가 기본 키
-    keyword = db.Column(db.String(20), nullable=False)  # NOT NULL
-    category = db.Column(db.String(20), nullable=False)  # NOT NULL
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # 기본값은 현재 시간
+    __tablename__ = 'popular_keyword'
+    keyword_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    keyword = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
-# 테이블 데이터 삭제
+class ProgressAvg(db.Model):
+    __tablename__ = 'progress_avg'
+    progress_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    beauty_avg = db.Column(db.Float, nullable=True)
+    etc_avg = db.Column(db.Float, nullable=True)
+    exercise_avg = db.Column(db.Float, nullable=True)
+    life_avg = db.Column(db.Float, nullable=True)
+    study_avg = db.Column(db.Float, nullable=True)
+    total_avg = db.Column(db.Float, nullable=True)
+    member_id = db.Column(db.BigInteger, db.ForeignKey('member.member_id'), nullable=True)
+
+
+class ChallengeHistory(db.Model):
+    __tablename__ = 'challenge_history'
+    challenge_history_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    category = db.Column(db.Enum(CategoryEnum), nullable=False)
+    challenge_content = db.Column(db.String(255), nullable=False)
+    planet_img_url = db.Column(db.String(255), nullable=False)
+    planet_name = db.Column(db.String(255), nullable=False)
+    progress = db.Column(db.Float, nullable=False)
+    member_id = db.Column(db.BigInteger, db.ForeignKey('member.member_id'), nullable=True)
+    challenge_result = db.Column(db.Enum(ChallengeResultEnum), nullable=False)
+
+
+# -- 인기 키워드 --
 def delete_all_records(model):
     try:
         db.session.query(model).delete()
@@ -78,115 +120,338 @@ def delete_all_records(model):
         return False
 
 
-# 의미없는 단어 제거
 def remove_stop_words(words):
-    stop_words = set("매일 하루 일 분 시간 초 번 하나 운동 챌린지".split())
+    stop_words = set("매일 하루 일 시간 시 분 초 번 하나 운동 챌린지 층".split())
     return [word for word in words if word not in stop_words]
 
 
 def get_mode_keywords(texts):
-    nouns = []  # 명사만 저장
     mecab = MeCab()
+    nouns = []
     for text in texts:
         nouns += list(set(mecab.nouns(text)))
     clean_nouns = remove_stop_words(nouns)
-    word_counts = Counter(clean_nouns) # 단어 빈도 계산
-    mode_keyword = [item[0] for item in word_counts.most_common(7)]  # 최빈값 추출, 상위 7개
-    return mode_keyword
+    word_counts = Counter(clean_nouns)
+    return [item[0] for item in word_counts.most_common(7)]
 
 
 def add_keyword(mode_keywords, category):
     try:
-        # `mode_keywords의 각 항목 객체 생성
         for keyword in mode_keywords:
-            new_keyword = PopularKeyword(keyword=keyword, category=category)
-            db.session.add(new_keyword)
+            db.session.add(PopularKeyword(keyword=keyword, category=category))
         db.session.commit()
         return True
-
     except Exception as e:
-        # 예외 발생 시 롤백
         db.session.rollback()
         app.logger.error(f"Error adding keyword: {str(e)}")
         return False
 
 
-@app.route('/api/v1/admin/keyword', methods=['GET'])
 def get_challenge_content():
-    if delete_all_records(PopularKeyword):
-        app.logger.info("All keyword records have been deleted successfully")
-        for category in CategoryEnum:
-            planets = Planet.query.filter(
-                and_(
-                    Planet.category == category.name,
-                    Planet.created_at >= datetime.utcnow()-timedelta(days=7) # 일주일 전 ~ 현재
-                )
-            ).all()
-            if planets:
-                challenge_contents = [planet.challenge_content for planet in planets]
-                mode_keyword = get_mode_keywords(challenge_contents)
-                if add_keyword(mode_keyword, category.name):
-                    app.logger.info(f"Keywords added for category: {category.name}")
+    with app.app_context():  # current_app 대신 app을 직접 사용하여 애플리케이션 컨텍스트 설정
+        if delete_all_records(PopularKeyword):
+            for category in CategoryEnum:
+                planets = Planet.query.filter(
+                    and_(
+                        Planet.category == category.name,
+                        Planet.created_at >= datetime.utcnow() - timedelta(days=7)
+                    )
+                ).all()
+                if planets:
+                    challenge_contents = [planet.challenge_content for planet in planets]
+                    mode_keyword = get_mode_keywords(challenge_contents)
+                    if add_keyword(mode_keyword, category.name):
+                        app.logger.info(f"Keywords added for category: {category.name}")
+                    else:
+                        app.logger.error("There was an issue adding the keyword")
                 else:
-                    return jsonify({'message': 'There was an issue adding the keyword'}), 500
-            else:
-                app.logger.info(f"No planets found for category: {category.name}")
-        return jsonify({'message': 'Keywords for all categories have been created successfully'}), 201
-    else:
-        return jsonify({"error": "An error occurred while deleting records"}), 500
+                    app.logger.info(f"No planets found for category: {category.name}")
+        else:
+            app.logger.error("An error occurred while deleting records")
+
+
+# 스케줄러
+cron = BackgroundScheduler(daemon=True, timezone='Asia/Seoul')
+cron.add_job(get_challenge_content, 'cron', day_of_week='sun', hour=0, minute=0)  # 매주 일요일 밤 12시(00:00)에 실행
+cron.start()
 
 
 # -- 이미지 유사도 --
-# URL 이미지 로드
-def load_image(url):
+def create_feature_extractor():
+    base_model = models.efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
+    feature_extractor = nn.Sequential(*list(base_model.children())[:-2])
+    feature_extractor.eval()
+    return feature_extractor
+
+
+def load_and_preprocess_image_from_url(image_url, input_size=(224, 224)):
     try:
-        resp = urlopen(url)
-        arr = np.asarray(bytearray(resp.read()), dtype=np.uint8)
-        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-        return img
-    except (URLError, HTTPError) as e:
-        raise ValueError(f"Error loading image from URL: {url}, {e}")
+        response = requests.get(image_url, timeout=5)
+        response.raise_for_status()
+        image = Image.open(BytesIO(response.content)).convert('RGB')
+        transform = transforms.Compose([
+            transforms.Resize(input_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+        return transform(image).unsqueeze(0)
+    except Exception as e:
+        app.logger.error(f"Error loading or processing image: {str(e)}")
+        return None
 
 
-@app.route('/api/v1/images', methods=['POST'])
-def get_img_url():
-    # 쿼리 매개변수
-    standard_img_url = request.json.get('standardImgUrl') # 기준 이미지
-    target_img_url = request.json.get('targetImgUrl') # 유저 이미지
+def compare_images(image1_url, image2_url, feature_extractor, threshold):
+    img1 = load_and_preprocess_image_from_url(image1_url)
+    img2 = load_and_preprocess_image_from_url(image2_url)
+
+    if img1 is None or img2 is None:
+        return None
+
+    with torch.no_grad():
+        features1 = feature_extractor(img1).flatten().numpy()
+        features2 = feature_extractor(img2).flatten().numpy()
+
+    similarity = cosine_similarity([features1], [features2])[0][0]
+    return round(similarity * 100), bool(similarity > threshold)
+
+
+feature_extractor = create_feature_extractor()
+
+
+@app.route('/ai/v1/images', methods=['POST'])
+def image_verification():
+    standard_img_url = request.json.get('standardImgUrl')
+    target_img_url = request.json.get('targetImgUrl')
     if not standard_img_url or not target_img_url:
-        return jsonify({"error": "Both imgUrl1 and imgUrl2 are required"}), 400
+        response = {
+            "code": "8000",
+            "message": "두 개의 이미지 URL이 필요합니다.",
+            "data": None,
+            "isSuccess": False
+        }
+        return jsonify(response), 400
 
-    # OpenCV 이미지 유사도 검사
-    img_urls = [standard_img_url, target_img_url]
-    hists = []
+    result = compare_images(standard_img_url, target_img_url, feature_extractor, threshold=0.088)
+
+    if result is None:
+        response = {
+            "code": "8001",
+            "message": "이미지 처리에서 오류가 발생했습니다.",
+            "data": None,
+            "isSuccess": False
+        }
+        return jsonify(response), 500
+
+    response = {
+        "code": "2000",
+        "message": "성공",
+        "data": {
+            "similarity_score": result[0],
+            "verified": result[1]
+        },
+        "isSuccess": True
+    }
+    return jsonify(response), 200
+
+
+# -- 마이페이지 --
+def calculate_z_score_percentiles(category_stats, user_avg):
+    percentiles = {}
+    for category, stats_data in category_stats.items():
+        mean = stats_data['avg']
+        std_dev = stats_data['stddev']
+        user_score = user_avg.get(category)
+        if user_score != -1 and mean != -1 and std_dev != -1 and std_dev != 0:
+            z_score = (user_score - mean) / std_dev
+            percentiles[category] = (1 - stats.norm.cdf(z_score)) * 100
+        else:
+            percentiles[category] = -1  # 유효하지 않은 값 처리
+    return percentiles
+
+
+@app.route('/ai/v1/members/mypage/<int:member_id>', methods=['GET'])
+def get_progress_avg(member_id):
     try:
-        for url in img_urls:
-            img = load_image(url)
-            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            hist = cv2.calcHist([hsv], [0, 1], None, [180, 256], [0, 180, 0, 256])
-            cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
-            hists.append(hist.astype(np.float32))
+        try:
+            success_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+                ChallengeHistory.member_id == member_id,
+                ChallengeHistory.challenge_result == ChallengeResultEnum.SUCCESS
+            ).scalar()
+        except Exception as e:
+            app.logger.error(f"Error calculating success_challenge_cnt: {str(e)}")
+            return jsonify({
+                "code": "8003",
+                "message": "챌린지 성공 횟수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
 
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+        try:
+            all_challenge_cnt = db.session.query(func.count(ChallengeHistory.challenge_history_id)).filter(
+                ChallengeHistory.member_id == member_id,
+            ).scalar()
+        except Exception as e:
+            app.logger.error(f"Error calculating all_challenge_cnt: {str(e)}")
+            return jsonify({
+                "code": "8004",
+                "message": "전체 챌린지 횟수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
 
-    standard_img = hists[0]  # 기준 이미지
-    flag = cv2.HISTCMP_INTERSECT  # 교차 검증
-    try:
-        score = cv2.compareHist(standard_img, hists[1], flag)
-        if np.sum(standard_img) == 0:
-            raise ZeroDivisionError("Sum of standard image histogram is zero.")
-        score = round(score / np.sum(standard_img) * 100)
-    except ZeroDivisionError as e:
-        return jsonify({"error": str(e)}), 500
+        try:
+            user_progress = ProgressAvg.query.filter_by(member_id=member_id).first()
+            if not user_progress:
+                response = {
+                    "code": "8002",
+                    "message": "해당 회원에 대한 평균 진행률 데이터가 없습니다.",
+                    "data": None,
+                    "isSuccess": False
+                }
+                return jsonify(response), 404
+        except Exception as e:
+            app.logger.error(f"Error fetching user_progress: {str(e)}")
+            return jsonify({
+                "code": "8005",
+                "message": "사용자 진행 데이터를 가져오는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
 
-    verified = bool(score >= 35)
+        try:
+            stats_query = db.session.query(
+                func.avg(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label('beauty_avg'),
+                func.stddev(case((ProgressAvg.beauty_avg != -1, ProgressAvg.beauty_avg), else_=None)).label(
+                    'beauty_stddev'),
+                func.avg(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_avg'),
+                func.stddev(case((ProgressAvg.etc_avg != -1, ProgressAvg.etc_avg), else_=None)).label('etc_stddev'),
+                func.avg(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label(
+                    'exercise_avg'),
+                func.stddev(case((ProgressAvg.exercise_avg != -1, ProgressAvg.exercise_avg), else_=None)).label(
+                    'exercise_stddev'),
+                func.avg(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_avg'),
+                func.stddev(case((ProgressAvg.life_avg != -1, ProgressAvg.life_avg), else_=None)).label('life_stddev'),
+                func.avg(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label('study_avg'),
+                func.stddev(case((ProgressAvg.study_avg != -1, ProgressAvg.study_avg), else_=None)).label(
+                    'study_stddev'),
+                func.avg(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label('total_avg'),
+                func.stddev(case((ProgressAvg.total_avg != -1, ProgressAvg.total_avg), else_=None)).label(
+                    'total_stddev')
+            ).one()
+        except Exception as e:
+            app.logger.error(f"Error fetching stats_query: {str(e)}")
+            return jsonify({
+                "code": "8006",
+                "message": "통계 데이터를 가져오는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
 
-    return jsonify({
-        "similarity_score": score, # 점수
-        "verified": verified # 인증 결과
-    })
+        try:
+            category_stats = {
+                'beauty': {'avg': stats_query.beauty_avg if stats_query.beauty_avg is not None else -1,
+                           'stddev': stats_query.beauty_stddev if stats_query.beauty_stddev is not None else -1},
+                'etc': {'avg': stats_query.etc_avg if stats_query.etc_avg is not None else -1,
+                        'stddev': stats_query.etc_stddev if stats_query.etc_stddev is not None else -1},
+                'exercise': {'avg': stats_query.exercise_avg if stats_query.exercise_avg is not None else -1,
+                             'stddev': stats_query.exercise_stddev if stats_query.exercise_stddev is not None else -1},
+                'life': {'avg': stats_query.life_avg if stats_query.life_avg is not None else -1,
+                         'stddev': stats_query.life_stddev if stats_query.life_stddev is not None else -1},
+                'study': {'avg': stats_query.study_avg if stats_query.study_avg is not None else -1,
+                          'stddev': stats_query.study_stddev if stats_query.study_stddev is not None else -1},
+                'total': {'avg': stats_query.total_avg if stats_query.total_avg is not None else -1,
+                          'stddev': stats_query.total_stddev if stats_query.total_stddev is not None else -1},
+            }
+        except Exception as e:
+            app.logger.error(f"Error preparing category_stats: {str(e)}")
+            return jsonify({
+                "code": "8007",
+                "message": "카테고리 통계를 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            user_avg = {
+                'beauty': user_progress.beauty_avg,
+                'etc': user_progress.etc_avg,
+                'exercise': user_progress.exercise_avg,
+                'life': user_progress.life_avg,
+                'study': user_progress.study_avg,
+                'total': user_progress.total_avg
+            }
+        except Exception as e:
+            app.logger.error(f"Error preparing user_avg: {str(e)}")
+            return jsonify({
+                "code": "8008",
+                "message": "사용자 평균을 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            user_percentiles = calculate_z_score_percentiles(category_stats, user_avg)
+        except Exception as e:
+            app.logger.error(f"Error calculating user_percentiles: {str(e)}")
+            return jsonify({
+                "code": "8009",
+                "message": "사용자 백분위수를 계산하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        try:
+            response_data = {
+                "completionCnt": success_challenge_cnt,
+                "challengeCnt": all_challenge_cnt,
+                "myTotalAvg": user_avg['total'],
+                "myTotalPer": user_percentiles['total'],
+                "totalAvg": category_stats['total']['avg'],
+                "myExerciseAvg": user_avg['exercise'],
+                "myExercisePer": user_percentiles['exercise'],
+                "exerciseAvg": category_stats['exercise']['avg'],
+                "myBeautyAvg": user_avg['beauty'],
+                "myBeautyPer": user_percentiles['beauty'],
+                "beautyAvg": category_stats['beauty']['avg'],
+                "myLifeAvg": user_avg['life'],
+                "myLifePer": user_percentiles['life'],
+                "lifeAvg": category_stats['life']['avg'],
+                "myStudyAvg": user_avg['study'],
+                "myStudyPer": user_percentiles['study'],
+                "studyAvg": category_stats['study']['avg'],
+                "myEtcAvg": user_avg['etc'],
+                "myEtcPer": user_percentiles['etc'],
+                "etcAvg": category_stats['etc']['avg']
+            }
+
+            rounded_response_data = {key: round(value, 2) for key, value in response_data.items()}
+        except Exception as e:
+            app.logger.error(f"Error preparing response_data: {str(e)}")
+            return jsonify({
+                "code": "8010",
+                "message": "응답 데이터를 준비하는 중 오류가 발생했습니다.",
+                "data": None,
+                "isSuccess": False
+            }), 500
+
+        response = {
+            "code": "2000",
+            "message": "성공",
+            "data": rounded_response_data,
+            "isSuccess": True
+        }
+        return jsonify(response)
+
+    except Exception as e:
+        app.logger.error(f"Unhandled error in get_progress_avg: {str(e)}")
+        return jsonify({
+            "code": "8011",
+            "message": "알 수 없는 오류가 발생했습니다.",
+            "data": None,
+            "isSuccess": False
+        }), 500
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    if os.getenv('FLASK_ENV') == 'development':
+        app.run(host="0.0.0.0", port=3000, debug=True)
