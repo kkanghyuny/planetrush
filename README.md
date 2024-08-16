@@ -35,7 +35,7 @@ https://i11a509.p.ssafy.io
     <img src="https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white"/>
   </p>
   
-  #### Server
+  #### Infra
   <p>
     <img src="https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/>
     <img src="https://img.shields.io/badge/-Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white"/>
@@ -43,6 +43,7 @@ https://i11a509.p.ssafy.io
     <img src="https://img.shields.io/badge/-Nginx-269539?style=flat-square&logo=Nginx&logoColor=white"/>
     <img src="https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=Ubuntu&logoColor=white"/>
     <img src="https://img.shields.io/badge/AWS_S3-569A31?logo=amazons3&logoColor=fff&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Gunicorn-499848?style=flat-square&logo=Gunicorn&logoColor=white">
   </p>
 
   #### Tools
