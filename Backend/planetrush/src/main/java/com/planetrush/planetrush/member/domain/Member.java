@@ -12,16 +12,13 @@ import com.planetrush.planetrush.member.exception.AlreadyWithdrawnException;
 import com.planetrush.planetrush.member.exception.NicknameOverflowException;
 import com.planetrush.planetrush.planet.domain.Resident;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -46,13 +43,6 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
 	private Long id;
-
-	/**
-	 * 사용자의 권한정보입니다.
-	 */
-	@ElementCollection
-	@CollectionTable(name = "member_authority", joinColumns = @JoinColumn(name = "member_id"))
-	private List<String> authorities = new ArrayList<>();
 
 	/**
 	 * 사용자의 닉네임입니다.
@@ -197,7 +187,7 @@ public class Member {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getAuthorities(), getNickname(), getEmail(), getCi(), getProvider(), getStatus(),
+		return Objects.hash(getId(), getNickname(), getEmail(), getCi(), getProvider(), getStatus(),
 			getResidents(), getCreatedAt(), getUpdatedAt());
 	}
 	

@@ -50,6 +50,12 @@ public class AuthServiceImpl implements AuthService {
 				.build());
 			progressAvgRepository.save(ProgressAvg.builder()
 				.member(member)
+				.totalAvg(-1.0)
+				.beautyAvg(-1.0)
+				.exerciseAvg(-1.0)
+				.lifeAvg(-1.0)
+				.studyAvg(-1.0)
+				.etcAvg(-1.0)
 				.build());
 		}
 		/* 로그인 */

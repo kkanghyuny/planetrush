@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.planetrush.planetrush.core.aop.annotation.RequireJwtToken;
 import com.planetrush.planetrush.core.aop.member.MemberContext;
-import com.planetrush.planetrush.core.jwt.JwtTokenProvider;
 import com.planetrush.planetrush.core.template.response.BaseResponse;
 import com.planetrush.planetrush.member.controller.request.KakaoLoginReq;
 import com.planetrush.planetrush.member.controller.request.KakaoLogoutReq;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class AuthController extends MemberController {
 
-	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthService authService;
 
 	/**
