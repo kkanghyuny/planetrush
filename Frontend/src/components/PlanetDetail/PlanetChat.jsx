@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import { createAvatar } from "@dicebear/core";
 import { botttsNeutral } from "@dicebear/collection";
 
+import { BiSend } from "react-icons/bi";
 import "../../styles/PlanetChat.css";
 
 const CHAT_URL = "i11a509.p.ssafy.io";
@@ -64,7 +65,7 @@ const PlanetChat = ({ planetId, residents }) => {
           scrollToBottom();
         },
         (error) => {
-          console.error("STOMP connection error:", error);
+          throw error
         }
       );
     });
@@ -182,9 +183,9 @@ const PlanetChat = ({ planetId, residents }) => {
           className="chat-input"
           placeholder="채팅을 입력해주세요"
         />
-        <button onClick={sendMessage} className="send-button">
-          입력
-        </button>
+        <div onClick={sendMessage} className="send-button">
+          <BiSend className="send-button" />
+        </div>
       </div>
     </div>
   );

@@ -10,18 +10,63 @@
 }
 
 .search-container {
-  padding: 0 10px;
-  margin-top: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%; /* 부모 요소의 전체 너비를 차지하도록 설정 */
+  padding: 0 10px;
+  margin: 5px 0;
 }
 
 .title-container {
   display: flex;
   align-items: center; /* 텍스트 내부에서의 수직 정렬을 맞춤 */
+  padding-left: 10px;
   white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 함 */
+}
+
+.link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
+  font-size: 30px;
+  color: #31fff3;
+  text-decoration: none;
+}
+
+.link-icon:hover {
+  color: #31fff3;
+}
+
+.link-icon svg {
+  margin-left: 8px;
+}
+
+.search-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.rocket-center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 550px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.rocket {
+  width: 300px;
+  height: auto;
+}
+
+.rocket-text {
+  margin-top: 20px;
+  font-size: 1.5em;
+  color: white;
 }
 
 .main-grid-container {
@@ -31,27 +76,47 @@
   width: 100%;
   max-width: 370px;
   position: relative;
-  height: 550px;
+  height: 100vh;
   overflow: hidden;
   gap: 10px;
   padding: 10px;
 }
 
-.planet {
-  display: flex;
-  justify-content: center;
+.planet-img {
+  width: 80%;
+  height: auto;
   align-items: center;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 50%;
-  position: absolute;
-  transition: transform 0.5s;
+  object-fit: contain;
 }
 
-.planet:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+.planet-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 90px;
+}
+
+.planet-name-container {
+  width: 80%;
+  height: 25px; /* 고정 높이 설정 */
+  overflow: hidden;
+  position: relative;
+}
+
+.planet-name {
+  position: absolute;
+  white-space: nowrap;
+  color: white;
+  font-size: clamp(10px, 2vw, 15px);
+  animation: marquee 4s linear infinite;
+}
+
+.burning {
+  animation: fire 0.5s infinite alternate, floating 0.3s infinite alternate;
 }
 
 @keyframes floating {
@@ -76,87 +141,6 @@
   }
 }
 
-.burning {
-  animation: fire 0.5s infinite alternate, floating 0.3s infinite alternate;
-}
-
-.rocket-center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 550px;
-  text-align: center;
-  overflow: hidden;
-}
-
-.rocket {
-  width: 300px;
-  height: auto;
-}
-
-.rocket-text {
-  margin-top: 20px;
-  font-size: 1.5em;
-  color: white;
-}
-
-.link-icon {
-  padding: 0 10px;
-  font-size: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  text-decoration: none;
-  color: #31fff3;
-}
-
-.link-icon:hover {
-  color: #31fff3;
-}
-
-.link-icon svg {
-  margin-left: 8px;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.planet-wrapper {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  height: auto;
-  min-height: 90px;
-}
-
-.planet-img {
-  width: 80%;
-  height: auto;
-  align-items: center;
-  object-fit: contain;
-}
-
-.planet-name-container {
-  width: 80%;
-  height: 25px; /* 고정 높이 설정 */
-  overflow: hidden;
-  position: relative;
-}
-
-.planet-name {
-  position: absolute;
-  animation: marquee 4s linear infinite;
-  white-space: nowrap;
-  color: white;
-  font-size: clamp(10px, 2vw, 15px);
-}
-
 @keyframes marquee {
   0% {
     transform: translateX(100%);
@@ -169,12 +153,7 @@ a {
   }
 }
 
-.main-title {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.search-icon {
-  width: 35px;
-  height: 35px;
+a {
+  text-decoration: none;
+  color: inherit;
 }

@@ -73,3 +73,16 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+.text-color {
+  font-size: 20px;
+  font-weight: bold;
+  color: #31fff3;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+}

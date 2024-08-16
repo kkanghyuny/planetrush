@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
@@ -10,6 +10,7 @@ import Auth from "./pages/AuthenticaitionPage/Kakaoauth";
 
 import Navigation from "./components/Nav/BottomNav";
 import SearchBar from "./pages/SearchPage/SearchPlanet";
+import Tutorial from "./components/Modals/TutorialModal";
 
 import PlanetDetailRecruiting from "./pages/PlanetDetailPage/PlanetDetailRecruiting";
 import PlanetDetailInProgress from "./pages/PlanetDetailPage/PlanetDetailInProgress";
@@ -22,6 +23,7 @@ import PlanetResult from "./pages/PlanetCreatePage/PlanetResult";
 
 import MyPage from "./pages/MyPage/MyPage";
 
+import audio from "./assets/hound-dog-jazz-228434.mp3";
 import "./App.css";
 
 const PrivateRoute = ({ element }) => {
@@ -34,10 +36,23 @@ const PrivateRoute = ({ element }) => {
 function App() {
   const location = useLocation();
   const isStartPage = location.pathname === "/";
+  const isMainPage = location.pathname === "/main";
+
+  const audioRef = useRef(null);
+
+  // 오디오 볼륨 설정
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+    }
+  }, []);
 
   return (
     <div className="App">
       <BackGround />
+      <audio ref={audioRef} autoPlay loop>
+        <source src={audio} type="audio/mpeg" />
+      </audio>
 
       <div
         className={`route-wrapper ${isStartPage ? "start-page-wrapper" : ""}`}
@@ -83,8 +98,8 @@ function App() {
           />
         </Routes>
       </div>
-
       {!isStartPage && <Navigation />}
+      {isMainPage && <Tutorial />}
     </div>
   );
 }

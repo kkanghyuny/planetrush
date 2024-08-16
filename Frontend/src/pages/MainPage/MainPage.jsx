@@ -5,10 +5,12 @@ import instance from "../AuthenticaitionPage/Axiosinstance";
 import Cookies from "js-cookie";
 import Tutorial from "../../components/Modals/TutorialModal.jsx";
 
+import "../../App.css";
 import "../../styles/Main.css";
 import rocket from "../../assets/Rocket.png";
 import gift from "../../assets/gift.png";
-import search from "../../assets/search.png";
+import search from "../../assets/searchbutton.png";
+import UseChallengeCountStore from "../../store/challengeCountStore";
 
 const gridPositions = [
   { top: "0%", left: "0%" },
@@ -37,6 +39,7 @@ const MainPage = () => {
 
   const [planets, setPlanets] = useState(null);
   const [shuffledPositions, setShuffledPositions] = useState([]);
+  const { resetChallengeCount } = UseChallengeCountStore();
   const nickname = Cookies.get("nickname");
 
   useEffect(() => {
@@ -49,7 +52,12 @@ const MainPage = () => {
         const response = await instance.get(`/planets/main/list`);
         if (response.data.isSuccess) {
           const data = response.data.data;
-          setPlanets(data);
+          const count = data.length;
+          resetChallengeCount(count);
+
+          const shuffledData = shuffleArray(data);
+
+          setPlanets(shuffledData);
         } else {
           setPlanets([]);
         }
@@ -107,12 +115,17 @@ const MainPage = () => {
     };
   };
 
-  const handleToDetail = (planetStatus, planetId) => {
+  const handleToDetail = (planetStatus, planetId, isLastDay) => {
     return () => {
       if (planetStatus === "READY") {
         navigate(`/planet/${planetId}`, { state: { from: "/main" } });
       } else {
-        navigate("/planet-progress", { state: planetId });
+        navigate("/planet-progress", {
+          state: {
+            planetId: planetId,
+            isLastDay: isLastDay,
+          },
+        });
       }
     };
   };
@@ -155,7 +168,11 @@ const MainPage = () => {
                   planet.isLastDay ? "burning" : ""
                 }`}
                 style={planetStyle}
-                onClick={handleToDetail(planet.status, planet.planetId)}
+                onClick={handleToDetail(
+                  planet.status,
+                  planet.planetId,
+                  planet.isLastDay
+                )}
               >
                 <img
                   src={planetImgUrl}

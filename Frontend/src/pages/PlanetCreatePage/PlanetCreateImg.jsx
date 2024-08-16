@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Canvas from "../../components/PlanetCreate/Canvas";
 import ChoosePlanet from "../../components/PlanetCreate/ChoosePlanet";
+import NoMorePlanetModal from "../../components/Modals/NoMorePlanetModal";
 
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
 import "../../styles/PlanetCreateImg.css";
@@ -24,6 +25,25 @@ const PlanetCreateImg = () => {
 
   //캔버스 유효성 검사
   const [isCanvasEmpty, setIsCanvasEmpty] = useState(true);
+
+  const [NoMorePlanetModalOpen, setNoMorePlanetModalOpen] = useState(false);
+
+  // 로컬 스토리지에서 challengeCount를 불러와서 모달을 열기
+  useEffect(() => {
+    const storedChallengeCount = localStorage.getItem("challengeCount");
+    const parsedChallengeCount = storedChallengeCount ? JSON.parse(storedChallengeCount) : 0;
+
+    if (parsedChallengeCount >= 9) {
+      setNoMorePlanetModalOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => setShowAlert(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   const getNewPlanetInfo = () => {
     const planetImg = {
@@ -51,22 +71,18 @@ const PlanetCreateImg = () => {
     navigate("/create-foam", { state: { savedImage: planetImg } });
   };
 
-  //view를 바꿀 수 있게함 (기본화면 - 고르기)
   const handleDefaultClick = () => {
     setView("default");
   };
 
-  //커스텀 누르기
   const handleCustomClick = () => {
     setView("custom");
   };
 
-  //고르기에서 이미지 선택시 선택된 이미지 뜨기
   const handleImageSelect = (image) => {
     setSelectedImage(image);
   };
 
-  //커스텀 url, file 저장
   const handleSaveImage = (url, file) => {
     setCanvasData(url);
     setCanvasFile(file);
@@ -75,13 +91,6 @@ const PlanetCreateImg = () => {
   const handleCanvasStateChange = (isEmpty) => {
     setIsCanvasEmpty(isEmpty);
   };
-
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => setShowAlert(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showAlert]);
 
   return (
     <div className="img-container">
@@ -132,6 +141,11 @@ const PlanetCreateImg = () => {
       <button onClick={getNewPlanetInfo} className="create-button">
         창조하기
       </button>
+      {NoMorePlanetModalOpen && (
+        <NoMorePlanetModal
+          setNoMorePlanetModalOpen={setNoMorePlanetModalOpen}
+        />
+      )}
     </div>
   );
 };

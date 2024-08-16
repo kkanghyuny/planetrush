@@ -95,9 +95,7 @@ const SearchPlanet = () => {
       }
 
       setHasNext(data.hasNext);
-    } catch (error) {
-      console.error("Failed to fetch challenges", error);
-    }
+    } catch (error) {}
   };
 
   const handleInputChange = (e) => {
@@ -228,13 +226,13 @@ const SearchPlanet = () => {
         {recommends.length > 0 && (
           <div className="recommend-container">
             <h3 className="search-h3">
-              지난 주,  
+              지난 주,
               <span className="category-recommend">
                 {getCategoryLabel(selectedCategory)} 카테고리
               </span>
               에서
             </h3>
-            <h3 className="search-h3">가장 핫한 챌린지예요</h3>
+            <h3 className="search-h3">가장 핫한 키워드예요</h3>
             <div className="recommend-list">
               {recommends.map((recommend, index) => (
                 <button
@@ -267,36 +265,29 @@ const SearchPlanet = () => {
                   {submittedQuery ? (
                     <>
                       <h4>
-                        <span className="fail-query">{submittedQuery}</span>
-                        에 해당하는 챌린지가
+                        <span className="fail-query">{submittedQuery}</span>에
+                        해당하는 챌린지가
                       </h4>
-                      <h4>
-                        존재하지 않습니다.
-                      </h4>
+                      <h4>존재하지 않습니다.</h4>
                     </>
                   ) : selectedRecommend ? (
                     <>
-                    <h4>
-                      <span className="fail-query">{selectedRecommend}</span>
-                      에 해당하는 챌린지가
-                    </h4>
-                    <h4>
-                      존재하지 않습니다.
-                    </h4>
-                  </>
+                      <h4>
+                        <span className="fail-query">{selectedRecommend}</span>
+                        에 해당하는 챌린지가
+                      </h4>
+                      <h4>존재하지 않습니다.</h4>
+                    </>
                   ) : selectedCategory && !query ? (
                     <>
                       <h4>
-                      <span className="fail-query">
-                        {getCategoryLabel(selectedCategory)}
-                      </span>
-                       카테고리에 해당하는 챌린지가 
+                        <span className="fail-query">
+                          {getCategoryLabel(selectedCategory)}
+                        </span>
+                        카테고리에 해당하는 챌린지가
                       </h4>
-                      <h4>
-                        존재하지 않습니다.
-                      </h4>
+                      <h4>존재하지 않습니다.</h4>
                     </>
-
                   ) : null}
                 </div>
               </>

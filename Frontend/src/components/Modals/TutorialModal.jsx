@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect } from "react";
+import useTutorialStore from "../../store/tutorialStore";
+
+import TutorialList from "../Lists/TutorialList";
+
+import tutorialButton from "../../assets/tutorial.png";
+import "../../styles/Tutorial.css";
 
 const Tutorial = () => {
-  const [currentPage, setCurrentPage] = useState(0);
+  const {
+    currentPage,
+    showModal,
+    setCurrentPage,
+    setShowModal,
+    initialize,
+    closeModal,
+  } = useTutorialStore();
 
-  const pages = [
-    "Page 1: Welcome to the tutorial!",
-    "Page 2: Here is some information.",
-    "Page 3: Another step in the tutorial.",
-    "Page 4: Keep going!",
-    "Page 5: You're halfway there.",
-    "Page 6: More useful info.",
-    "Page 7: Almost done!",
-    "Page 8: Final steps.",
-    "Page 9: Getting ready to finish.",
-    "Page 10: Tutorial complete!"
-  ];
+  useEffect(() => {
+    // 컴포넌트 마운트 시 초기화
+    initialize();
+
+    // 로그인 이력 확인
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+
+    if (!hasSeenTutorial) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
+    }
+  }, [initialize, setShowModal]);
+
+  const pages = TutorialList(); // pages 배열 가져오기
 
   const handlePrev = () => {
     if (currentPage > 0) {
@@ -28,28 +44,67 @@ const Tutorial = () => {
     }
   };
 
-  return (
-    <div className="App">
-      <button onClick={() => document.getElementById('tutorialModal').style.display = 'block'}>
-        Open Tutorial
-      </button>
+  const handleCloseModal = () => {
+    closeModal();
+    localStorage.setItem("hasSeenTutorial", "true"); // 모달이 닫힐 때 로그인 이력을 localStorage에 저장
+  };
 
-      <div id="tutorialModal" className="modal">
-        <div className="modal-content">
-          <span onClick={handlePrev} className="arrow">&#9664;</span>
-          <div className="modal-page">
-            {pages[currentPage]}
+  return (
+    <div>
+      <img
+        className="tutorial-button"
+        src={tutorialButton}
+        alt="Open Tutorial"
+        onClick={() => setShowModal(true)}
+      />
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-page">
+              튜토리얼
+              <img
+                className="tutorial-img"
+                src={pages[currentPage].image}
+                alt={`Tutorial Page ${currentPage + 1}`}
+              />
+              <p>{pages[currentPage].description}</p>
+            </div>
+            <div className="arrow-area">
+              <span
+                onClick={handlePrev}
+                className={`arrow ${currentPage === 0 ? "hidden" : "visible"}`}
+              >
+                &#9664;
+              </span>
+              <span
+                onClick={handleNext}
+                className={`arrow ${
+                  currentPage === pages.length - 1 ? "hidden" : "visible"
+                }`}
+              >
+                &#9654;
+              </span>
+            </div>
+
+            <div className="exit-button-container">
+              <button onClick={handleCloseModal} className="close-button">
+                닫기
+              </button>
+            </div>
+            <div className="pagination">
+              {pages.map((_, index) => (
+                <span
+                  key={index}
+                  className={`dot ${index === currentPage ? "active" : ""}`}
+                ></span>
+              ))}
+            </div>
           </div>
-          <span onClick={handleNext} className="arrow">&#9654;</span>
         </div>
-        <div className="pagination">
-          {pages.map((_, index) => (
-            <span key={index} className={`dot ${index === currentPage ? 'active' : ''}`}></span>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
-}
+};
 
 export default Tutorial;

@@ -1,103 +1,131 @@
 .detail-info-container {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .planet-category {
-    text-align: center;
-    background-color: #31fff3;
-    border-radius: 20px;
-    width: 60px;
-    color: black;
-    font-weight: bold;
-    margin-right: 30px;
-    padding: 3px 0;
+  text-align: center;
+  background-color: #31fff3;
+  border-radius: 20px;
+  width: 60px;
+  color: black;
+  font-weight: bold;
+  margin-right: 30px;
+  padding: 3px 0;
 }
 
 .planet-detail-content {
-    background-color: rgba(255,255,255,0.7);
-    padding: 10px 20px;
-    border-radius: 20px;
-    color: black;
-    font-weight: bold;
-    text-align: center;
-    margin: 0 auto;
-    width: fit-content; 
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .detail-participant-ratio {
-    margin: 20px;
-    text-align: center;
+  margin: 20px;
+  text-align: center;
 }
 
 .detail-img-container {
-    text-align: center;
+  text-align: center;
 }
 
 .detail-img {
-    width: 250px;
-    height: 250px;
+  width: 250px;
+  height: 250px;
 }
 
-.direction-button-container{
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.direction-button-container {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 
 .direction-button {
-    width: 20px;
-    height: 20px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
-    border: none;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    backdrop-filter: none; /* 버튼 배경의 흐림 효과 제거 */
-    background-clip: padding-box;
-    margin: 0 10px;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  border: none;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  backdrop-filter: none; /* 버튼 배경의 흐림 효과 제거 */
+  background-clip: padding-box;
+  margin: 0 10px;
 }
 
 .triangle {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .triangle-right {
-    clip-path: polygon(30% 50%, 60% 30%, 60% 70%);
-    background: inherit;
+  clip-path: polygon(30% 50%, 60% 30%, 60% 70%);
+  background: inherit;
 }
 
 .triangle-left {
-    clip-path: polygon(70% 50%, 40% 30%, 40% 70%);
-    background: inherit;
+  clip-path: polygon(70% 50%, 40% 30%, 40% 70%);
+  background: inherit;
 }
 
 .isjoined-button-container {
-    margin: 20px 0;
-    text-align: center;
+  margin: 20px 0;
+  text-align: center;
 }
 
 .isjoined-button {
-    padding: 10px;
-    background-color: #31fff3;
-    border-radius: 20px;
-    font-weight: bold;
+  padding: 10px;
+  background-color: #31fff3;
+  border-radius: 20px;
+  font-weight: bold;
+  border: none;
 }
 
 .alert-container {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recruit-verificate-info {
+  display: flex;
+  padding: 20px 30px;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 30px;
+  border: 2px solid cyan;
+  border-radius: 30px;
+  margin: 30px;
+}
+
+.recruit-verificate-content {
+  font-weight: 700;
+  line-height: 30px;
+  padding: 10px 0px;
+  margin-bottom: 20px;
+}
+
+.recruit-verificate-img {
+  width: 100px;
+}
+
+.open-verificate-img {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
 }
