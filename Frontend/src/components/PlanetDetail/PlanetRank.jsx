@@ -1,7 +1,27 @@
+import Crown from "../../assets/Crown.png";
 import "../../styles/PlanetRank.css";
 
-const PlanetRank = ({ residents }) => {
-  //랭킹 정렬
+const PlanetRank = ({ planetInfo, residents }) => {
+  // 최고 verificationContinuityPoint 값을 찾음
+  const maxPoint = residents.reduce((max, resident) => {
+    return Math.max(max, resident.verificationContinuityPoint);
+  }, 0);
+
+  // 점수 기준으로 1등 결정
+  const topRanker = residents.reduce((top, resident) => {
+    if (
+      !top ||
+      resident.verificationContinuityPoint > top.verificationContinuityPoint ||
+      (resident.verificationContinuityPoint ===
+        top.verificationContinuityPoint &&
+        resident.verificationCnt > top.verificationCnt)
+    ) {
+      return resident;
+    }
+    return top;
+  }, null);
+
+  // 정렬은 isQuerriedMember 기준으로 진행
   const sortedResidents = [...residents].sort((a, b) => {
     if (a.isQuerriedMember && !b.isQuerriedMember) {
       return -1;
@@ -9,19 +29,22 @@ const PlanetRank = ({ residents }) => {
     if (!a.isQuerriedMember && b.isQuerriedMember) {
       return 1;
     }
-    if (!a.isQuerriedMember && !b.isQuerriedMember) {
-      const percentageA = (a.verificationCnt / 10) * 100;
-      const percentageB = (b.verificationCnt / 10) * 100;
-      return percentageB - percentageA;
+
+    if (a.verificationContinuityPoint !== b.verificationContinuityPoint) {
+      return b.verificationContinuityPoint - a.verificationContinuityPoint;
+    } else {
+      return b.verificationCnt - a.verificationCnt;
     }
-    return 0;
   });
 
   return (
     <div className="planet-rank-container">
       {sortedResidents.map((resident, index) => {
-        const total = 10;
+        const total = planetInfo.totalVerificationCnt;
         const percentage = (resident.verificationCnt / total) * 100;
+
+        // 왕관은 topRanker에만 표시
+        const isTopRanker = resident.verificationContinuityPoint === maxPoint;
 
         return (
           <div
@@ -31,7 +54,12 @@ const PlanetRank = ({ residents }) => {
             }`}
           >
             <div className="user-verificate">
-              <p className="nickname">{resident.nickname}</p>
+              <p className="nickname">
+                {isTopRanker && (
+                  <img src={Crown} alt="1등" className="crown-icon" />
+                )}
+                {resident.nickname}
+              </p>
             </div>
             <div className="progress-info">
               <div className="progress-rank-bar">

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import heic2any from "heic2any";
+
 import "../../styles/PlanetCreateForm.css";
 
 const PlanetCreateForm = () => {
@@ -101,16 +103,78 @@ const PlanetCreateForm = () => {
     }));
   };
 
-  //인증 사진 파일 업로드
-  const handleFileChange = (e) => {
+  //인증사진 업로드
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    let convertedFile = file; // 초기값을 원본 파일로 설정
 
     if (file) {
-      const missionUrl = URL.createObjectURL(file);
+      let fileType = file.type;
+
+      // MIME 타입이 비어 있을 경우 확장자명으로 판단
+      if (!fileType) {
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (extension === "heic") {
+          fileType = "image/heic";
+        } else if (extension === "heif") {
+          fileType = "image/heif";
+        } else if (extension === "hevc") {
+          fileType = "image/hevc";
+        } else if (extension === "jpg" || extension === "jpeg") {
+          fileType = "image/jpeg";
+        } else if (extension === "png") {
+          fileType = "image/png";
+        }
+      }
+
+      // 파일이 HEIC 형식일 경우 변환
+      if (
+        fileType === "image/heic" ||
+        fileType === "image/heif" ||
+        fileType === "image/hevc"
+      ) {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg", // 변환할 파일 형식
+          });
+
+          convertedFile = new File(
+            [convertedBlob],
+            file.name.replace(/\.[^/.]+$/, ".jpg"),
+            {
+              type: "image/jpeg",
+            }
+          );
+
+          // 변환된 파일의 크기가 제한을 초과하는지 확인
+          if (convertedFile.size > 10 * 1024 * 1024) {
+            // 10MB 초과 체크
+            alert("파일이 10MB를 초과합니다. 다른 사진을 선택하세요.");
+            return;
+          }
+        } catch (error) {
+          alert("이미지 변환 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      } else if (fileType === "image/jpeg" || fileType === "image/png") {
+        // 일반 이미지 파일일 경우
+        if (file.size > 10 * 1024 * 1024) {
+          // 10MB 초과 체크
+          alert("파일이 10MB를 초과합니다. 다른 사진을 선택하세요.");
+          return;
+        }
+      } else {
+        // 지원하지 않는 파일 형식의 경우
+        alert("지원하지 않는 파일 형식입니다. 다른 파일을 선택하세요.");
+        return;
+      }
+
+      const missionUrl = URL.createObjectURL(convertedFile);
 
       setPlanetInfo((prevState) => ({
         ...prevState,
-        missionFile: file,
+        missionFile: convertedFile,
         missionUrl: missionUrl,
       }));
     }
@@ -132,7 +196,7 @@ const PlanetCreateForm = () => {
     if (start < today || start > weekFromToday) {
       setErrors((prevState) => ({
         ...prevState,
-        date: "시작일은 오늘부터 2주일 이내여야 합니다.",
+        date: "시작일은 내일부터 2주일 이내여야 합니다.",
       }));
 
       setPlanetInfo((prevState) => ({
@@ -179,16 +243,51 @@ const PlanetCreateForm = () => {
 
   const handleDateChange = (e) => {
     const { name, value } = e.target;
+    let adjustedValue = value;
+
+    // startDate가 today와 같으면 내일 날짜로 변경
+    if (name === "startDate") {
+      const today = getTodayDate();
+      const tomorrow = new Date();
+
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const formattedTomorrow = `${tomorrow.getFullYear()}-${String(
+        tomorrow.getMonth() + 1
+      ).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
+
+      if (value === today) {
+        adjustedValue = formattedTomorrow;
+
+        setErrors((prevState) => ({
+          ...prevState,
+          date: "시작일은 내일부터 가능합니다.",
+        }));
+
+        // 여기서 return하여 이후의 validateDate 호출을 막음
+        setPlanetInfo((prevState) => ({
+          ...prevState,
+          [name]: adjustedValue,
+        }));
+
+        return; // validateDate 함수를 호출하지 않음
+      } else {
+        setErrors((prevState) => ({
+          ...prevState,
+          date: "",
+        }));
+      }
+    }
 
     setPlanetInfo((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: adjustedValue,
     }));
-    name;
+
     if (name === "startDate" || name === "endDate") {
       validateDate(
-        name === "startDate" ? value : planetInfo.startDate,
-        name === "endDate" ? value : planetInfo.endDate
+        name === "startDate" ? adjustedValue : planetInfo.startDate,
+        name === "endDate" ? adjustedValue : planetInfo.endDate
       );
     }
   };

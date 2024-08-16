@@ -9,7 +9,7 @@ const ExitModal = ({ setIsExitModalOpen, imageUrl }) => {
   const navigate = useNavigate();
   const handleCloseModal = () => {
     setIsExitModalOpen(false);
-    navigate("/main");
+    navigate(-1);
   };
 
   return (

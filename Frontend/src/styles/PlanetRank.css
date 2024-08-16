@@ -4,6 +4,8 @@
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .resident-container {
@@ -35,6 +37,7 @@
 .progress-info {
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   width: 100%;
 }
 
@@ -60,4 +63,9 @@
 .verification-info {
   font-size: 14px;
   color: white;
+}
+
+.crown-icon {
+  width: 30px;
+  object-fit: cover;
 }

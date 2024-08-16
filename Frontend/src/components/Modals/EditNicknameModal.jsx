@@ -37,15 +37,12 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
         Cookies.remove("access-token");
         Cookies.remove("refresh-token");
         Cookies.remove("nickname");
-
         navigate("/");
-        console.log("회원 탈퇴가 성공적으로 처리되었습니다.");
         closeModal();
       } else {
-        console.log("회원 탈퇴 요청이 성공하지 않았습니다.");
       }
     } catch (error) {
-      console.error("회원 탈퇴 중 오류가 발생했습니다:", error);
+      throw error;
     }
   };
 
@@ -78,8 +75,7 @@ const NicknameEditModal = ({ nickname, isOpen, closeModal, saveNickname }) => {
           지금까지 총 <strong>{challengeCnt}</strong>개의 챌린지에 도전했고, 그
           중 <strong>{completionCnt}</strong>개를 성공하셨습니다.
         </p>
-        <button onClick={handleOpenConfirm}>예</button>
-        <button onClick={closeModal}>아니오</button>
+        <button onClick={handleOpenConfirm}>탈퇴한다</button>
       </div>
 
       {isConfirmOpen && (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import instance from "../../pages/AuthenticaitionPage/Axiosinstance";
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -10,7 +11,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
 import useStatisticsStore from "../../store/statisticsStore"; // 추가
+import MyPageErrorModal from "../Modals/MyPageErrorModal";
+
 import "../../styles/Mypage.css";
 
 ChartJS.register(
@@ -24,6 +28,7 @@ ChartJS.register(
 
 const MyStatistics = () => {
   const setStatistics = useStatisticsStore((state) => state.setStatistics); // 상태 업데이트 함수 가져오기
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // 에러 모달 상태
 
   const [stats, setStats] = useState({
     completionCnt: null,
@@ -51,10 +56,15 @@ const MyStatistics = () => {
   const handleShowStats = async () => {
     try {
       const response = await instance.get("/members/mypage");
-      const data = response.data.data;
-      return data;
+
+      if (response.status === 200) {
+        const data = response.data.data;
+        return data;
+      } else {
+        setIsErrorModalOpen(true);
+      }
     } catch (error) {
-      throw error;
+      setIsErrorModalOpen(true);
     }
   };
 
@@ -117,8 +127,8 @@ const MyStatistics = () => {
   const createBarOptions = (myAvg, avg) => {
     const minValue = Math.min(myAvg, avg);
     const maxValue = Math.max(myAvg, avg);
-    const min = Math.max(0, minValue - 10);
-    const max = Math.min(100, maxValue + 10);
+    const min = Math.max(0, minValue - 5);
+    const max = Math.min(100, maxValue + 5);
 
     return {
       responsive: true,
@@ -188,6 +198,7 @@ const MyStatistics = () => {
 
   return (
     <>
+      <MyPageErrorModal isOpen={isErrorModalOpen} />
       <div className="doughnut-chart-container">
         <Doughnut
           className="doughnut-canvas"
@@ -215,7 +226,11 @@ const MyStatistics = () => {
           {categories.map((category, index) => (
             <div key={index} className="bar-chart-container">
               <h3 className="category-title">{category.title}</h3>
-              {category.percentage !== 0 ? (
+              {category.myAvg === -1 ||
+              category.percentage === -1 ||
+              category.avg === -1 ? (
+                <p>참여한 행성이 없습니다.</p>
+              ) : (
                 <>
                   <Bar
                     data={createBarData(category.myAvg, category.avg)}
@@ -227,8 +242,6 @@ const MyStatistics = () => {
                     입니다.
                   </p>
                 </>
-              ) : (
-                <p>참여한 행성이 없습니다.</p>
               )}
             </div>
           ))}

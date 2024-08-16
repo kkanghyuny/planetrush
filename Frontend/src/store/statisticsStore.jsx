@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 const useStatisticsStore = create((set) => ({
   challengeCnt: 0,
