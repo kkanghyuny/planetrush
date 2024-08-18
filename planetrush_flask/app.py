@@ -20,6 +20,7 @@ import logging
 from dotenv import load_dotenv
 from scipy import stats
 from apscheduler.schedulers.background import BackgroundScheduler
+from pykospacing import Spacing
 
 load_dotenv(verbose=True)
 app = Flask(__name__)
@@ -121,7 +122,7 @@ def delete_all_records(model):
 
 
 def remove_stop_words(words):
-    stop_words = set("매일 하루 일 시간 시 분 초 번 하나 운동 챌린지 층".split())
+    stop_words = set("매일 하루 일 시간 시 분 초 번 하나 운동 챌린지 층 시업 해요".split())
     return [word for word in words if word not in stop_words]
 
 
@@ -158,7 +159,9 @@ def get_challenge_content():
                     )
                 ).all()
                 if planets:
-                    challenge_contents = [planet.challenge_content for planet in planets]
+                    challenge_contents = [planet.challenge_content.replace(" ", "") for planet in planets]
+                    spacing = Spacing()
+                    challenge_contents = [spacing(content) for content in challenge_contents]
                     mode_keyword = get_mode_keywords(challenge_contents)
                     if add_keyword(mode_keyword, category.name):
                         app.logger.info(f"Keywords added for category: {category.name}")
