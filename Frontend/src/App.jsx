@@ -43,7 +43,7 @@ function App() {
   // 오디오 볼륨 설정
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = 0.1;
     }
   }, []);
 

@@ -83,7 +83,7 @@
 }
 
 .planet-img {
-  width: 80%;
+  width: 90%;
   height: auto;
   align-items: center;
   object-fit: contain;
@@ -97,12 +97,12 @@
   justify-content: flex-start;
   box-sizing: border-box;
   height: auto;
-  min-height: 90px;
+  min-height: 100px;
 }
 
 .planet-name-container {
-  width: 80%;
-  height: 25px; /* 고정 높이 설정 */
+  width: 90%;
+  height: 30px; /* 고정 높이 설정 */
   overflow: hidden;
   position: relative;
 }
@@ -111,7 +111,7 @@
   position: absolute;
   white-space: nowrap;
   color: white;
-  font-size: clamp(10px, 2vw, 15px);
+  font-size: clamp(15px, 4vw, 20px);
   animation: marquee 4s linear infinite;
 }
 
