@@ -23,6 +23,8 @@
   align-items: center; /* 텍스트 내부에서의 수직 정렬을 맞춤 */
   padding-left: 10px;
   white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 함 */
+  font-weight: 900;
+  font-size: 15px;
 }
 
 .link-icon {
@@ -113,6 +115,7 @@
   color: white;
   font-size: clamp(15px, 4vw, 20px);
   animation: marquee 4s linear infinite;
+  font-weight: 700;
 }
 
 .burning {
