@@ -57,3 +57,8 @@
 .nickname-input {
   width: 100%;
 }
+
+.spinner {
+  width: 100px;
+  margin-left: 35%;
+}

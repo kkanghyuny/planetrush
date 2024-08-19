@@ -8,6 +8,7 @@ import VerificateSuccessModal from "../../components/Modals/VerificateSuccessMod
 import VerificateFailModal from "../../components/Modals/VerificateFailModal";
 import VerificateErrorModal from "../../components/Modals/VerificateErrorModal";
 import AlreadyVerificateModal from "../../components/Modals/AlreadyVerificateModal";
+import LoadingModal from "../../components/Modals/LoadingModal";
 
 import { BiSolidImageAlt } from "react-icons/bi";
 import { BiSolidLeftArrowCircle } from "react-icons/bi";
@@ -29,6 +30,7 @@ const PlanetVerification = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isError, setIsError] = useState(false); // 에러 상태 추가
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -83,6 +85,8 @@ const PlanetVerification = () => {
   };
 
   const handleVerification = async () => {
+    setIsLoading(true); // 로딩 시작
+
     const verifyImg = new FormData();
     verifyImg.append("verificationImg", selectedImageFile);
 
@@ -112,9 +116,10 @@ const PlanetVerification = () => {
       } else {
         setIsError(true);
       } // 에러 발생 시 상태 업데이트
+    } finally {
+      setIsLoading(false); // 로딩 종료
+      setModalIsOpen(true);
     }
-
-    setModalIsOpen(true); //다 하고 나서 띄운다!
   };
 
   const closeModal = () => {
@@ -124,6 +129,7 @@ const PlanetVerification = () => {
 
   return (
     <div>
+      {isLoading && <LoadingModal />}
       <div>
         <div className="back-button">
           <BiSolidLeftArrowCircle onClick={() => navigate(-1)} />
