@@ -4,17 +4,14 @@
 </p>
 
 <div align="center">
-  
-![PlanetRush_192x192](https://github.com/user-attachments/assets/3dc0b2e4-20c4-49a1-b0b3-bb207dd20f37)
+
+![PlanetRush_192x192](https://github.com/user-attachments/assets/eaafc401-03a7-4952-8d74-ed51526ad086)
 
 ### Planet Rush: 행성 챌린지 플랫폼
 
 <h4>Planet Rush는 사용자들이 다양한 카테고리의 챌린지에 참여하고 성장할 수 있는 플랫폼입니다.</h4>
+<a href="https://www.youtube.com/watch?v=HkrfResgT-g">서비스 소개 영상 보기</a>
 </div>
-
-## 시작하기
-
-https://i11a509.p.ssafy.io
 
 ## 기술 스택
 
@@ -57,12 +54,7 @@ https://i11a509.p.ssafy.io
 
 ## 시스템 아키텍처
 
-![아키텍처_구조](https://github.com/user-attachments/assets/8a2d1be6-a9db-4f0f-b9ae-aeddb4862058)
-
-
-## ERD (Entity Relationship Diagram)
-
-![erd](https://github.com/user-attachments/assets/0cb2fd31-1354-41c8-a166-36c5839faab1)
+![아키텍처](https://github.com/user-attachments/assets/ee107e1a-6f9f-4e17-8238-5699726f355a)
 
 
 ## 주요 기능
@@ -95,40 +87,38 @@ https://i11a509.p.ssafy.io
   - Ubuntu 20.04.6 LTS
   - Jenkins 2.452.3
 
-## Javadoc
+## 팀원
 
-👉🏻[Planet Rush API Java Docs](https://simhani1.github.io/temp/javadoc/)
+### Frontend
 
-## Author
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/ide05484"><img src="https://avatars.githubusercontent.com/u/158231909?v=4" width="100" height="100"/></a></td>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/AhnHongchan"><img src="https://avatars.githubusercontent.com/u/156401196?s=100&v=4" width="100" height="100"/></a></td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://github.com/ide05484" title="Closed Pull Requests">김도은</a></td>
+        <td align="center"><a href="https://github.com/AhnHongchan" title="Closed Pull Requests">안홍찬</a></td>
+    </tr>
+  </tbody>
+</table>
 
-🐹 **김도은**
+### Backend
 
-* Github: [@ide05484](https://github.com/ide05484)
-
-👀 **김경민**
-
-* Github: [@gyungmean](https://github.com/gyungmean)
-
-🌊 **박정의**
-
-* Github: [@justice-7](https://github.com/justice-7)
-
-🍭 **심종한**
-
-* Github: [@simhani1](https://github.com/simhani1)
-
-👶🏻 **안홍찬**
-
-* Github: [@AhnHongchan](https://github.com/AhnHongchan)
-
-👸🏻 **이강현**
-
-* Github: [@kkanghyuny](https://github.com/kkanghyuny)
-
-## 🤝 기여하기
-이슈와 기능 요청은 언제나 환영합니다!
-
-[issues page](https://github.com/simhani1/PlanetRush/issues)<br />
-
-## 📝 라이선스
-Copyright © 2024 F1T5. [ide05484](https://github.com/ide05484). [gyungmean](https://github.com/gyungmean). [justice-7](https://github.com/justice-7). [simhani1](https://github.com/simhani1). [AhnHongchan](https://github.com/AhnHongchan). [kkanghyuny](https://github.com/kkanghyuny) <br />
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/gyungmean"><img src="https://avatars.githubusercontent.com/u/70059000?v=4" width="100" height="100"/></a></td>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/justice-7"><img src="https://avatars.githubusercontent.com/u/81703684?s=100&v=4" width="100" height="100"/></a></td>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/simhani1"><img src="https://avatars.githubusercontent.com/u/48800281?v=4" width="100" height="100"/></a></td>
+      <td align="center" valign="top" width="5%"><a href="https://github.com/kkanghyuny"><img src="https://avatars.githubusercontent.com/u/130138811?s=100&v=4" width="100" height="100"/></a></td>
+    </tr>
+    <tr>
+        <td align="center"><a href="https://github.com/gyungmean" title="Closed Pull Requests">김경민</a></td>
+        <td align="center"><a href="https://github.com/justice-7" title="Closed Pull Requests">박정의</a></td>
+        <td align="center"><a href="https://github.com/simhani1" title="Closed Pull Requests">심종한</a></td>
+        <td align="center"><a href="https://github.com/kkanghyuny" title="Closed Pull Requests">이강현</a></td>
+    </tr>
+  </tbody>
+</table>
